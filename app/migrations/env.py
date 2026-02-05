@@ -4,7 +4,6 @@ import asyncio
 from logging.config import fileConfig
 
 from sqlalchemy import pool
-import sqlalchemy
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
@@ -14,6 +13,7 @@ from app.database import Base
 from app.config import settings
 
 from app.buildings.models import Buildings
+from app.users.models import UserModel
 
 sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
 

@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # MODE: Literal["DEV", "TEST", "PROD"]
-    # LOG_LEVEL: str
+    LOG_LEVEL: str
 
     POSTGRES_HOST: str
     POSTGRES_PORT: int

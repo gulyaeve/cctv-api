@@ -1,5 +1,11 @@
 from fastapi import FastAPI
-from buildings.router import router as buildings_router
+from sqladmin import Admin
+from app.admin.views import UsersAdmin
+from app.admin.auth import authentication_backend
+from app.database import engine
+from app.buildings.router import router as buildings_router
+from app.users.router import router as users_router
+
 
 
 app = FastAPI(
@@ -9,3 +15,8 @@ app = FastAPI(
 )
 
 app.include_router(buildings_router)
+app.include_router(users_router)
+
+admin = Admin(app, engine, authentication_backend=authentication_backend)
+admin.add_view(UsersAdmin)
+
