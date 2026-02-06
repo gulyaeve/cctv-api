@@ -14,6 +14,7 @@ from app.config import settings
 
 from app.buildings.models import Buildings
 from app.users.models import UserModel
+from app.classrooms.models import ClassroomModel
 
 sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
 
