@@ -34,3 +34,6 @@ class UserNotPresent(BaseException):
     detail = "Пользователь не найден"
 
 
+class ObjectMissingException(BaseException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "Объект не найден"

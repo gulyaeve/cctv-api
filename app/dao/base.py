@@ -1,4 +1,4 @@
-from sqlalchemy import delete, insert, select
+from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.database import async_session_maker
@@ -25,11 +25,11 @@ class BaseDAO:
     @classmethod
     async def add(cls, **data):
         try:
-            query = insert(cls.model).values(**data).returning(cls.model.id)
+            query = insert(cls.model).values(**data).returning(cls.model)
             async with async_session_maker() as session:
                 result = await session.execute(query)
                 await session.commit()
-                return result.mappings().first()
+                return result.scalar_one_or_none()
         except (SQLAlchemyError, Exception) as e:
             if isinstance(e, SQLAlchemyError):
                 msg = "Database Exc: Cannot insert data into table"
@@ -45,6 +45,14 @@ class BaseDAO:
             query = delete(cls.model).filter_by(**filter_by)
             await session.execute(query)
             await session.commit()
+
+    @classmethod
+    async def del_by_ids(cls, ids: list[int]):
+        for id in ids:
+            async with async_session_maker() as session:
+                query = delete(cls.model).filter_by(id=id)
+                await session.execute(query)
+                await session.commit()
 
     
     @classmethod
@@ -63,6 +71,28 @@ class BaseDAO:
             elif isinstance(e, Exception):
                 msg = "Unknown Exc"
             msg += ": Cannot bulk insert data into table"
+
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
+        
+    @classmethod
+    async def update(cls, id: int, **data):
+        try:
+            query = (
+                update(cls.model)
+                .where(cls.model.id == id)
+                .values(**data)
+                .returning(cls.model)
+                )
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                await session.commit()
+                return result.scalar_one_or_none()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Cannot insert data into table"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Cannot insert data into table"
 
             logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
             return None
