@@ -12,7 +12,7 @@ from alembic import context
 from app.database import Base
 from app.config import settings
 
-from app.buildings.models import Buildings
+from app.buildings.models import BuildingModel
 from app.users.models import UserModel
 from app.classrooms.models import ClassroomModel
 
