@@ -13,7 +13,7 @@ from app.database import Base
 from app.config import settings
 
 from app.buildings.models import BuildingModel
-from app.users.models import UserModel
+from app.cameras.models import CameraModel
 from app.classrooms.models import ClassroomModel
 
 sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))

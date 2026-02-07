@@ -1,6 +1,5 @@
+from typing import List
 from sqlalchemy import ForeignKey
-from app.cameras.models import CameraModel
-from app.buildings.models import BuildingModel
 from app.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -13,5 +12,5 @@ class ClassroomModel(Base):
     building_id: Mapped[int] = mapped_column(ForeignKey("buildings.id"))
     floor: Mapped[int]
 
-    building = relationship(BuildingModel, backref="classrooms")
-    cameras = relationship(CameraModel, backref="classroom")
+    building = relationship("BuildingModel", back_populates="classrooms")
+    cameras: Mapped[List["CameraModel"]] = relationship(back_populates="classroom")
