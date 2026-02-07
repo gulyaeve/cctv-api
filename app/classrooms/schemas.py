@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class ClassroomScheme(BaseModel):
     id: int
     name: str
-    building: int
+    building_id: int
     floor: int
 
     class Config:
@@ -15,12 +15,12 @@ class ClassroomScheme(BaseModel):
 class ClassroomAddScheme(BaseModel):
     # id: int
     name: str
-    building: int
+    building_id: int
     floor: int
 
 
 class ClassroomSearch(BaseModel):
     name: str = ""
-    building: Optional[int] = None
+    building_id: Optional[int] = None
     floor: Optional[int] = None
 

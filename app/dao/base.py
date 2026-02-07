@@ -10,17 +10,35 @@ class BaseDAO:
 
     @classmethod
     async def find_one_or_none(cls, **filter_by):
-        async with async_session_maker() as session:
+        try:
             query = select(cls.model.__table__.columns).filter_by(**filter_by)
-            result = await session.execute(query)
-            return result.mappings().one_or_none()
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                return result.mappings().one_or_none()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Data not found"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Data not found"
+
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
 
     @classmethod
     async def find_all(cls, **filter_by):
-        async with async_session_maker() as session:
+        try:
             query = select(cls.model.__table__.columns).filter_by(**filter_by)
-            result = await session.execute(query)
-            return result.mappings().all()
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                return result.mappings().all()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Data not found"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Data not found"
+
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
     
     @classmethod
     async def add(cls, **data):
@@ -41,18 +59,27 @@ class BaseDAO:
 
     @classmethod
     async def delete(cls, **filter_by):
-        async with async_session_maker() as session:
+        try:
             query = delete(cls.model).filter_by(**filter_by)
-            await session.execute(query)
-            await session.commit()
-
-    @classmethod
-    async def del_by_ids(cls, ids: list[int]):
-        for id in ids:
             async with async_session_maker() as session:
-                query = delete(cls.model).filter_by(id=id)
                 await session.execute(query)
                 await session.commit()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Cannot delete data"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Cannot delete data"
+
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
+
+    # @classmethod
+    # async def del_by_ids(cls, ids: list[int]):
+    #     for id in ids:
+    #         async with async_session_maker() as session:
+    #             query = delete(cls.model).filter_by(id=id)
+    #             await session.execute(query)
+    #             await session.commit()
 
     
     @classmethod
@@ -90,9 +117,9 @@ class BaseDAO:
                 return result.scalar_one_or_none()
         except (SQLAlchemyError, Exception) as e:
             if isinstance(e, SQLAlchemyError):
-                msg = "Database Exc: Cannot insert data into table"
+                msg = "Database Exc: Cannot update data in table"
             elif isinstance(e, Exception):
-                msg = "Unknown Exc: Cannot insert data into table"
+                msg = "Unknown Exc: Cannot update data in table"
 
             logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
             return None
