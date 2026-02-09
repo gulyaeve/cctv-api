@@ -22,6 +22,15 @@ async def get_all_cameras(filter_query: Annotated[CameraSearch, Query()]):
     return await CamerasDAO.find_all(**filter_model)
 
 
+@router.get("/{id}", response_model=CameraScheme)
+async def get_camera(id: int):
+    camera = await CamerasDAO.find_one_or_none(id=id)
+    if camera is None:
+        raise ObjectMissingException
+    else:
+        return camera
+
+
 @router.post("", response_model=CameraScheme, status_code=status.HTTP_201_CREATED)
 async def add_camera(data: CameraAddScheme):
     """

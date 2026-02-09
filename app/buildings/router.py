@@ -22,6 +22,15 @@ async def get_all_buildings(filter_query: Annotated[BuildingSearch, Query()]):
     return await BuildingsDAO.find_all(**filter_model)
 
 
+@router.get("/{id}", response_model=BuildingScheme)
+async def get_building(id: int):
+    building = await BuildingsDAO.find_one_or_none(id=id)
+    if building is None:
+        raise ObjectMissingException
+    else:
+        return building
+
+
 @router.post("", response_model=BuildingScheme, status_code=status.HTTP_201_CREATED)
 async def add_building(building: BuildingAddScheme):
     """

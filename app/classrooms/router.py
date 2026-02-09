@@ -1,4 +1,3 @@
-import logging
 from typing import Annotated, Sequence
 from fastapi import APIRouter, Query, status
 
@@ -21,6 +20,15 @@ async def get_all_classrooms(filter_query: Annotated[ClassroomSearch, Query()]):
     """
     filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
     return await ClassroomsDAO.find_all(**filter_model)
+
+
+@router.get("/{id}", response_model=ClassroomScheme)
+async def get_classroom(id: int):
+    classroom = await ClassroomsDAO.find_one_or_none(id=id)
+    if classroom is None:
+        raise ObjectMissingException
+    else:
+        return classroom
 
 
 @router.post("", response_model=ClassroomScheme, status_code=status.HTTP_201_CREATED)

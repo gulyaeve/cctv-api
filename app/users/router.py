@@ -39,7 +39,7 @@ async def get_all_users(filter_query: Annotated[UserSearch, Query()]) -> Sequenc
 
 @router.post("/register", status_code=201)
 async def register_user(user_data: UserReg):
-    existing_user = await UsersDAO.find_one(email=user_data.email)
+    existing_user = await UsersDAO.find_one_or_none(email=user_data.email)
     if existing_user:
         raise UserExistException
     hashed_password = get_password_hash(user_data.password)
@@ -69,4 +69,4 @@ async def user_get_itself(current_user: UserModel = Depends(get_current_user)) -
 
 @router.get("/{id}")
 async def get_user_info(id: int) -> UserScheme:
-    return await UsersDAO.find_by_id(id)
+    return await UsersDAO.find_one_or_none(id=id)
