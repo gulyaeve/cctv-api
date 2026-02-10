@@ -1,5 +1,6 @@
-from app.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
 
 
 class BuildingModel(Base):
@@ -10,3 +11,6 @@ class BuildingModel(Base):
     location: Mapped[str]
 
     classrooms = relationship("ClassroomModel", back_populates="building")
+
+    def __str__(self) -> str:
+        return f"{self.name}"

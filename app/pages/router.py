@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 templates = Jinja2Templates(
-    directory="web/templates"
+    directory="app/templates"
 )
 
 

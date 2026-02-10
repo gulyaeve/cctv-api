@@ -1,7 +1,9 @@
 from typing import List
+
 from sqlalchemy import ForeignKey
-from app.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
 
 
 class ClassroomModel(Base):
@@ -14,3 +16,6 @@ class ClassroomModel(Base):
 
     building = relationship("BuildingModel", back_populates="classrooms")
     cameras: Mapped[List["CameraModel"]] = relationship(back_populates="classroom")
+
+    def __str__(self) -> str:
+        return f"{self.name}"

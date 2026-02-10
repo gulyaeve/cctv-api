@@ -1,6 +1,7 @@
-from sqlalchemy import ForeignKey, ARRAY, String
-from app.database import Base
+from sqlalchemy import ARRAY, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
 
 
 class CameraModel(Base):
@@ -14,4 +15,6 @@ class CameraModel(Base):
     rtsp_urls: Mapped[list[str]] = mapped_column(ARRAY(String))
 
     classroom = relationship("ClassroomModel", back_populates="cameras")
-    
+
+    def __str__(self) -> str:
+        return f"{self.view}"

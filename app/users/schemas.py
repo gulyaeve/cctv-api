@@ -3,31 +3,31 @@ from typing import Optional
 from datetime import datetime
 
 
-class UserScheme(BaseModel):
-    id: int
-    name: str
-    surname: str
-    patronymic: Optional[str]
-    # login: str
+class UserBaseScheme(BaseModel):
+    username: str
+    full_name: Optional[str]
+    email: EmailStr
     time_created: datetime
-    email: Optional[EmailStr]
-    phone: Optional[str]
+    last_login: Optional[datetime]
 
 
-class UserSearch(BaseModel):
-    name: str = ""
-    surname: str = ""
-    patronymic: Optional[str] = None
-    # login: str = ""
-    email: Optional[EmailStr] = None
-    phone: Optional[str] = None
+class UserScheme(UserBaseScheme):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class UserSearch(UserBaseScheme):
+    username: str = ""
+    full_name: Optional[str] = None
+    email: EmailStr = ""
 
 
 class UserReg(BaseModel):
+    username: str
+    full_name: Optional[str]
     email: EmailStr
-    # login: str
-    name: str
-    surname: str
     password: str
 
 

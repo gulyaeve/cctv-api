@@ -1,4 +1,4 @@
-import time
+import logging
 from typing import Sequence, Annotated
 from fastapi import APIRouter, Depends, Query, Response
 
@@ -8,7 +8,7 @@ from app.users.models import UserModel
 from app.users.schemas import UserScheme, UserReg, UserSearch, UserLogin
 from app.users.dao import UsersDAO
 from app.exceptions import UserExistException
-from fastapi_cache.decorator import cache
+# from fastapi_cache.decorator import cache
 
 
 router = APIRouter(
@@ -18,23 +18,13 @@ router = APIRouter(
 
 
 @router.get("")
-@cache(expire=60)
+# @cache(expire=60)
 async def get_all_users(filter_query: Annotated[UserSearch, Query()]) -> Sequence[UserScheme]:
     """
     Get all users
     """
-    time.sleep(10)
     filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
     return await UsersDAO.find_all(**filter_model)
-
-
-# @router.get("")
-# async def get_all_users_2(filter_query: Annotated[UserSearch, Query()]) -> Sequence[User] | User:
-#     """
-#     Get all users with single model
-#     """
-#     filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
-#     return await UsersDAO.find(**filter_model)
 
 
 @router.post("/register", status_code=201)
@@ -42,12 +32,12 @@ async def register_user(user_data: UserReg):
     existing_user = await UsersDAO.find_one_or_none(email=user_data.email)
     if existing_user:
         raise UserExistException
-    hashed_password = get_password_hash(user_data.password)
+    data = user_data.model_dump()
+    data["hashed_password"] = get_password_hash(user_data.password)
+    data.pop("password")
+    logging.info(data)
     await UsersDAO.add(
-        email=user_data.email,
-        name=user_data.name,
-        surname=user_data.surname,
-        hashed_password=hashed_password,
+        **data
     )
     print(f"User saved to db: {user_data}")
     # return user_data

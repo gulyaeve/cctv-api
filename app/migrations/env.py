@@ -1,22 +1,25 @@
-import sys
-from os.path import abspath, dirname
 import asyncio
+import sys
 from logging.config import fileConfig
+from os.path import abspath, dirname
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
-from alembic import context
-
-from app.database import Base
 from app.config import settings
+from app.database import Base
+
+sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
+
 
 from app.buildings.models import BuildingModel
 from app.cameras.models import CameraModel
 from app.classrooms.models import ClassroomModel
+from app.users.models import UserModel
+from app.users.models import Role
+from app.users.models import Permission
 
-sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

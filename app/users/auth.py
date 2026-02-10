@@ -21,15 +21,16 @@ def verify_password(password: str, hashed_password: str) -> bool:
 
 
 async def auth_user(email: EmailStr, password: str):
-    user = await UsersDAO.find_one(email=email)
+    user = await UsersDAO.find_one_or_none(email=email)
     if not (user and verify_password(password, user.hashed_password)):
         raise IncorrectEmailOrPassword
+    await UsersDAO.update(id=user.id, last_login=datetime.now())
     return user
 
 
 def create_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.now() + timedelta(minutes=20)
+    expire = datetime.now() + timedelta(minutes=settings.TOKEN_TTL_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         to_encode,

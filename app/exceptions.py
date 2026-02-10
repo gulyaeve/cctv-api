@@ -37,3 +37,9 @@ class UserNotPresent(BaseException):
 class ObjectMissingException(BaseException):
     status_code = status.HTTP_409_CONFLICT
     detail = "Объект не найден"
+
+
+class OperationNotPermited(BaseException):
+    status_code=status.HTTP_403_FORBIDDEN
+    detail="Operation not permitted"
+
