@@ -49,7 +49,7 @@ class PermissionsAdmin(ModelView, model=Permission):
 
 
 class BuildingsAdmin(ModelView, model=BuildingModel):
-    can_create = False
+    can_create = True
     can_delete = True
     name = "building"
     name_plural = "buildings"
@@ -62,7 +62,7 @@ class BuildingsAdmin(ModelView, model=BuildingModel):
 
 
 class ClassroomsAdmin(ModelView, model=ClassroomModel):
-    can_create = False
+    can_create = True
     can_delete = True
     name = "classroom"
     name_plural = "classrooms"
@@ -76,7 +76,7 @@ class ClassroomsAdmin(ModelView, model=ClassroomModel):
 
 
 class CamerasAdmin(ModelView, model=CameraModel):
-    can_create = False
+    can_create = True
     can_delete = True
     name = "camera"
     name_plural = "cameras"

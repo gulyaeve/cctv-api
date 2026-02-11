@@ -1,4 +1,6 @@
 from fastapi import APIRouter, FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from sqladmin import Admin
 
 from app.admin.views import (
@@ -27,8 +29,24 @@ api.include_router(users_router)
 api.include_router(cameras_router)
 
 app = FastAPI(title="Система видеонаблюдения", version="0.1.0")
+app.mount("/static", StaticFiles(directory="app/static"), "static")
 app.include_router(api)
 app.include_router(pages_router)
+
+
+# CORS
+origins = [
+    "http://127.0.0.1:8000",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
+    allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", 
+                   "Access-Control-Allow-Origin", "Authorization"],
+)
+
 
 # admin = Admin(app, engine, authentication_backend=authentication_backend)
 admin = Admin(app, engine)

@@ -5,12 +5,12 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="icon" href="{{ url_for('static', path='images/logo.png') }}">
+    <link rel="icon" href="{{ url_for('static', path='favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='css/navbar.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         async function logoutUser() {
-            const url = "http://localhost:8000/api/v1/auth/logout";
+            const url = "http://localhost:8000/api/users/logout";
 
             await fetch(url, {
                 method: 'POST',
@@ -28,7 +28,7 @@
 <nav class="mb-10">
     <div class="flex justify-between px-8 py-3 text-2xl">
       <ul class="flex gap-x-5">
-        <li><a href="/pages/monitoring">Мониторинг</a></li>
+        <li><a href="/pages/buildings">Корпуса</a></li>
         <li>
             <button onclick="logoutUser()">Выйти</button>
         </li>

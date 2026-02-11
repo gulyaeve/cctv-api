@@ -51,11 +51,15 @@ async def login_user(response: Response, user_data: UserLogin):
     return {"access_token": access_token}
 
 
+@router.post("/logout")
+async def logout_user(response: Response):
+    response.delete_cookie("access_token")
+
+
 @router.get("/me")
 async def user_get_itself(current_user: UserModel = Depends(get_current_user)) -> UserScheme:
     return current_user
     
-
 
 @router.get("/{id}")
 async def get_user_info(id: int) -> UserScheme:
