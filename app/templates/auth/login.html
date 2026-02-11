@@ -26,26 +26,28 @@
 {% endblock %}
 
 {% block content %}
+    <h2 class="mb-3"><i style="color: #5388FF;">ИТ</i>.МОСКВА | Система видеонаблюдения</h1>
+    <h5 class="mb-4">АВТОРИЗАЦИЯ</h1>
     <div class="flex flex-col items-center justify-center h-screen">
-        <span class="font-bold text-3xl mb-10"> ИТ.Москва | Система видеонаблюдения </span>
-        <span class="font-bold text-3xl mb-10"><D-Space>АВТОРИЗАЦИЯ </span>
-        <div>
-            <div class="flex flex-col items-start text-xl mb-5">
-                <label for="email" class="mb-1">Email</label>
-                <input class="border-b-2 border-yellow-400 mb-4" id="email" name="email" type="text" value="" placeholder="user@mail.ru">
-
-                <label for="password" class="mb-1">Пароль</label>
-                <input class="border-b-2 border-yellow-400" id="password" name="password" type="password" value="" placeholder="********">
+        <div class="flex flex-col items-start text-xl mb-5">
+            <div>
+                {# <label for="email" class="mb-1">Email</label> #}
+                <input class="btn btn-outline-light btn-lg m-2" id="email" name="email" type="text" value="" placeholder="user@mail.ru">
+            </div>
+            <div>
+            {# <div class="flex flex-col items-start text-xl mb-5"> #}
+                {# <label for="password" class="mb-1">Пароль</label> #}
+                <input class="btn btn-outline-light btn-lg m-2" id="password" name="password" type="password" value="" placeholder="********">
                 <span id="wrong_credentials" class="text-sm text-red-400"></span>
             </div>
+            <button onclick="loginUser()" class="btn btn-outline-light btn-lg m-2">Войти</button>
         </div>
-        <button onclick="loginUser()" class="text-xl bg-yellow-400 px-3 py-2 rounded-3xl mb-3">Войти</button>
-        <span>
-            Не зарегистрированы?
-            <a href="/pages/register"
-               class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                Зарегистрироваться
-            </a>
-        </span>
+        {# <span> #}
+        {#     Не зарегистрированы? #}
+        {#     <a href="/pages/register" #}
+        {#        class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"> #}
+        {#         Зарегистрироваться #}
+        {#     </a> #}
+        {# </span> #}
     </div>
 {% endblock %}

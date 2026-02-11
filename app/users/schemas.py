@@ -18,10 +18,10 @@ class UserScheme(UserBaseScheme):
         from_attributes = True
 
 
-class UserSearch(UserBaseScheme):
+class UserSearch(BaseModel):
     username: str = ""
     full_name: Optional[str] = None
-    email: EmailStr = ""
+    email: Optional[EmailStr] = None
 
 
 class UserReg(BaseModel):

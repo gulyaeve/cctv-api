@@ -36,6 +36,6 @@ async def get_login_page(request: Request):
     return templates.TemplateResponse("auth/login.html", {"request": request})
 
 
-@router.get("/register", response_class=HTMLResponse)
-async def get_register_page(request: Request):
-    return templates.TemplateResponse("auth/register.html", {"request": request})
+# @router.get("/register", response_class=HTMLResponse)
+# async def get_register_page(request: Request):
+#     return templates.TemplateResponse("auth/register.html", {"request": request})
