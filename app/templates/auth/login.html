@@ -12,6 +12,7 @@
 
             await fetch(url, {
                 method: 'POST',
+                credentials: "include",
                 headers: {'Content-Type': 'application/json'}, 
                 body: JSON.stringify({email: email, password: password}),
             }).then(response => {
@@ -32,12 +33,12 @@
         <div class="flex flex-col items-start text-xl mb-5">
             <div>
                 {# <label for="email" class="mb-1">Email</label> #}
-                <input class="btn btn-outline-light btn-lg m-2" id="email" name="email" type="text" value="" placeholder="user@mail.ru">
+                <input class="btn-outline-light btn-lg m-2" id="email" name="email" type="text" value="" placeholder="user@mail.ru">
             </div>
             <div>
             {# <div class="flex flex-col items-start text-xl mb-5"> #}
                 {# <label for="password" class="mb-1">Пароль</label> #}
-                <input class="btn btn-outline-light btn-lg m-2" id="password" name="password" type="password" value="" placeholder="********">
+                <input class="btn-outline-light btn-lg m-2" id="password" name="password" type="password" value="" placeholder="********">
                 <span id="wrong_credentials" class="text-sm text-red-400"></span>
             </div>
             <button onclick="loginUser()" class="btn btn-outline-light btn-lg m-2">Войти</button>

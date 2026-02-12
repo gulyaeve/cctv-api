@@ -14,7 +14,7 @@ class CameraScheme(BaseModel):
     camera_ip: str
     reg_ip: str
     view: str
-    rtsp_urls: list[str]
+    rtsp_url: str
 
     class Config:
         from_attributes = True
@@ -26,7 +26,7 @@ class CameraAddScheme(BaseModel):
     camera_ip: str
     reg_ip: str
     view: str
-    rtsp_urls: list[str]
+    rtsp_url: str
 
 
 class CameraSearch(BaseModel):

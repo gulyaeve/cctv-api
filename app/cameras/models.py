@@ -12,7 +12,7 @@ class CameraModel(Base):
     camera_ip: Mapped[str]
     reg_ip: Mapped[str]
     view: Mapped[str]
-    rtsp_urls: Mapped[list[str]] = mapped_column(ARRAY(String))
+    rtsp_url: Mapped[str]
 
     classroom = relationship("ClassroomModel", back_populates="cameras")
 
