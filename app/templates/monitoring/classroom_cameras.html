@@ -29,15 +29,14 @@
 <div class="flex justify-center mb-10 text-3xl">
     Камеры {{ classroom.name }}
 </div>
-<div class="flex flex-col items-center">
-    {% for camera in cameras %}
-        <div>
-            <div class="text-2xl font-bold mb-5">
+<div class="container">
+    <div class="row">
+        {% for camera in cameras %}
+            <div class="col">
                 <span><a href="/pages/classroom_cameras_view/{{ classroom.id }}">{{ camera.view }}</a></span>
             </div>
-            
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
 

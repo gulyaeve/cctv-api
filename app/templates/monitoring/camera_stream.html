@@ -26,20 +26,18 @@
 {% endblock %}
 
 {% block content %}
-<div class="flex justify-center mb-10 text-3xl">
+<div class="flex justify-center mb-5 text-3xl">
     Камеры {{ classroom.name }}
 </div>
-<div class="flex flex-col items-center">
-    
-    {% for camera in cameras %}
-        <div>
-            <div class="text-2xl font-bold mb-5">
-                <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 25%);" src="http://127.0.0.1:8000/pages/camera_view/{{ camera.id }}" width="1024">
+<div class="container">
+    <div class="row">
+        {% for camera in cameras %}
+            <div class="col">
+                <img src="http://127.0.0.1:8000/pages/camera_view/{{ camera.id }}" width="1024" class="img-fluid">
                 <!-- <span><a href="/pages/camera_view/{{ camera.id }}">{{ camera.view }}</a></span> -->
             </div>
-            
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
 
