@@ -1,22 +1,20 @@
 from typing import Annotated, Sequence
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Query, status
 
 from app.buildings.dao import BuildingsDAO
 from app.buildings.schemas import BuildingAddScheme, BuildingScheme, BuildingSearch
 from app.exceptions import ObjectMissingException
-from app.users.dependencies import get_current_user
-from app.users.models import UserModel
 
 
 router = APIRouter(
     prefix="/buildings",
     tags=["Здания"]
-)
+    )
 
 
 @router.get("", response_model=Sequence[BuildingScheme])
 # @cache(expire=60)
-async def get_all_buildings(filter_query: Annotated[BuildingSearch, Query()], current_user: UserModel = Depends(get_current_user)):
+async def get_all_buildings(filter_query: Annotated[BuildingSearch, Query()]):
     """
     Get all buildings
     """

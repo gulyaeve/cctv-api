@@ -47,8 +47,8 @@ async def register_user(user_data: UserReg):
 async def login_user(response: Response, user_data: UserLogin):
     user = await auth_user(user_data.email, user_data.password)
     access_token = create_token({"sub": str(user.id)})
-    response.set_cookie("access_token", access_token)
-    return {"access_token": access_token}
+    response.set_cookie(key="access_token", value=access_token)
+    # return {"access_token": access_token}
 
 
 @router.post("/logout")
