@@ -10,6 +10,7 @@ dependencies = [
     "fastapi>=0.128.1",
     "fastapi-cache2[redis]>=0.2.2",
     "itsdangerous>=2.2.0",
+    "opencv-python-headless>=4.13.0.92",
     "passlib>=1.7.4",
     "pydantic-settings>=2.12.0",
     "pydantic[email]>=2.12.5",
