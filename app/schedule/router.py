@@ -1,0 +1,66 @@
+from typing import Annotated, Sequence
+from fastapi import APIRouter, Query, status
+
+from app.schedule.dao import ScheduleDAO
+from app.schedule.schemas import ScheduleAddScheme, ScheduleScheme, ScheduleSearch
+from app.exceptions import ObjectMissingException
+
+
+router = APIRouter(
+    prefix="/schedule",
+    tags=["Расписание"]
+)
+
+
+@router.get("", response_model=Sequence[ScheduleScheme])
+# @cache(expire=60)
+async def get_all_schedules(filter_query: Annotated[ScheduleSearch, Query()]):
+    """
+    Get all classrooms
+    """
+    filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
+    return await ScheduleDAO.find_all(**filter_model)
+
+
+@router.get("/{id}", response_model=ScheduleScheme)
+async def get_schedule(id: int):
+    schedule = await ScheduleDAO.find_one_or_none(id=id)
+    if schedule is None:
+        raise ObjectMissingException
+    else:
+        return schedule
+
+
+@router.post("", response_model=ScheduleScheme, status_code=status.HTTP_201_CREATED)
+async def add_schedule(data: ScheduleAddScheme):
+    """
+    Add schedule
+    """
+    new_object = await ScheduleDAO.add(
+        **data.model_dump()
+    )
+    if new_object is None:
+        raise ObjectMissingException
+    else:
+        return new_object
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+async def del_schedule(id: int):
+    existing_object = await ScheduleDAO.find_one_or_none(id=id)
+    if existing_object is None:
+        raise ObjectMissingException
+    else:
+        return await ScheduleDAO.delete(id=id)
+
+
+@router.put("/{id}", response_model=ScheduleScheme)
+async def update_schedule(id: int, data: ScheduleAddScheme):
+
+    existing_object = await ScheduleDAO.find_one_or_none(id=id)
+    if existing_object is None:
+        raise ObjectMissingException
+    else:
+        updated_object = await ScheduleDAO.update(id, **data.model_dump())
+        return updated_object
+    

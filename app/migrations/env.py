@@ -19,6 +19,8 @@ from app.classrooms.models import ClassroomModel
 from app.users.models import UserModel
 from app.users.models import Role
 from app.users.models import Permission
+from app.schedule.models import ScheduleModel
+from app.teachers.models import TeacherModel
 
 
 # this is the Alembic Config object, which provides
