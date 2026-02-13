@@ -1,4 +1,4 @@
-from typing import Literal
+# from typing import Literal
 
 # во 2 версии Pydantic модуль BaseSettings 
 # был вынесен в отдельную библиотеку pydantic-settings
@@ -14,12 +14,12 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str
     POSTGRES_PORT: int
     POSTGRES_USER: str
-    POSTGRES_PASS: str
+    POSTGRES_PASSWORD: str
     POSTGRES_DB: str
 
     @property
     def database_url(self):
-        user = f"{self.POSTGRES_USER}:{self.POSTGRES_PASS}"
+        user = f"{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
         database = f"{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
         return f"postgresql+asyncpg://{user}@{database}"

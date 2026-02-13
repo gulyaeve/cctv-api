@@ -1,4 +1,5 @@
 from fastapi import APIRouter, FastAPI
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqladmin import Admin
@@ -58,3 +59,8 @@ admin.add_view(PermissionsAdmin)
 admin.add_view(BuildingsAdmin)
 admin.add_view(ClassroomsAdmin)
 admin.add_view(CamerasAdmin)
+
+
+@app.get("/", response_class=RedirectResponse)
+def redirect_to_login_page():
+    return RedirectResponse("/pages/login")
