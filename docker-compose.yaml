@@ -6,9 +6,9 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - nginx.conf:/etc/nginx/nginx.conf
-      - cctv.itmoscow.crt:/etc/nginx/ssl/cctv.itmoscow.crt
-      - cctv.itmoscow.key:/etc/nginx/ssl/cctv.itmoscow.key
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./cctv.itmoscow.crt:/etc/nginx/ssl/cctv.itmoscow.crt
+      - ./cctv.itmoscow.key:/etc/nginx/ssl/cctv.itmoscow.key
     restart: on-failure
 
   db:
