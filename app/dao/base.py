@@ -84,14 +84,12 @@ class BaseDAO:
     
     @classmethod
     async def add_bulk(cls, *data):
-        # Для загрузки массива данных [{"id": 1}, {"id": 2}]
-        # мы должны обрабатывать его через позиционные аргументы *args.
         try:
-            query = insert(cls.model).values(*data).returning(cls.model.id)
+            query = insert(cls.model).values(*data).returning(cls.model)
             async with async_session_maker() as session:
                 result = await session.execute(query)
                 await session.commit()
-                return result.mappings().first()
+                return result.mappings().all()
         except (SQLAlchemyError, Exception) as e:
             if isinstance(e, SQLAlchemyError):
                 msg = "Database Exc"

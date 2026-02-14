@@ -42,6 +42,11 @@ async def add_building(building: BuildingAddScheme):
     return new_building
 
 
+@router.post("/bulk", status_code=status.HTTP_201_CREATED)
+async def bulk_add_buildings(items: Sequence[BuildingAddScheme]):
+    await BuildingsDAO.add_bulk([item.model_dump() for item in items])
+
+
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def del_buildings(id: int):
     """

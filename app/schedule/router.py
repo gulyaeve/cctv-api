@@ -45,6 +45,11 @@ async def add_schedule(data: ScheduleAddScheme):
         return new_object
 
 
+@router.post("/bulk", status_code=status.HTTP_201_CREATED)
+async def bulk_add_schedules(items: Sequence[ScheduleAddScheme]):
+    await ScheduleDAO.add_bulk([item.model_dump() for item in items])
+
+
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def del_schedule(id: int):
     existing_object = await ScheduleDAO.find_one_or_none(id=id)

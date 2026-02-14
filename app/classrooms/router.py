@@ -45,6 +45,11 @@ async def add_classroom(data: ClassroomAddScheme):
         return new_object
 
 
+@router.post("/bulk", status_code=status.HTTP_201_CREATED)
+async def bulk_add_classrooms(items: Sequence[ClassroomAddScheme]):
+    await ClassroomsDAO.add_bulk([item.model_dump() for item in items])
+
+
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def del_classroom(id: int):
     """

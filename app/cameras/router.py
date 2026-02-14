@@ -45,6 +45,11 @@ async def add_camera(data: CameraAddScheme):
         return new_object
 
 
+@router.post("/bulk", status_code=status.HTTP_201_CREATED)
+async def bulk_add_cameras(items: Sequence[CameraAddScheme]):
+    await CamerasDAO.add_bulk([item.model_dump() for item in items])
+
+
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def del_camera(id: int):
     """
