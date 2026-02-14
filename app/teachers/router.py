@@ -24,7 +24,7 @@ async def get_all_teachers(filter_query: Annotated[TeacherSearch, Query()]):
 
 
 @router.get("/{id}", response_model=TeacherScheme)
-async def get_teachers(id: int):
+async def get_teacher(id: int):
     teacher = await TeachersDAO.find_one_or_none(id=id)
     if teacher is None:
         raise ObjectMissingException

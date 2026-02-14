@@ -6,6 +6,9 @@ from app.classrooms.models import ClassroomModel
 from app.users.models import UserModel
 from app.users.models import Role
 from app.users.models import Permission
+from app.teachers.models import TeacherModel
+from app.schedule.models import ScheduleModel
+from app.groups.models import GroupModel
 
 
 class UsersAdmin(ModelView, model=UserModel):
@@ -88,3 +91,40 @@ class CamerasAdmin(ModelView, model=CameraModel):
         CameraModel.rtsp_url,
         CameraModel.classroom,
     ]
+
+
+class TeachersAdmin(ModelView, model=TeacherModel):
+    can_create = True
+    can_delete = True
+    name = "teacher"
+    name_plural = "teachers"
+    column_list = [
+        TeacherModel.id,
+        TeacherModel.name,
+    ]
+
+
+class ScheduleAdmin(ModelView, model=ScheduleModel):
+    can_create = True
+    can_delete = True
+    name = "schedule"
+    name_plural = "schedules"
+    column_list = [
+        ScheduleModel.id,
+        ScheduleModel.subject,
+        ScheduleModel.classroom,
+        ScheduleModel.teacher,
+        ScheduleModel.duration,
+    ]
+
+
+class GroupsAdmin(ModelView, model=GroupModel):
+    can_create = True
+    can_delete = True
+    name = "group"
+    name_plural = "groups"
+    column_list = [
+        GroupModel.id,
+        GroupModel.name,
+    ]
+

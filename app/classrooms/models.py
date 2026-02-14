@@ -16,6 +16,7 @@ class ClassroomModel(Base):
 
     building = relationship("BuildingModel", back_populates="classrooms")
     cameras: Mapped[List["CameraModel"]] = relationship(back_populates="classroom")
+    schedule: Mapped[List["ScheduleModel"]] = relationship(back_populates="classroom")
 
     def __str__(self) -> str:
         return f"{self.name}"

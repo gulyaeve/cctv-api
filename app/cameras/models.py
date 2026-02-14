@@ -9,9 +9,9 @@ class CameraModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     classroom_id: Mapped[int] = mapped_column(ForeignKey("classrooms.id"))
-    camera_ip: Mapped[str]
-    reg_ip: Mapped[str]
-    view: Mapped[str]
+    camera_ip: Mapped[str] = mapped_column(nullable=True)
+    reg_ip: Mapped[str] = mapped_column(nullable=True)
+    view: Mapped[str] = mapped_column(nullable=True)
     rtsp_url: Mapped[str] = mapped_column(nullable=False)
 
     classroom = relationship("ClassroomModel", back_populates="cameras")
