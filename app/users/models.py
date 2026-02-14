@@ -34,6 +34,7 @@ class UserModel(Base):
     last_login = Column(DateTime, nullable=True, default=None)
 
     roles = relationship("Role", secondary=user_roles, back_populates="users")
+    incidents = relationship("IncidentModel", back_populates="visor")
 
     def __str__(self) -> str:
         return f"{self.username}"

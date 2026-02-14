@@ -14,6 +14,7 @@ from app.admin.views import (
     TeachersAdmin,
     UsersAdmin,
     GroupsAdmin,
+    IncidentsAdmin,
 )
 from app.buildings.router import router as buildings_router
 from app.cameras.router import router as cameras_router
@@ -26,6 +27,8 @@ from app.database import engine
 from app.pages.router import router as pages_router
 from app.users.router import router as users_router
 from app.groups.router import router as groups_router
+from app.incidents.router import router as incidents_router
+
 
 api = APIRouter(
     prefix="/api",
@@ -37,6 +40,8 @@ api.include_router(cameras_router)
 api.include_router(teachers_router)
 api.include_router(schedule_router)
 api.include_router(groups_router)
+api.include_router(incidents_router)
+
 
 app = FastAPI(title="Система видеонаблюдения", version="0.1.0")
 app.mount("/static", StaticFiles(directory="app/static"), "static")
@@ -71,6 +76,7 @@ admin.add_view(CamerasAdmin)
 admin.add_view(ScheduleAdmin)
 admin.add_view(TeachersAdmin)
 admin.add_view(GroupsAdmin)
+admin.add_view(IncidentsAdmin)
 
 
 @app.get("/", response_class=RedirectResponse)

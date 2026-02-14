@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy import Column, DateTime, ForeignKey, Interval
 from app.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -17,6 +18,7 @@ class ScheduleModel(Base):
     classroom = relationship("ClassroomModel", back_populates="schedule")
     teacher = relationship("TeacherModel", back_populates="schedule")
     group = relationship("GroupModel", back_populates="schedule")
+    incidents: Mapped[List["IncidentModel"]] = relationship(back_populates="schedule")
 
     def __str__(self) -> str:
         return f"{self.subject} {self.timestamp_start}"

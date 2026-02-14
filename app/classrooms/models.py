@@ -15,6 +15,7 @@ class ClassroomModel(Base):
     floor: Mapped[int]
 
     building = relationship("BuildingModel", back_populates="classrooms")
+    incident = relationship("IncidentModel", back_populates="classroom")
     cameras: Mapped[List["CameraModel"]] = relationship(back_populates="classroom")
     schedule: Mapped[List["ScheduleModel"]] = relationship(back_populates="classroom")
 

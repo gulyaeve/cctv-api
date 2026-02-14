@@ -9,6 +9,7 @@ from app.users.models import Permission
 from app.teachers.models import TeacherModel
 from app.schedule.models import ScheduleModel
 from app.groups.models import GroupModel
+from app.incidents.models import IncidentModel
 
 
 class UsersAdmin(ModelView, model=UserModel):
@@ -127,4 +128,28 @@ class GroupsAdmin(ModelView, model=GroupModel):
         GroupModel.id,
         GroupModel.name,
     ]
+
+
+class IncidentsAdmin(ModelView, model=IncidentModel):
+    can_create = True
+    can_delete = True
+    name = "incident"
+    name_plural = "incidents"
+    column_list = [
+        IncidentModel.id,
+        IncidentModel.comment,
+        IncidentModel.schedule,
+        IncidentModel.classroom,
+        IncidentModel.visor
+    ]
+# id = Column(Integer, primary_key=True, index=True)
+#     comment = Column(String, nullable=False, index=True)
+#     event: Mapped[int] = mapped_column(ForeignKey("schedules.id"))
+#     time_created: Mapped[datetime] = mapped_column(server_default=func.now())
+#     classroom_id: Mapped[int] = mapped_column(ForeignKey("classrooms.id"))
+#     visor: Mapped[int] = mapped_column(ForeignKey("users.id"))
+#
+#     schedule: Mapped[List["ScheduleModel"]] = relationship(back_populates="incident")
+#     classroom = relationship("ClassroomModel", back_populates="incident")
+#     visor = relationship("UserModel", back_populates="incidents")
 

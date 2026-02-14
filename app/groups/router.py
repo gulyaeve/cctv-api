@@ -33,7 +33,7 @@ async def get_group(id: int):
 
 
 @router.post("", response_model=GroupScheme, status_code=status.HTTP_201_CREATED)
-async def add_teacher(data: GroupBaseScheme):
+async def add_group(data: GroupBaseScheme):
     """
     Add group
     """
@@ -64,7 +64,7 @@ async def del_group(id: int):
 
 
 @router.put("/{id}", response_model=GroupScheme)
-async def update_group(id: int, data: GroupBaseScheme):
+async def update_groups(id: int, data: GroupBaseScheme):
     """
     update group
     """
