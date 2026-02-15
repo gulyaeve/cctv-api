@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script>
+        async function loginUser() {
+            const wrongCredentialsSpan = document.getElementById("wrong_credentials");
+            wrongCredentialsSpan.textContent = "";
+
+            const url = "http://localhost:8000/api/users/login";
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify({email: email, password: password}),
+            }).then(response => {
+                if (response.status === 200) {
+                    window.location.href = "/pages/buildings"
+                } else {
+                    wrongCredentialsSpan.textContent = "Неверный email или пароль";
+                }
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+  <div class="row m-0">
+    <div class="col-9 p-0">
+      <div class="video-wall d-flex">
+        {% for camera in cameras %}
+        <div class="video d-inline">
+          <a href="#" data-toggle="modal" data-target="#cam1"><img src="http://127.0.0.1:8000/pages/camera_view/{{ camera.id }}" alt=""></a>
+        </div>
+        {% endfor %}
+      <!--   <div class="video d-inline"> -->
+      <!--     <a href="#" data-toggle="modal" data-target="#cam2"><img src="img/cam2.jpg" alt=""></a> -->
+      <!--   </div> -->
+      <!-- </div> -->
+      <!-- <div class="video-wall d-flex text-center"> -->
+      <!--   <div class="video d-inline"> -->
+      <!--     <a href="#" data-toggle="modal" data-target="#cam3"><img src="img/cam3.jpg" alt=""></a> -->
+      <!--   </div> -->
+      <!--   <div class="video d-inline"> -->
+      <!--     <a href="#" data-toggle="modal" data-target="#cam4"><img src="img/cam4.jpg" alt=""></a> -->
+      <!--   </div> -->
+      </div>
+      <div class="row m-0">
+        <div class="col-4 pl-3 pr-0 pt-3 m-0">
+          <div class="control-panel-meta">
+            <div class="control-panel-meta-head">
+              Информация
+            </div>
+            <hr>
+              <b>Кабинет:</b> {{ monitoring_data.current_classroom }}<br>
+            <b>Корпус:</b> {{ monitoring_data.current_building}}<br>
+            <br>
+            <b>Занятие:</b><br>
+            {{ monitoring_data.current_subject }} <br>
+            <b>Время занятия:</b> {{ monitoring_data.timestamp_start.strftime('%H:%M') }} - {{ monitoring_data.timestamp_end.strftime('%H:%M') }}<br>
+            <b>Преподаватель:</b><br>
+            {{ monitoring_data.current_teacher }} <br>
+            <b>Группа:</b><br>
+            {{ monitoring_data.current_group }} <br>
+          </div>
+        </div>
+        <div class="col-8 p-3 m-0">
+          <div class="control-panel-addinc">
+            <div class="control-panel-buttons d-flex">
+              <button class="control-panel-btn btn-inc-alright" type="button" name="button">Всё хорошо</button>
+              <button class="control-panel-btn btn-inc-control" type="button" name="button">Контроль</button>
+              <button class="control-panel-btn btn-inc-alert" type="button" name="button">Инцидент</button>
+            </div>
+            
+            <div class="control-panel-details st-inc-control d-none">
+              <div class="row">
+                <div class="col-6">
+                  <b>Быстрый ввод</b>
+                  <button class="control-panel-btn" type="button" name="button">Студент(ы) спит(ят)</button>
+                  <button class="control-panel-btn" type="button" name="button">Преподаватель отсутствует</button>
+                  <button class="control-panel-btn" type="button" name="button">Преподаватель спит</button>
+                  <button class="control-panel-btn" type="button" name="button">Студенты бездельничают</button>
+                </div>
+                <div class="col-6">
+                  <b>Комментарий:</b>
+                  <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
+                  <button class="control-panel-btn" type="button" name="button">Отправить информацию</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="control-panel-details st-inc-alert d-none">
+              <div class="row">
+                <div class="col-6">
+                  <b>Быстрый ввод</b>
+                  <button class="control-panel-btn" type="button" name="button">Студент(ы) спит(ят)</button>
+                  <button class="control-panel-btn" type="button" name="button">Преподаватель отсутствует</button>
+                  <button class="control-panel-btn" type="button" name="button">Преподаватель спит</button>
+                  <button class="control-panel-btn" type="button" name="button">Студенты бездельничают</button>
+                  <button class="control-panel-btn" type="button" name="button">Камера не работает</button>
+                </div>
+                <div class="col-6">
+                  <b>Комментарий:</b>
+                  <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
+                  <button class="control-panel-btn" type="button" name="button">Отправить информацию</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-3 p-0">
+      <div class="status-log d-flex flex-column">
+        <div class="status inc-alright d-block">
+          <div class="status-head-placeholder d-flex">
+            <img class="d-inline" src="img/alright.png" alt="">
+            <div class="status-head">Всё хорошо</div>
+          </div>
+          <hr class="mt-0">
+          <div class="status-inc-description">
+            <b>Визор:</b> Иванов И.<br>
+            <b>Время:</b> 13.01.2026 09:30<br>
+            <br>
+            <b>Занятие:</b><br>
+            Веб-разработка<br>
+            <b>Преподаватель:</b><br>
+            Мызников В.<br>
+            <b>Группа:</b><br>
+            2ИП-1-24<br>
+          </div>
+        </div>
+        <div class="status inc-control d-block">
+          <div class="status-head-placeholder d-flex">
+            <img class="d-inline" src="img/control.png" alt="">
+            <div class="status-head">Контроль</div>
+          </div>
+          <hr class="mt-0">
+          <div class="status-inc-description">
+            <b>Визор:</b> Иванов И.<br>
+            <b>Время:</b> 13.01.2026 09:30<br>
+            <br>
+            <b>Занятие:</b><br>
+            Веб-разработка<br>
+            <b>Преподаватель:</b><br>
+            Мызников В.<br>
+            <b>Группа:</b><br>
+            2ИП-1-24<br>
+            <br>
+            <b>Контроль:</b><br>
+            Студент спит, преподаватель его не видит.<br>
+          </div>
+        </div>
+        <div class="status inc-alert d-block">
+          <div class="status-head-placeholder d-flex">
+            <img class="d-inline" src="img/alert.png" alt="">
+            <div class="status-head">Инцидент</div>
+          </div>
+          <hr class="mt-0">
+          <div class="status-inc-description">
+            <b>Визор:</b> Иванов И.<br>
+            <b>Время:</b> 13.01.2026 09:30<br>
+            <br>
+            <b>Занятие:</b><br>
+            Веб-разработка<br>
+            <b>Преподаватель:</b><br>
+            Мызников В.<br>
+            <b>Группа:</b><br>
+            2ИП-1-24<br>
+            <br>
+            <b>Контроль:</b><br>
+            Студент спит продолжительное время, преподаватель не обращает на него внимание.<br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <section class="text-center">
+    <h4 class="mb-5"><strong>Facilis consequatur eligendi</strong></h4>
+
+    <div class="row">
+      <div class="col-lg-4 col-md-12 mb-4">
+        <div class="card">
+          <div class="bg-image hover-overlay" data-mdb-ripple-init data-mdb-ripple-color="light">
+            <img src="" class="img-fluid" />
+            <a href="#!">
+              <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+            </a>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">
+              Some quick example text to build on the card title and make up the bulk of the
+              card's content.
+            </p>
+            <a href="#!" class="btn btn-primary" data-mdb-ripple-init>Button</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card">
+          <div class="bg-image hover-overlay" data-mdb-ripple-init data-mdb-ripple-color="light">
+            <img src="" class="img-fluid" />
+            <a href="#!">
+              <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+            </a>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">
+              Some quick example text to build on the card title and make up the bulk of the
+              card's content.
+            </p>
+            <a href="#!" class="btn btn-primary" data-mdb-ripple-init>Button</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card">
+          <div class="bg-image hover-overlay" data-mdb-ripple-init data-mdb-ripple-color="light">
+            <img src="" class="img-fluid" />
+            <a href="#!">
+              <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+            </a>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">
+              Some quick example text to build on the card title and make up the bulk of the
+              card's content.
+            </p>
+            <a href="#!" class="btn btn-primary" data-mdb-ripple-init>Button</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+  <!--Section: Content-->
+
+</div>
+{% endblock %}
+

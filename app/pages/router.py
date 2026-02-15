@@ -11,6 +11,9 @@ from app.cameras.router import get_camera
 from app.classrooms.dao import ClassroomsDAO
 from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
+from app.schedule.router import get_active_monitoring
+from app.users.dependencies import get_current_user
+from app.users.models import UserModel
 
 
 router = APIRouter(
@@ -75,6 +78,24 @@ async def page_get_cameras_view_page(
         context={"cameras": cameras, "classroom": classroom}
         )
 
+@router.get("/active_monitoring", response_class=HTMLResponse)
+async def page_get_active_monitoring(
+    request: Request,
+    monitoring_data = Depends(get_active_monitoring),
+    current_user: UserModel = Depends(get_current_user)
+    ):
+    if monitoring_data:
+        cameras = await CamerasDAO.find_all(classroom_id=monitoring_data.current_classroom_id)
+        return templates.TemplateResponse(
+            request=request,
+            name="monitoring/active_monitoring.html",
+            context={
+                "monitoring_data": monitoring_data,
+                "current_user": current_user,
+                "cameras": cameras
+            }
+            )
+
 @router.get("/camera_view/{id}", response_class=StreamingResponse)
 async def camera_stream(
     id: int,
@@ -89,6 +110,6 @@ async def page_get_login(request: Request):
     return templates.TemplateResponse("auth/login.html", {"request": request})
 
 
-# @router.get("/register", response_class=HTMLResponse)
-# async def get_register_page(request: Request):
-#     return templates.TemplateResponse("auth/register.html", {"request": request})
+@router.get("/register", response_class=HTMLResponse)
+async def get_register_page(request: Request):
+    return templates.TemplateResponse("auth/register.html", {"request": request})
