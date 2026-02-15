@@ -115,7 +115,6 @@ class ScheduleAdmin(ModelView, model=ScheduleModel):
         ScheduleModel.subject,
         ScheduleModel.classroom,
         ScheduleModel.teacher,
-        ScheduleModel.duration,
     ]
 
 
@@ -139,17 +138,5 @@ class IncidentsAdmin(ModelView, model=IncidentModel):
         IncidentModel.id,
         IncidentModel.comment,
         IncidentModel.schedule,
-        IncidentModel.classroom,
         IncidentModel.visor
     ]
-# id = Column(Integer, primary_key=True, index=True)
-#     comment = Column(String, nullable=False, index=True)
-#     event: Mapped[int] = mapped_column(ForeignKey("schedules.id"))
-#     time_created: Mapped[datetime] = mapped_column(server_default=func.now())
-#     classroom_id: Mapped[int] = mapped_column(ForeignKey("classrooms.id"))
-#     visor: Mapped[int] = mapped_column(ForeignKey("users.id"))
-#
-#     schedule: Mapped[List["ScheduleModel"]] = relationship(back_populates="incident")
-#     classroom = relationship("ClassroomModel", back_populates="incident")
-#     visor = relationship("UserModel", back_populates="incidents")
-

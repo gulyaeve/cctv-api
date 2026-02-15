@@ -1,17 +1,19 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ИТ.Москва | CCTV</title>
+    <title>CCTV.ITMOSCOW | Система видеонаблюдения</title>
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ url_for('static', path='css/font-awesome.min.css') }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='css/font-awesome.min.css') }}" />
     <!-- Fonts Montserrat -->
-    <link rel="stylesheet" href="{{ url_for('static', path='css/stylesheet.css') }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/monserrat.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='css/stylesheet.css') }}" />
     <!-- Main style -->
-    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}" type="text/css"/>
-    <link rel="stylesheet" href="{{ url_for('static', path='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/custom-style.css') }}" />
+    <script src="{{ url_for('static', path='scripts/script.js') }}"></script>
     <script>
         async function logoutUser() {
             const url = "http://localhost:8000/api/users/logout";
@@ -27,6 +29,7 @@
     </script>
     {% block head %}{% endblock %}
 </head>
+
 <body>
   <!--Main Navigation-->
   <header>
@@ -40,108 +43,103 @@
 
       .navbar .nav-link {
         color: #fff !important;
+        background-color: #333333;
       }
     </style>
 
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark d-none d-lg-block" style="z-index: 2000;">
-      <div class="container-fluid">
-        <!-- Navbar brand -->
-        <a class="navbar-brand nav-link" target="_blank" href="cctv.itmoscow">
-          <strong><i style="color: #5388FF;">IT.</i>Moscow CCTV</strong>
-        </a>
-        <button class="navbar-toggler" type="button" data-mdb-collapse-init data-mdb-target="#navbarExample01"
-          aria-controls="navbarExample01" aria-expanded="false" aria-label="Toggle navigation">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarExample01">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            {# <li class="nav-item active"> #}
-            {#   <a class="nav-link" aria-current="page" href="#intro">Главная страница</a> #}
-            {# </li> #}
-            <li class="nav-item active">
-              <a class="nav-link" aria-current="page" href="/pages/buildings">Корпуса</a>
-            </li>
-            {# <li class="nav-item active"> #}
-            {#   <a class="nav-link" href="javascript:void(0);" onclick="logoutUser();">Выйти</a> #}
-            {# </li> #}
-          </ul>
 
-          <ul class="navbar-nav d-flex flex-row">
-            <li class="nav-item active">
-              <a class="nav-link" href="javascript:void(0);" onclick="logoutUser();">Выйти</a>
-            </li>
-            <!-- Icons -->
-            {# <li class="nav-item me-3 me-lg-0"> #}
-            {#   <a class="nav-link" href="https://t.me/itteachers" rel="nofollow" #}
-            {#     target="_blank"> #}
-            {#     <i class="fa fa-telegram fa-2x"></i> #}
-            {#   </a> #}
-            {# </li> #}
-            {# <li class="nav-item me-3 me-lg-0"> #}
-            {#   <a class="nav-link" href="https://vk.com/itteachers" rel="nofollow" target="_blank"> #}
-            {#     <i class="fa fa-vk fa-2x"></i> #}
-            {#   </a> #}
-            {# </li> #}
-            {# <li class="nav-item me-3 me-lg-0"> #}
-            {#   <a class="nav-link" href="https://youtube.com/@itteachers_russia" rel="nofollow" target="_blank"> #}
-            {#     <i class="fa fa-youtube-play fa-2x"></i> #}
-            {#   </a> #}
-            {# </li> #}
-            <!-- <li class="nav-item me-3 me-lg-0">
-              <a class="nav-link" href="https://github.com/mdbootstrap/mdb-ui-kit" rel="nofollow" target="_blank">
-                <i class="fa fa-github"></i>
-              </a>
-            </li> -->
-          </ul>
-        </div>
-
-      </div>
-    </nav>
     <!-- Navbar -->
-
-
-    <!-- Background image -->
-    <div id="intro" class="bg-image vh-100 shadow-1-strong">
-      <img style="min-width: 100%; min-height: 100%;" src={{ url_for('static', path='img/background.jpg') }} alt="">
-      {# <video style="min-width: 100%; min-height: 100%;" playsinline autoplay muted loop> #}
-      {#   <source class="h-100" src="https://itteachers.ru/video/background_itteachers_web.mp4" type="video/mp4" /> #}
-      {# </video> #}
-      <div class="mask" style="
-        background: linear-gradient(
-          45deg,
-          rgba(10, 10, 10, 0.5),
-          rgba(50, 50, 50, 0.5) 100%
-        );
-      ">
-        <div class="container d-flex align-items-center justify-content-center text-center h-100">
-          <div class="text-white" data-mdb-theme="dark">
-            {% block content %}{% endblock %}
+    <nav class="navbar navbar-expand-lg navbar-dark d-none d-lg-block" style="z-index: 2000;">
+      <div class="container">
+        <a class="navbar-brand nav-link" target="_blank" href="http://cctv.itmoscow/">
+          <strong><i style="color: #5388FF;">CCTV.</i>ITMOSCOW</strong>
+        </a>
+        <b>
+          <div id="clock">Ошибка вывода текущего времени</div>
+        </b>
+        <div class="d-flex">
+          <div class="lk-link">
+            <a class="nav-link" href="/lk" rel="nofollow" target="_blank">
+              Иванов Иван<br><i style="color: #5388FF;">Визор</i>
+            </a>
+          </div>
+          <div class="avatar-placeholder">
+              <img src="{{ url_for('static', path='img/login.png') }}">
           </div>
         </div>
       </div>
-    </div>
-    <!-- Background image -->
+    </nav>
+    <!-- Navbar -->
   </header>
-  <!--Main Navigation-->
-
+  <!--Main layout-->
+  <main class="mt-0">
+    {# <img style="min-width: 100%; min-height: 100%;" src={{ url_for('static', path='img/background.jpg') }} alt=""> #}
+    <div class="container-justify">
+      <!--Section: Content-->
+      {% block content %}{% endblock %}
+      <!--Section: Content-->
+    </div>
+  </main>
+  <!--Main layout-->
   <!--Footer-->
-  <footer class="bg-light text-lg-start">
+  <footer class="bg-light text-lg-start fixed-bottom">
     <!-- Copyright -->
-    <div class="p-3" style="background-color: rgba(40, 40, 40, 1);">
-      <div class="row">
-        <div class="col-6 text-left">
-          2026
-        </div>
-        <div class="col-6">
-          <a style="float: right;" target="_blank" href="https://itmoscow.mskobr.ru/"><img class="logo-itmoscow-min" src="{{ url_for('static', path='img/logo_itmoscow.svg') }}"></a>
+    {# <div class="container"> #}
+      <div class="p-3" style="background-color: rgba(40, 40, 40, 1);">
+        <div class="row">
+          <div class="col-6 text-left">
+            <strong style="color: #FFFFFF;">2026</strong>
+          </div>
+          <div class="col-6">
+            <a style="float: right;" target="_blank" href="https://itmoscow.mskobr.ru/">
+              <strong style="color: #FFFFFF;"><i style="color: #5388FF !important;">IT.</i>МОСКВА</strong>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+    {# </div> #}
     <!-- Copyright -->
   </footer>
   <!--Footer-->
-  <!-- MDB -->
 
 </body>
+
+<!-- Yandex.Metrika counter -->
+
+<script src="js/jquery-3.4.1.slim.min.js"></script>
+<!-- <script src="js/popper.min.js"></script> -->
+<script src="js/bootstrap.min.js"></script>
+
+<script>
+  function currentTime() {
+    var date = new Date(); /* creating object of Date class */
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    var hour = date.getHours();
+    var min = date.getMinutes();
+    var sec = date.getSeconds();
+    day = updateTime(day);
+    month = updateTime(month);
+    year = updateTime(year);
+    hour = updateTime(hour);
+    min = updateTime(min);
+    sec = updateTime(sec);
+    // document.getElementById("clock").innerText = date;
+    document.getElementById("clock").innerText = day + "." + month + "." + year + " | " + hour + " : " + min + " : " + sec; /* adding time to the div */
+    var t = setTimeout(function () { currentTime() }, 1000); /* setting timer */
+  }
+
+  function updateTime(k) {
+    if (k < 10) {
+      return "0" + k;
+    }
+    else {
+      return k;
+    }
+  }
+
+  currentTime(); /* calling currentTime() function to initiate the process */
+</script>
 </html>
 

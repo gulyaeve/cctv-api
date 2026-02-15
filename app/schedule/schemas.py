@@ -8,7 +8,7 @@ class ScheduleBaseScheme(BaseModel):
     classroom_id: int
     teacher_id: int
     timestamp_start: datetime
-    duration: timedelta
+    timestamp_end: datetime
 
     class Config:
         from_attributes = True
@@ -26,7 +26,7 @@ class ScheduleAddScheme(BaseModel):
     classroom_id: int
     teacher_id: int
     timestamp_start: datetime
-    duration: timedelta
+    timestamp_end: datetime
 
 
 class ScheduleSearch(BaseModel):
@@ -34,6 +34,7 @@ class ScheduleSearch(BaseModel):
     classroom_id: Optional[int] = None
     teacher_id: Optional[int] = None
     timestamp_start: Optional[datetime] = None
+    timestamp_end: Optional[datetime] = None
 
     # name: str = ""
     # building_id: Optional[int] = None

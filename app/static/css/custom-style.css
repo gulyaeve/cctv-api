@@ -1,0 +1,181 @@
+body {
+  font-family: "Montserrat";
+  background-color: #333333;
+}
+p, h1, h2, h3, h4, h5 {
+  color: #FFFFFF;
+}
+
+button:focus {
+  outline: none;
+}
+
+#clock {
+  color: #FFFFFF;
+  font-size: 20px;
+}
+
+.avatar-placeholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #555555;
+}
+.avatar-placeholder img{
+  width: 30px;
+  height: 30px;
+  margin: 10px;
+}
+
+.lk-link {
+	margin: 0 10px 0 0;
+	text-align: end;
+}
+.logo-itmoscow-min {
+  width: 130px;
+}
+.video-wall {
+  width: 100%;
+  background-color: #000;
+}
+.video{
+  width: 50%;
+}
+.video img{
+  width: 100%;
+}
+.status-log {
+  background-color: #222222;
+  width: 100%;
+  height: 100%;
+}
+
+.status {
+  padding: 10px;
+  border-radius: 10px;
+  width: 90%;
+  margin: 5% 5% 0 5%;
+  background: #777777;
+}
+.status-head, .control-panel-meta-head {
+  font-size: 25px;
+}
+.status.inc-alright {
+  background: linear-gradient(to bottom, #2c7b29, #4fb84f);
+}
+.status-head-placeholder img{
+  width: 30px;
+  height: 30px;
+  padding: 2px;
+}
+.status.inc-control {
+  background: linear-gradient(to bottom, #b9b02f, #e8d96a);
+}
+.status.inc-alert {
+  background: linear-gradient(to bottom, #b62b20, #cb5343);
+  color: #FFF;
+}
+.status.inc-alert hr, .control-panel-meta hr{
+    background-color: #FFF;
+}
+.status.inc-control hr, .status.inc-alright hr{
+    background-color: #333;
+}
+.control-panel-meta, .control-panel-addinc {
+	background-color: #444;
+	color: #FFF;
+	border-radius: 10px;
+	padding: 15px;
+  width: 100%;
+}
+.control-panel-btn {
+  border-radius: 10px;
+  width: 100%;
+  margin: 10px 0;
+  font-size: 20px;
+  font-weight: 500;
+  border: 0;
+  padding: 10px 0;
+}
+.control-panel-btn.btn-inc-alright {
+  background-color: #3e9d3f;
+  width: 33% !important;
+  margin: 10px;
+}
+.control-panel-btn.btn-inc-control {
+  background-color: #d0c34f;
+  width: 33% !important;
+  margin: 10px;
+}
+.control-panel-btn.btn-inc-alert {
+  background-color: #c04736;
+  color: #FFF;
+  width: 33% !important;
+  margin: 10px;
+}
+.control-panel-details {
+  position: relative;
+  background-color: #777;
+  color: #FFF;
+  border-radius: 10px;
+  padding: 30px 15px 15px 15px;
+  width: 100%;
+}
+.control-panel-details.st-inc-control {
+  background: linear-gradient(to bottom, #d0c34f 2%, #4a4a4a 6%, #4a4a4a 92%);
+}
+
+.control-panel-details.st-inc-alert {
+  background: linear-gradient(to bottom, #c04736 2%, #4a4a4a 6%, #4a4a4a 92%);
+}
+
+.control-panel-details-textarea {
+  width: 100%;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+/* Модальные окна */
+.modal-content {
+  background-color: #222222 !important;
+}
+.modal-body img {
+  width: 100% !important;
+}
+.control-panel-details {
+  position: relative;
+}
+
+/*Треугольник*/
+.control-panel-details::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: var(--arrow-left, 50%);
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+.control-panel-details.st-inc-control::before {
+  border-bottom-color: #d0c34f;
+}
+
+.control-panel-details.st-inc-alert::before {
+  border-bottom-color: #c04736;
+}
+
+
+/* Границы кнопок быстрого ввода */
+
+/* .control-panel-details.st-inc-control .control-panel-btn.active {
+  border: 3px solid #d0c34f;
+}
+
+.control-panel-details.st-inc-alert .control-panel-btn.active {
+  border: 3px solid #c04736;
+} */
+

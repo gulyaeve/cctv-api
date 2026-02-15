@@ -13,7 +13,7 @@ class ScheduleModel(Base):
     group_id: Mapped[int] = mapped_column(ForeignKey("groups.id"), nullable=True)
     teacher_id: Mapped[int] = mapped_column(ForeignKey("teachers.id"))
     timestamp_start = Column(DateTime, nullable=False, default=None)
-    duration = Column(Interval)
+    timestamp_end = Column(DateTime, nullable=False, default=None)
 
     classroom = relationship("ClassroomModel", back_populates="schedule")
     teacher = relationship("TeacherModel", back_populates="schedule")

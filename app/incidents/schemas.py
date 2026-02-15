@@ -6,8 +6,8 @@ from typing import Optional
 class IncidentBaseScheme(BaseModel):
     comment: str
     event: int
-    classroom_id: int
     visor_id: int
+    status: int
    
 
 class IncidentScheme(IncidentBaseScheme):
@@ -22,7 +22,7 @@ class IncidentSearch(BaseModel):
     comment: Optional[str] = None
     event: Optional[int] = None
     time_created: Optional[datetime] = None
-    classroom_id: Optional[int] = None
     visor_id: Optional[int] = None
+    status: Optional[int] = None
    
 

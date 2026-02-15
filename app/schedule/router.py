@@ -1,15 +1,23 @@
 from typing import Annotated, Sequence
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.schedule.dao import ScheduleDAO
 from app.schedule.schemas import ScheduleAddScheme, ScheduleScheme, ScheduleSearch
 from app.exceptions import ObjectMissingException
+from app.users.dependencies import get_current_user
+from app.users.models import UserModel
 
 
 router = APIRouter(
     prefix="/schedule",
     tags=["Расписание"]
 )
+
+
+@router.get("/active_monitoring")
+async def get_active_monitoring(current_user: UserModel = Depends(get_current_user)):
+    schedule_for_monitoring = await ScheduleDAO.get_schedule_for_active_monitoring(visor_id=(current_user.id))
+    return schedule_for_monitoring
 
 
 @router.get("", response_model=Sequence[ScheduleScheme])
@@ -68,4 +76,6 @@ async def update_schedule(id: int, data: ScheduleAddScheme):
     else:
         updated_object = await ScheduleDAO.update(id, **data.model_dump())
         return updated_object
+
+
     
