@@ -74,7 +74,6 @@
   <!--Main layout-->
   <main class="mt-0">
     {# <img style="min-width: 100%; min-height: 100%;" src={{ url_for('static', path='img/background.jpg') }} alt=""> #}
-    <div class="container-justify">
       <!--Section: Content-->
       {% block content %}{% endblock %}
       <!--Section: Content-->
@@ -106,9 +105,9 @@
 
 <!-- Yandex.Metrika counter -->
 
-<script src="js/jquery-3.4.1.slim.min.js"></script>
+  <script src="{{ url_for('static', path='js/jquery-3.4.1.slim.min.js') }}"></script>
 <!-- <script src="js/popper.min.js"></script> -->
-<script src="js/bootstrap.min.js"></script>
+  <script src="{{ url_for('static', path='js/bootstrap.min.js') }}"></script>
 
 <script>
   function currentTime() {
@@ -142,4 +141,3 @@
   currentTime(); /* calling currentTime() function to initiate the process */
 </script>
 </html>
-

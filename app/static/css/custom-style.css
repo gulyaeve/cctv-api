@@ -36,18 +36,30 @@ button:focus {
 }
 .video-wall {
   width: 100%;
+  height: calc(60vh - 80px - 56px);
   background-color: #000;
+}
+.video-wall-string {
+  width: 100%;
+  height: 50%;
+  background-color: #000;
+  margin: auto;
 }
 .video{
   width: 50%;
+  height: 100%;
+  margin: auto;
 }
 .video img{
   width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  margin: 0 auto;
 }
 .status-log {
   background-color: #222222;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 80px - 56px);
 }
 
 .status {
@@ -81,21 +93,31 @@ button:focus {
 .status.inc-control hr, .status.inc-alright hr{
     background-color: #333;
 }
-.control-panel-meta, .control-panel-addinc {
+.control-panel-meta {
+  background-color: #444;
+  color: #FFF;
+  border-radius: 10px;
+  padding: 15px;
+  width: 100%;
+}
+.control-panel-meta-data {
+
+}
+.control-panel-addinc {
 	background-color: #444;
 	color: #FFF;
 	border-radius: 10px;
-	padding: 15px;
   width: 100%;
+  padding-bottom: 1%;
 }
 .control-panel-btn {
   border-radius: 10px;
   width: 100%;
   margin: 10px 0;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 500;
   border: 0;
-  padding: 10px 0;
+  padding: 5px 0;
 }
 .control-panel-btn.btn-inc-alright {
   background-color: #3e9d3f;
@@ -119,7 +141,8 @@ button:focus {
   color: #FFF;
   border-radius: 10px;
   padding: 30px 15px 15px 15px;
-  width: 100%;
+  margin: 0 1% 0 1%;
+  width: 98%;
 }
 .control-panel-details.st-inc-control {
   background: linear-gradient(to bottom, #d0c34f 2%, #4a4a4a 6%, #4a4a4a 92%);
@@ -168,14 +191,57 @@ button:focus {
   border-bottom-color: #c04736;
 }
 
-
-/* Границы кнопок быстрого ввода */
-
-/* .control-panel-details.st-inc-control .control-panel-btn.active {
+.control-panel-details.st-inc-control .control-panel-btn.active {
   border: 3px solid #d0c34f;
 }
 
 .control-panel-details.st-inc-alert .control-panel-btn.active {
   border: 3px solid #c04736;
-} */
+}
 
+/* Авторизация */
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.logo-signin {
+  margin: 40px 0;
+}
+.logo-signin strong{
+  font-size: 30px;
+  color: #FFF;
+}
+
+@media (min-width: 1500px) {
+  .container-xxl {
+    width: 1606px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

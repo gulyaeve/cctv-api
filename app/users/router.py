@@ -1,6 +1,7 @@
 import logging
 from typing import Sequence, Annotated
-from fastapi import APIRouter, Depends, Query, Response
+from fastapi import APIRouter, Depends, Form, Query, Response, status
+from fastapi.responses import RedirectResponse
 
 from app.users.auth import auth_user, get_password_hash, create_token
 from app.users.dependencies import get_current_user
@@ -8,6 +9,7 @@ from app.users.models import UserModel
 from app.users.schemas import UserScheme, UserReg, UserSearch, UserLogin
 from app.users.dao import UsersDAO
 from app.exceptions import UserExistException
+from fastapi_csrf_protect import CsrfProtect
 # from fastapi_cache.decorator import cache
 
 
@@ -43,12 +45,26 @@ async def register_user(user_data: UserReg):
     # return user_data
 
 
+# @router.post("/login")
+# async def login_user(response: Response, user_data: UserLogin):
+#     user = await auth_user(user_data.email, user_data.password)
+#     access_token = create_token({"sub": str(user.id)})
+#     response.set_cookie(key="access_token", value=access_token)
+#     # return {"access_token": access_token}
+
 @router.post("/login")
-async def login_user(response: Response, user_data: UserLogin):
-    user = await auth_user(user_data.email, user_data.password)
+async def login_user(
+    response: Response,
+    email: Annotated[str, Form()],
+    password: Annotated[str, Form()],
+):
+    user = await auth_user(email, password)
     access_token = create_token({"sub": str(user.id)})
     response.set_cookie(key="access_token", value=access_token)
-    # return {"access_token": access_token}
+    return {"access_token": access_token}
+
+    # return RedirectResponse("/pages/buildings", status_code=status.HTTP_301_MOVED_PERMANENTLY)
+
 
 
 @router.post("/logout")

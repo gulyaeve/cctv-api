@@ -1,56 +1,73 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block head %}
-    <script>
-        async function loginUser() {
-            const wrongCredentialsSpan = document.getElementById("wrong_credentials");
-            wrongCredentialsSpan.textContent = "";
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <title>Авторизация | CCTV.ITMOSCOW</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{ url_for('static', path='css/bootstrap.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', path='css/font-awesome.min.css') }}" />
+  <!-- Fonts Montserrat -->
+  <link rel="stylesheet" href="{{ url_for('static', path='css/monserrat.css') }}" />
+  <!-- Main style -->
+  <link rel="stylesheet" href="{{ url_for('static', path='css/custom-style.css') }}" />
+  <!-- <script src="{{ url_for('static', path='scripts/script.js') }}"></script> -->
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', path='css/signin.css') }}" rel="stylesheet">
 
-            const url = "http://localhost:8000/api/users/login";
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+</head>
 
-            await fetch(url, {
-                method: 'POST',
-                credentials: "include",
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify({email: email, password: password}),
-            }).then(response => {
-                if (response.status === 200) {
-                    window.location.href = "/pages/buildings"
-                } else {
-                    wrongCredentialsSpan.textContent = "Неверный email или пароль";
-                }
-            });
-        }
-    </script>
-{% endblock %}
+<body>
 
-{% block content %}
-    <div class="flex-grow-1">
-        <h2 class="mb-3"><i style="color: #5388FF;">ИТ</i>.МОСКВА | Система видеонаблюдения</h1>
-        <h5 class="mb-4">АВТОРИЗАЦИЯ</h1>
-        <div class="flex flex-col items-center justify-center h-screen">
-            <div class="flex flex-col items-start text-xl mb-5">
-                <div>
-                    {# <label for="email" class="mb-1">Email</label> #}
-                    <input class="btn-outline-light btn-lg m-2" id="email" name="email" type="text" value="" placeholder="user@mail.ru">
-                </div>
-                <div>
-                {# <div class="flex flex-col items-start text-xl mb-5"> #}
-                    {# <label for="password" class="mb-1">Пароль</label> #}
-                    <input class="btn-outline-light btn-lg m-2" id="password" name="password" type="password" value="" placeholder="********">
-                    <span id="wrong_credentials" class="text-sm text-red-400"></span>
-                </div>
-                <button onclick="loginUser()" class="btn btn-outline-light btn-lg m-2">Войти</button>
-            </div>
-            {# <span> #}
-            {#     Не зарегистрированы? #}
-            {#     <a href="/pages/register" #}
-            {#        class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"> #}
-            {#         Зарегистрироваться #}
-            {#     </a> #}
-            {# </span> #}
+  <!--Main layout-->
+  <main class="text-center">
+    <form class="form-signin" method="post" enctype="multipart/form-data" action="http://localhost:8000/api/users/login">
+      <div class="logo-signin">
+        <strong>
+          <i style="color: #5388FF;">CCTV.</i>ITMOSCOW
+        </strong>
+      </div>
+      <h1 class="h3 mb-3 font-weight-normal">Авторизация</h1>
+      <label for="inputEmail" class="sr-only">Email</label>
+      <input name="email" type="email" id="email" class="form-control" placeholder="Email" required="" autofocus="">
+      <label for="inputPassword" class="sr-only">Пароль</label>
+      <input name="password" type="password" id="password" class="form-control" placeholder="Пароль" required="">
+      <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Запомнить меня
+        </label>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+      <p class="mt-5 mb-3 text-muted">© 2026</p>
+    </form>
+  </main>
+  <!--Main layout-->
+
+  <!--Footer-->
+  <footer class="bg-light fixed-bottom text-lg-start">
+    <!-- Copyright -->
+    <div class="p-3" style="background-color: rgba(40, 40, 40, 1);">
+      <div class="container">
+        <div class="row">
+          <div class="col-6 text-left">
+            <strong style="color: #FFFFFF;">2026</strong>
+          </div>
+          <div class="col-6">
+            <a style="float: right;" target="_blank" href="https://itmoscow.mskobr.ru/">
+              <strong style="color: #FFFFFF;"><i style="color: #5388FF !important;">IT.</i>МОСКВА</strong>
+            </a>
+          </div>
         </div>
+      </div>
     </div>
-{% endblock %}
+    <!-- Copyright -->
+  </footer>
+  <!--Footer-->
+
+
+<script src="{{ url_for('static', path='js/jquery-3.4.1.slim.min.js') }}"></script>
+<script src="{{ url_for('static', path='js/bootstrap.min.js') }}"></script>
+
+</html>
