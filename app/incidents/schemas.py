@@ -8,11 +8,13 @@ class IncidentBaseScheme(BaseModel):
     event: int
     visor_id: int
     status: int
+    cameras_ids: list[int]
    
 
 class IncidentScheme(IncidentBaseScheme):
     id: int
     time_created: datetime
+    cameras_screenshots: list[str]
 
     class Config:
         from_attributes = True

@@ -19,7 +19,7 @@ class IncidentsDAO(BaseDAO):
         try:
             query = (
                 select(
-                    IncidentModel,
+                    IncidentModel.__table__,
                     TeacherModel.name.label('current_teacher'),
                     GroupModel.name.label('current_group'),
                     ScheduleModel.subject.label('current_schedule'),
@@ -34,8 +34,8 @@ class IncidentsDAO(BaseDAO):
                 .filter(IncidentModel.visor_id == visor_id, IncidentModel.event == event_id)
             )
             async with async_session_maker() as session:
-                    result = await session.execute(query)
-                    return result.mappings().one_or_none()
+                result = await session.execute(query)
+                return result.mappings().all()
         except (SQLAlchemyError, Exception) as e:
             if isinstance(e, SQLAlchemyError):
                 msg = "Database Exc: Data not found"

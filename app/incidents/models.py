@@ -1,6 +1,5 @@
 from datetime import datetime
-# from typing import List
-from sqlalchemy import Column, Integer, String, ForeignKey, func
+from sqlalchemy import ARRAY, INTEGER, VARCHAR, Column, Integer, String, ForeignKey, func
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from app.database import Base
@@ -15,6 +14,8 @@ class IncidentModel(Base):
     event: Mapped[int] = mapped_column(ForeignKey("schedule.id"))
     time_created: Mapped[datetime] = mapped_column(server_default=func.now())
     visor_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    cameras_ids = mapped_column(ARRAY(item_type=INTEGER))
+    cameras_screenshots = mapped_column(ARRAY(item_type=VARCHAR))
 
     schedule= relationship("ScheduleModel", back_populates="incidents")
     visor = relationship("UserModel", back_populates="incidents")

@@ -34,6 +34,7 @@ class ScheduleDAO(BaseDAO):
             # Основной запрос
             query = (
                 select(
+                    ScheduleModel.id.label('current_subject_id'),
                     ScheduleModel.subject.label('current_subject'),
                     ScheduleModel.timestamp_start,
                     ScheduleModel.timestamp_end,

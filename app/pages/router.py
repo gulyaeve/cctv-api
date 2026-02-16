@@ -11,6 +11,7 @@ from app.cameras.router import get_camera
 from app.classrooms.dao import ClassroomsDAO
 from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
+from app.incidents.dao import IncidentsDAO
 from app.schedule.router import get_active_monitoring
 from app.users.dependencies import get_current_user, get_fake_user
 from app.users.models import UserModel
@@ -74,6 +75,10 @@ async def page_get_active_monitoring(
     ):
     if monitoring_data:
         cameras = await CamerasDAO.find_all(classroom_id=monitoring_data.current_classroom_id)
+        incidents_data = await IncidentsDAO.get_incidents_info(
+            visor_id=current_user.id,
+            event_id=monitoring_data.current_subject_id,
+        ) 
         return templates.TemplateResponse(
             request=request,
             name="monitoring/active_monitoring.html",
@@ -81,6 +86,7 @@ async def page_get_active_monitoring(
                 "monitoring_data": monitoring_data,
                 "current_user": current_user,
                 "cameras": cameras,
+                "incidents_data": incidents_data,
                 "len_cameras": len(cameras)
             }
             )

@@ -36,6 +36,14 @@ class Camera:
 
             return jpeg.tobytes()
 
+    def save_screenshot(self, path: str) -> Optional[str]:
+        with self.lock:
+            ret, frame = self.cap.read()
+            if ret:
+                cv2.imwrite(path, frame)
+                return path
+
+
     def release(self) -> None:
         """
         Release the camera resource.
