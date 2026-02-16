@@ -1,15 +1,14 @@
 import logging
 from typing import Sequence, Annotated
-from fastapi import APIRouter, Depends, Form, Query, Response, status
-from fastapi.responses import RedirectResponse
+from fastapi import APIRouter, Depends, Form, Query, Response
 
 from app.users.auth import auth_user, get_password_hash, create_token
 from app.users.dependencies import get_current_user
 from app.users.models import UserModel
-from app.users.schemas import UserScheme, UserReg, UserSearch, UserLogin
+from app.users.schemas import UserScheme, UserReg, UserSearch
 from app.users.dao import UsersDAO
 from app.exceptions import UserExistException
-from fastapi_csrf_protect import CsrfProtect
+# from fastapi_csrf_protect import CsrfProtect
 # from fastapi_cache.decorator import cache
 
 
