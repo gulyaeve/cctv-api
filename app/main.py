@@ -28,6 +28,7 @@ from app.pages.router import router as pages_router
 from app.schedule.router import router as schedule_router
 from app.teachers.router import router as teachers_router
 from app.users.router import router as users_router
+from app.config import settings
 
 api = APIRouter(
     prefix="/api",
@@ -49,7 +50,7 @@ app.include_router(pages_router)
 
 
 # CORS
-origins = ["http://127.0.0.1:8000", "http://localhost:8000", "cctv.itmoscow"]
+origins = settings.ORIGINS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
