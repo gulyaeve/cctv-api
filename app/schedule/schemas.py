@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class ScheduleBaseScheme(BaseModel):
     subject: str
     classroom_id: int
+    group_id: int
     teacher_id: int
     timestamp_start: datetime
     timestamp_end: datetime
@@ -25,6 +26,7 @@ class ScheduleAddScheme(BaseModel):
     subject: str
     classroom_id: int
     teacher_id: int
+    group_id: int
     timestamp_start: datetime
     timestamp_end: datetime
 
@@ -33,6 +35,7 @@ class ScheduleSearch(BaseModel):
     subject: Optional[str] = None
     classroom_id: Optional[int] = None
     teacher_id: Optional[int] = None
+    group_id: Optional[int] = None
     timestamp_start: Optional[datetime] = None
     timestamp_end: Optional[datetime] = None
 
