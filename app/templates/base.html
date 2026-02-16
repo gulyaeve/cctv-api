@@ -14,19 +14,6 @@
     <!-- Main style -->
     <link rel="stylesheet" href="{{ url_for('static', path='css/custom-style.css') }}" />
     <script src="{{ url_for('static', path='scripts/script.js') }}"></script>
-    <script>
-        async function logoutUser() {
-            const url = "http://localhost:8000/api/users/logout";
-
-            await fetch(url, {
-                method: 'POST',
-            }).then(response => {
-                if (response.status === 200) {
-                    window.location.href = "/pages/login"
-                }
-            });
-        }
-    </script>
     {% block head %}{% endblock %}
 </head>
 

@@ -1,5 +1,5 @@
 from typing import List
-from sqlalchemy import Column, DateTime, ForeignKey, Interval
+from sqlalchemy import Column, DateTime, ForeignKey
 from app.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 

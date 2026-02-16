@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     TZ: str = "Europe/Moscow"
     # MODE: Literal["DEV", "TEST", "PROD"]
     LOG_LEVEL: str
+    BASE_URL: str
     ORIGINS: list
 
     POSTGRES_HOST: str

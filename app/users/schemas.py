@@ -25,8 +25,6 @@ class UserSearch(BaseModel):
 
 
 class UserReg(BaseModel):
-    username: str
-    full_name: Optional[str]
     email: EmailStr
     password: str
 

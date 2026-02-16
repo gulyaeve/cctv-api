@@ -1,6 +1,8 @@
 import logging
 from typing import Sequence, Annotated
-from fastapi import APIRouter, Depends, Form, Query, Response
+from fastapi import APIRouter, Depends, Form, Query, Response, status
+from fastapi.responses import RedirectResponse
+
 
 from app.users.auth import auth_user, get_password_hash, create_token
 from app.users.dependencies import get_current_user
@@ -8,7 +10,6 @@ from app.users.models import UserModel
 from app.users.schemas import UserScheme, UserReg, UserSearch
 from app.users.dao import UsersDAO
 from app.exceptions import UserExistException
-# from fastapi_csrf_protect import CsrfProtect
 # from fastapi_cache.decorator import cache
 
 
@@ -29,19 +30,17 @@ async def get_all_users(filter_query: Annotated[UserSearch, Query()]) -> Sequenc
 
 
 @router.post("/register", status_code=201)
-async def register_user(user_data: UserReg):
-    existing_user = await UsersDAO.find_one_or_none(email=user_data.email)
+async def register_user(
+    email: Annotated[str, Form()],
+    password: Annotated[str, Form()],
+    ):
+    existing_user = await UsersDAO.find_one_or_none(email=email)
     if existing_user:
         raise UserExistException
-    data = user_data.model_dump()
-    data["hashed_password"] = get_password_hash(user_data.password)
-    data.pop("password")
-    logging.info(data)
     await UsersDAO.add(
-        **data
+        {"email": email, "hashed_password": get_password_hash(password)}
     )
-    print(f"User saved to db: {user_data}")
-    # return user_data
+    logging.info(f"User saved to db: {email}")
 
 
 # @router.post("/login")
@@ -61,9 +60,6 @@ async def login_user(
     access_token = create_token({"sub": str(user.id)})
     response.set_cookie(key="access_token", value=access_token)
     return {"access_token": access_token}
-
-    # return RedirectResponse("/pages/buildings", status_code=status.HTTP_301_MOVED_PERMANENTLY)
-
 
 
 @router.post("/logout")

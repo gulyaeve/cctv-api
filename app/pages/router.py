@@ -14,6 +14,7 @@ from app.classrooms.router import get_classroom
 from app.schedule.router import get_active_monitoring
 from app.users.dependencies import get_current_user
 from app.users.models import UserModel
+from app.config import settings
 
 
 router = APIRouter(
@@ -51,19 +52,6 @@ async def page_get_building_classrooms_page(
         context={"classrooms": classrooms, "building": building}
         )
 
-
-# @router.get("/classroom_cameras/{id}", response_class=HTMLResponse)
-# async def page_get_classroom_cameras(
-#     id: int,
-#     request: Request,
-#     classroom: ClassroomModel=Depends(get_classroom),
-#     ):
-#     cameras = await CamerasDAO.find_all(classroom_id=id)
-#     return templates.TemplateResponse(
-#         request=request,
-#         name="monitoring/classroom_cameras.html",
-#         context={"cameras": cameras, "classroom": classroom}
-#         )
 
 @router.get("/classroom_cameras_view/{id}", response_class=HTMLResponse)
 async def page_get_cameras_view_page(

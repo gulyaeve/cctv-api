@@ -1,11 +1,9 @@
-import logging
-from typing import Callable, Optional, Sequence
+
 from fastapi import Depends, Request
 from jose import jwt, JWTError
-from app.exceptions import OperationNotPermited, TokenMissing, TokenIncorrect, UserNotPresent
+from app.exceptions import TokenMissing, TokenIncorrect, UserNotPresent
 from app.config import settings
-from app.users.dao import RolesDAO, UsersDAO
-from app.users.models import UserModel
+from app.users.dao import UsersDAO
 
 
 def get_token(request: Request):
