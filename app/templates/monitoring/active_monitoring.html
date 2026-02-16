@@ -6,13 +6,17 @@
       <div class="row m-0">
         <div class="col-9 p-0">
           <div class="video-wall">
-            <div class="video-wall-string d-flex">
               {% for camera in cameras %}
+                {% if cameras.index(camera) == 0 || 2 %}
+                  <div class="video-wall-string d-flex">
+                {% endif %}
                 <div class="video d-inline">
                   <a href="#" data-toggle="modal" data-target="#cam{{ cameras.index(camera) + 1 }}"><img src="/pages/camera_view/{{ camera.id }}" alt=""></a>
-                </div>
+                </div> 
+                {% if cameras.index(camera) == 0 || 2 %}
+                  </div>
+                {% endif %}
               {% endfor %}
-            </div>
           </div>
           <div class="row m-0">
             <div class="col-4 pl-3 pr-0 pt-3 m-0">
