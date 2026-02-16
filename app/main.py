@@ -50,10 +50,9 @@ app.include_router(pages_router)
 
 
 # CORS
-origins = settings.ORIGINS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.ORIGINS,
     allow_credentials=True,
     # allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
     allow_methods=["*"],
