@@ -82,7 +82,7 @@ class ScheduleDAO(BaseDAO):
                 desc('last_status_incident'),
                 'time_created_incident'
             )
-            # .limit(1)
+            .limit(1)
             )
 
             async with async_session_maker() as session:

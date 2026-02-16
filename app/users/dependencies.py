@@ -1,9 +1,11 @@
 
 from fastapi import Depends, Request
+from fastapi.responses import RedirectResponse
 from jose import jwt, JWTError
 from app.exceptions import TokenMissing, TokenIncorrect, UserNotPresent
 from app.config import settings
 from app.users.dao import UsersDAO
+from app.users.models import UserModel
 
 
 def get_token(request: Request):
@@ -29,6 +31,10 @@ async def get_current_user(token: str = Depends(get_token)):
     if not user:
         raise UserNotPresent
     return user
+
+
+async def get_fake_user():
+    return await UsersDAO.find_one_or_none(id=1)
 
 
 # async def get_current_user_roles(current_user: UserModel = Depends(get_current_user)):

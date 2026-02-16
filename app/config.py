@@ -9,8 +9,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     TZ: str = "Europe/Moscow"
     # MODE: Literal["DEV", "TEST", "PROD"]
+    DOMAIN: str
     LOG_LEVEL: str
-    BASE_URL: str
     ORIGINS: list
 
     POSTGRES_HOST: str

@@ -1,3 +1,4 @@
+from fastapi.responses import RedirectResponse
 from passlib.context import CryptContext
 from pydantic import EmailStr
 from jose import jwt
@@ -10,6 +11,10 @@ from app.config import settings
 
 
 pwd_context = CryptContext(schemes=["md5_crypt"], deprecated="auto")
+
+
+def noauth_handler(request, exc):
+    return RedirectResponse(url='/pages/login')
 
 
 def get_password_hash(password: str) -> str:

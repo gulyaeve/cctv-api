@@ -22,11 +22,13 @@ from app.classrooms.router import router as classrooms_router
 
 # from app.admin.auth import authentication_backend
 from app.database import engine
+from app.exceptions import NotAuthenticatedException
 from app.groups.router import router as groups_router
 from app.incidents.router import router as incidents_router
 from app.pages.router import router as pages_router
 from app.schedule.router import router as schedule_router
 from app.teachers.router import router as teachers_router
+from app.users.auth import noauth_handler
 from app.users.router import router as users_router
 from app.config import settings
 
@@ -47,6 +49,8 @@ app = FastAPI(title="Система видеонаблюдения", version="0.
 app.mount("/static", StaticFiles(directory="app/static"), "static")
 app.include_router(api)
 app.include_router(pages_router)
+
+app.add_exception_handler(NotAuthenticatedException, noauth_handler)
 
 
 # CORS

@@ -9,7 +9,7 @@
             <div class="video-wall-string d-flex">
               {% for camera in cameras %}
                 <div class="video d-inline">
-                  <a href="#" data-toggle="modal" data-target="#cam{{ camera.id }}"><img src="http://127.0.0.1:8000/pages/camera_view/{{ camera.id }}" alt=""></a>
+                  <a href="#" data-toggle="modal" data-target="#cam{{ cameras.index(camera) + 1 }}"><img src="/pages/camera_view/{{ camera.id }}" alt=""></a>
                 </div>
               {% endfor %}
             </div>
@@ -85,7 +85,7 @@
           <div class="status-log d-flex flex-column overflow-auto">
             <div class="status inc-alright d-block">
               <div class="status-head-placeholder d-flex">
-                <img class="d-inline" src="img/alright.png" alt="">
+                <img class="d-inline" src="{{ url_for('static', path='img/alright.png') }}" alt="">
                 <div class="status-head">Всё хорошо</div>
               </div>
               <hr class="mt-0">
@@ -171,18 +171,18 @@
   </div>
 </div>
 {% for camera in cameras %}
-  <div class="modal fade" id="cam{{ camera.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  <div class="modal fade" id="cam{{ cameras.index(camera) + 1 }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Камера №{{ camera.id }} | {{ monitoring_data.current_classroom }}</h5>
+          <h5 class="modal-title" id="exampleModalLongTitle">Камера №{{ cameras.index(camera) + 1 }} | {{ monitoring_data.current_classroom }}</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <img src="http://127.0.0.1:8000/pages/camera_view/{{ camera.id }}" alt="">
+          <img src="/pages/camera_view/{{ camera.id }}" alt="">
         </div>
       </div>
     </div>

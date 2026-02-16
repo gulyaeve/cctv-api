@@ -43,3 +43,7 @@ class OperationNotPermited(BaseException):
     status_code=status.HTTP_403_FORBIDDEN
     detail="Operation not permitted"
 
+
+class NotAuthenticatedException(BaseException):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "Пользователь не авторизован"
