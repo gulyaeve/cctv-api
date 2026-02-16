@@ -63,22 +63,22 @@ async def register_user(
     logging.info(f"User saved to db: {email}")
 
 
-@router.post("/login")
-async def login_user(data: OAuth2PasswordRequestForm = Depends()):
-    email = data.username
-    password = data.password
+# @router.post("/login")
+# async def login_user(data: OAuth2PasswordRequestForm = Depends()):
+#     email = data.username
+#     password = data.password
 
-    user = await load_user(email)  # we are using the same function to retrieve the user
-    logging.info(f"{data.__dict__=} {user=}")
-    if not user:
-        raise InvalidCredentialsException  # you can also use your own HTTPException
-    elif not verify_password(password, user.hashed_password):
-        raise InvalidCredentialsException
+#     user = await load_user(email)  # we are using the same function to retrieve the user
+#     logging.info(f"{data.__dict__=} {user=}")
+#     if not user:
+#         raise InvalidCredentialsException  # you can also use your own HTTPException
+#     elif not verify_password(password, user.hashed_password):
+#         raise InvalidCredentialsException
 
-    access_token = manager.create_access_token(
-        data=dict(sub=email)
-    )
-    return {'access_token': access_token, 'token_type': 'bearer'}
+#     access_token = manager.create_access_token(
+#         data=dict(sub=email)
+#     )
+#     return {'access_token': access_token, 'token_type': 'bearer'}
 # @router.post("/login")
 # async def login_user(response: Response, user_data: UserLogin):
 #     user = await auth_user(user_data.email, user_data.password)
@@ -86,20 +86,20 @@ async def login_user(data: OAuth2PasswordRequestForm = Depends()):
 #     response.set_cookie(key="access_token", value=access_token)
 #     # return {"access_token": access_token}
 
-# @router.post("/login")
-# async def login_user(
-#     response: Response,
-#     email: Annotated[EmailStr, Form()],
-#     password: Annotated[str, Form()],
-# ):
-#     user = await auth_user(email, password)
-#     access_token = create_token({"sub": str(user.id)})
-#     response.set_cookie(
-#         key="access_token",
-#         value=access_token,
-#         domain=settings.DOMAIN
-#         )
-#     return {"access_token": access_token}
+@router.post("/login")
+async def login_user(
+    response: Response,
+    email: Annotated[EmailStr, Form()],
+    password: Annotated[str, Form()],
+):
+    user = await auth_user(email, password)
+    access_token = create_token({"sub": str(user.id)})
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        domain=settings.DOMAIN
+        )
+    return {"access_token": access_token}
 
 
 @router.post("/logout")
