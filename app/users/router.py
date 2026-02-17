@@ -1,20 +1,19 @@
 from datetime import datetime, timedelta, timezone
 import logging
-from typing import Sequence, Annotated
-from fastapi import APIRouter, Depends, Form, Query, Request, Response, status
+from typing import Optional, Sequence, Annotated
+from fastapi import APIRouter, Depends, Form, Query, Response, status
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi_login import LoginManager
-from fastapi_login.exceptions import InvalidCredentialsException
+# from fastapi_login import LoginManager
 from pydantic import EmailStr
 
 
-from app.users.auth import auth_user, get_password_hash, create_token, verify_password
+from app.users.auth import auth_user, get_password_hash, create_token
 from app.users.dependencies import get_current_user
-from app.users.models import UserModel
+# from app.users.models import UserModel
 from app.users.schemas import UserScheme, UserSearch
 from app.users.dao import UsersDAO
-from app.exceptions import NotAuthenticatedException, UserExistException
+from app.exceptions import UserExistException
 from app.config import settings
 # from fastapi_cache.decorator import cache
 
@@ -24,21 +23,21 @@ router = APIRouter(
     tags=["Users"],
 )
 
-manager = LoginManager(
-    settings.SECRET_KEY,
-    token_url=f"{router.prefix}/login",
-    not_authenticated_exception=NotAuthenticatedException,
-    use_cookie=True
-    )
+# manager = LoginManager(
+#     settings.SECRET_KEY,
+#     token_url=f"{router.prefix}/login",
+#     not_authenticated_exception=NotAuthenticatedException,
+#     use_cookie=True
+#     )
 
 
-@manager.user_loader()
-async def load_user(email: str):
-    user: UserModel = await UsersDAO.find_one_or_none(email=email)
-    return user
+# @manager.user_loader()
+# async def load_user(email: str):
+#     user: UserModel = await UsersDAO.find_one_or_none(email=email)
+#     return user
 
 
-@router.get("")
+@router.get("", dependencies=[Depends(get_current_user)])
 # @cache(expire=60)
 async def get_all_users(filter_query: Annotated[UserSearch, Query()]) -> Sequence[UserScheme]:
     """
@@ -113,7 +112,7 @@ async def login_user(
         key="access_token",
         value=access_token,
         httponly=True,
-        expires=datetime.now(timezone.utc) + timedelta(minutes=settings.TOKEN_TTL_MINUTES)
+        # expires=datetime.now(timezone.utc) + timedelta(minutes=settings.TOKEN_TTL_MINUTES)
         )
     return response
 
@@ -129,5 +128,5 @@ async def user_get_itself(current_user = Depends(get_current_user)) -> UserSchem
     
 
 @router.get("/{id}")
-async def get_user_info(id: int) -> UserScheme:
+async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Optional[UserScheme]:
     return await UsersDAO.find_one_or_none(id=id)

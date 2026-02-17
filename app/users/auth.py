@@ -35,8 +35,8 @@ async def auth_user(email: EmailStr, password: str):
 
 def create_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.now() + timedelta(minutes=settings.TOKEN_TTL_MINUTES)
-    to_encode.update({"exp": expire})
+    # expire = datetime.now() + timedelta(minutes=settings.TOKEN_TTL_MINUTES)
+    # to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         to_encode,
         settings.SECRET_KEY,

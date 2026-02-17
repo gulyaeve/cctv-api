@@ -5,15 +5,15 @@
       <!--Section: Content-->
       <div class="row m-0">
         <div class="col-9 p-0">
-          <div class="video-wall">
+          <div class="video-wall {% if len_cameras == 2 %} d-flex {% endif %}">
               {% for camera in cameras %}
                 {% if cameras.index(camera) in (0, 2) %}
-                  <div class="video-wall-string d-flex">
+                  <div class="video-wall-string d-flex {% if len_cameras == 1 %} h-100 {% endif %}">
                 {% endif %}
-                <div class="video d-inline">
+                  <div class="video {% if len_cameras == 1 %} w-100 {% endif %} d-inline">
                   <a href="#" data-toggle="modal" data-target="#cam{{ cameras.index(camera) + 1 }}"><img src="/camera_view/{{ camera.id }}" alt=""></a>
                 </div>
-                {% if (cameras.index(camera) in (1, 3)) or (cameras.index(camera) == len_cameras) %}
+                {% if (cameras.index(camera) in (1, 3)) or (cameras.index(camera) + 1 == len_cameras) %}
                   </div>
                 {% endif %}
               {% endfor %}
@@ -25,7 +25,7 @@
                   Информация
                   <hr class="mt-1">
                 </div>
-                <div class="control-panel-meta-data overflow-auto">
+                <div class="control-panel-meta-data overflow-y" style="word-wrap: anywhere;">
                   <b>Кабинет:</b> {{ monitoring_data.current_classroom }}<br>
                   <b>Корпус:</b> {{ monitoring_data.current_building}}<br>
                   <br>

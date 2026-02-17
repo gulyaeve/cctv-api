@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Depends, Response
+from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, StreamingResponse
 
@@ -13,8 +13,7 @@ from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
 from app.incidents.dao import IncidentsDAO
 from app.schedule.router import get_active_monitoring
-from app.users.auth import auth_user
-from app.users.dependencies import get_current_user, get_fake_user
+from app.users.dependencies import get_current_user
 from app.users.models import UserModel
 
 
@@ -30,13 +29,17 @@ templates = Jinja2Templates(
 @router.get("/buildings", response_class=HTMLResponse)
 async def page_get_buildings_page(
     request: Request,
-    buildings: BuildingModel=Depends(get_all_buildings)
+    buildings: BuildingModel=Depends(get_all_buildings),
+    current_user: UserModel = Depends(get_current_user)
     ):
     return templates.TemplateResponse(
         request=request,
         name="monitoring/buildings.html",
-        context={"buildings": buildings}
-        )
+        context={
+            "buildings": buildings,
+            "current_user": current_user,
+        }
+    )
 
 
 @router.get("/building_classrooms/{id}", response_class=HTMLResponse)
@@ -44,13 +47,18 @@ async def page_get_building_classrooms_page(
     id: int,
     request: Request,
     building: BuildingModel=Depends(get_building),
+    current_user: UserModel = Depends(get_current_user),
     ):
     classrooms = await ClassroomsDAO.find_all(building_id=id)
     return templates.TemplateResponse(
         request=request,
         name="monitoring/building_classrooms.html",
-        context={"classrooms": classrooms, "building": building}
-        )
+        context={
+            "classrooms": classrooms,
+            "building": building,
+            "current_user": current_user,
+        }
+    )
 
 
 @router.get("/classroom_cameras_view/{id}", response_class=HTMLResponse)
@@ -58,13 +66,18 @@ async def page_get_cameras_view_page(
     id: int,
     request: Request,
     classroom: ClassroomModel=Depends(get_classroom),
+    current_user: UserModel = Depends(get_current_user)
     ):
     cameras = await CamerasDAO.find_all(classroom_id=id)
     return templates.TemplateResponse(
         request=request,
         name="monitoring/camera_stream.html",
-        context={"cameras": cameras, "classroom": classroom}
-        )
+        context={
+            "cameras": cameras,
+            "classroom": classroom,
+            "current_user": current_user,
+        }
+    )
 
 
 @router.get("/active_monitoring", response_class=HTMLResponse)
@@ -90,12 +103,12 @@ async def page_get_active_monitoring(
                 "len_cameras": len(cameras),
                 "cameras_ids": ",".join(str(camera.id) for camera in cameras)
             }
-            )
+        )
 
 
 @router.get("/camera_view/{id}", response_class=StreamingResponse)
 async def camera_stream(
-    id: int,
+    # id: int,
     camera: CameraModel=Depends(get_camera),
     ):
     camera_stream = Camera(camera.rtsp_url)
