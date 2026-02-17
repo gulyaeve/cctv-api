@@ -4,10 +4,10 @@ from fastapi import APIRouter, Query, status, Depends
 
 from app.cameras.dao import CamerasDAO
 from app.incidents.models import IncidentModel
-from app.incidents.schemas import IncidentBaseScheme, IncidentScheme, IncidentSearch
+from app.incidents.schemas import IncidentAppendScheme, IncidentScheme, IncidentSearch
 from app.incidents.dao import IncidentsDAO
 from app.exceptions import ObjectMissingException
-from app.users.dependencies import get_fake_user
+from app.users.dependencies import get_current_user
 from app.users.models import UserModel
 from app.camera_utils.streaming import Camera
 # from fastapi_cache.decorator import cache
@@ -20,7 +20,7 @@ router = APIRouter(
 
 
 @router.get("/schedule/{id}")
-async def get_active_monitoring(id: int, current_user: UserModel = Depends(get_fake_user)): # TODO: Убрать fake
+async def get_active_monitoring(id: int, current_user: UserModel = Depends(get_current_user)):
     schedule_for_monitoring = await IncidentsDAO.get_incidents_info(visor_id=current_user.id, event_id=id)
     return schedule_for_monitoring
 
@@ -45,7 +45,7 @@ async def get_incident(id: int):
 
 
 @router.post("", response_model=IncidentScheme, status_code=status.HTTP_201_CREATED)
-async def add_incident(data: IncidentBaseScheme):
+async def add_incident(data: IncidentAppendScheme):
     """
     Add incident with cameras
     """
@@ -63,17 +63,18 @@ async def add_incident(data: IncidentBaseScheme):
     if new_object is None:
         raise ObjectMissingException
     else:
-        for camera, filename in zip(data.cameras_ids, filenames):
-            camera_data = await CamerasDAO.find_one_or_none(id=camera)
-            if camera_data:
-                camera_rtsp = camera_data.rtsp_url
-                frame = Camera(camera_rtsp)
-                frame.save_screenshot(filename)
+        if data.cameras_ids:
+            for camera, filename in zip(data.cameras_ids, filenames):
+                camera_data = await CamerasDAO.find_one_or_none(id=camera)
+                if camera_data:
+                    camera_rtsp = camera_data.rtsp_url
+                    frame = Camera(camera_rtsp)
+                    frame.save_screenshot(filename)
         return new_object
 
 
 @router.post("/bulk", status_code=status.HTTP_201_CREATED)
-async def bulk_add_incidents(items: Sequence[IncidentBaseScheme]):
+async def bulk_add_incidents(items: Sequence[IncidentAppendScheme]):
     await IncidentsDAO.add_bulk([item.model_dump() for item in items])
 
 
@@ -90,7 +91,7 @@ async def del_incident(id: int):
 
 
 @router.put("/{id}", response_model=IncidentScheme)
-async def update_incident(id: int, data: IncidentBaseScheme):
+async def update_incident(id: int, data: IncidentAppendScheme):
     """
     update group
     """

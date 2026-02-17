@@ -64,15 +64,15 @@ class ScheduleDAO(BaseDAO):
                                 inc_subquery.c.status == 2
                             ),
                             func.current_timestamp() >= 
-                                inc_subquery.c.time_created + text("INTERVAL '5 minutes'")
-                                # inc_subquery.c.time_created + text("INTERVAL '1 minutes'")
+                                # inc_subquery.c.time_created + text("INTERVAL '5 minutes'")
+                                inc_subquery.c.time_created + text("INTERVAL '3 minutes'")
                         ),
                         # Статус 0 и прошло 15 минут
                         and_(
                             inc_subquery.c.status == 0,
                             func.current_timestamp() >= 
-                                inc_subquery.c.time_created + text("INTERVAL '15 minutes'")
-                                # inc_subquery.c.time_created + text("INTERVAL '2 minutes'")
+                                # inc_subquery.c.time_created + text("INTERVAL '15 minutes'")
+                                inc_subquery.c.time_created + text("INTERVAL '6 minutes'")
                         ),
                         # Или статус NULL
                         inc_subquery.c.status.is_(None)

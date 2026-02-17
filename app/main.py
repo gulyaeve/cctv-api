@@ -30,6 +30,7 @@ from app.schedule.router import router as schedule_router
 from app.teachers.router import router as teachers_router
 from app.users.auth import noauth_handler
 from app.users.router import router as users_router
+from app.active_monitoring.router import router as active_monitoring_router
 from app.config import settings
 
 api = APIRouter(
@@ -49,6 +50,7 @@ app = FastAPI(title="Система видеонаблюдения", version="0.
 app.mount("/static", StaticFiles(directory="app/static"), "static")
 app.include_router(api)
 app.include_router(pages_router)
+app.include_router(active_monitoring_router)
 
 app.add_exception_handler(IncorrectEmailOrPassword, noauth_handler)
 

@@ -1,5 +1,5 @@
 import logging
-from sqlalchemy import select
+from sqlalchemy import desc, select
 from app.database import async_session_maker
 from app.classrooms.models import ClassroomModel
 from app.dao.base import BaseDAO
@@ -32,6 +32,7 @@ class IncidentsDAO(BaseDAO):
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .join(UserModel, IncidentModel.visor_id == UserModel.id)
                 .filter(IncidentModel.visor_id == visor_id, IncidentModel.event == event_id)
+                .order_by(desc(IncidentModel.time_created))
             )
             async with async_session_maker() as session:
                 result = await session.execute(query)

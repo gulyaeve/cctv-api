@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, Response
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, StreamingResponse
 
@@ -13,6 +13,7 @@ from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
 from app.incidents.dao import IncidentsDAO
 from app.schedule.router import get_active_monitoring
+from app.users.auth import auth_user
 from app.users.dependencies import get_current_user, get_fake_user
 from app.users.models import UserModel
 
@@ -70,7 +71,7 @@ async def page_get_cameras_view_page(
 async def page_get_active_monitoring(
     request: Request,
     monitoring_data = Depends(get_active_monitoring),
-    current_user: UserModel = Depends(get_fake_user) # TODO: Убрать fake
+    current_user: UserModel = Depends(get_current_user)
     ):
     if monitoring_data:
         cameras = await CamerasDAO.find_all(classroom_id=monitoring_data.current_classroom_id)
@@ -86,7 +87,8 @@ async def page_get_active_monitoring(
                 "current_user": current_user,
                 "cameras": cameras,
                 "incidents_data": incidents_data,
-                "len_cameras": len(cameras)
+                "len_cameras": len(cameras),
+                "cameras_ids": ",".join(str(camera.id) for camera in cameras)
             }
             )
 

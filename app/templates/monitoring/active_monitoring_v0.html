@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container-xxl">
+      <!--Section: Content-->
+      <div class="row m-0">
+        <div class="col-9 p-0">
+          <div class="video-wall">
+              {% for camera in cameras %}
+                {% if cameras.index(camera) in (0, 2) %}
+                  <div class="video-wall-string d-flex">
+                {% endif %}
+                <div class="video d-inline">
+                  <a href="#" data-toggle="modal" data-target="#cam{{ cameras.index(camera) + 1 }}"><img src="/camera_view/{{ camera.id }}" alt=""></a>
+                </div>
+                {% if (cameras.index(camera) in (1, 3)) or (cameras.index(camera) == len_cameras) %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+          </div>
+          <div class="row m-0">
+            <div class="col-4 pl-3 pr-0 pt-3 m-0">
+              <div class="control-panel-meta">
+                <div class="control-panel-meta-head">
+                  Информация
+                  <hr class="mt-1">
+                </div>
+                <div class="control-panel-meta-data overflow-auto">
+                  <b>Кабинет:</b> {{ monitoring_data.current_classroom }}<br>
+                  <b>Корпус:</b> {{ monitoring_data.current_building}}<br>
+                  <br>
+                  <b>Занятие:</b><br>
+                  {{ monitoring_data.current_subject }}<br>
+                  <b>Время занятия:</b> {{ monitoring_data.timestamp_start.strftime('%H:%M') }} - {{ monitoring_data.timestamp_end.strftime('%H:%M') }}<br>
+                  <b>Преподаватель:</b><br>
+                  {{ monitoring_data.current_teacher }}<br>
+                  <b>Группа:</b><br>
+                  {{ monitoring_data.current_group }}<br>
+                </div>
+              </div>
+            </div>
+            <div class="col-8 p-3 m-0">
+              <div class="control-panel-addinc">
+                <div class="control-panel-buttons d-flex">
+                  <form method="post" action="/create_incident" enctype="multipart/form-data">
+                    <input type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}" disabled>
+                    <input type="text" name="status" class="d-none" value="0" disabled>
+                    <input type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}' disabled>
+                    <input type="text" name="visor_id" class="d-none" value="{{ current_user.id }}" disabled>
+                    <button class="control-panel-btn btn-inc-alright" type="submit" name="button">Всё хорошо</button>
+                  </form>
+                  <button class="control-panel-btn btn-inc-control" type="button" name="button">Контроль</button>
+                  <button class="control-panel-btn btn-inc-alert" type="button" name="button">Инцидент</button>
+                </div>
+
+                <div class="control-panel-details st-inc-control d-none">
+                  <div class="row">
+                    <div class="col-6">
+                      <b>Быстрый ввод</b>
+                      <button class="control-panel-btn" type="button" name="button">Студент(ы) спит(ят)</button>
+                      <button class="control-panel-btn" type="button" name="button">Преподаватель отсутствует</button>
+                      <button class="control-panel-btn" type="button" name="button">Преподаватель спит</button>
+                      <button class="control-panel-btn" type="button" name="button">Студенты бездельничают</button>
+                    </div>
+                    <div class="col-6">
+                      <b>Комментарий:</b>
+                      <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
+                      <button class="control-panel-btn" type="button" name="button">Отправить информацию</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="control-panel-details st-inc-alert d-none">
+                  <div class="row">
+                    <div class="col-6">
+                      <b>Быстрый ввод</b>
+                      <button class="control-panel-btn" type="button" name="button">Студент(ы) спит(ят)</button>
+                      <button class="control-panel-btn" type="button" name="button">Преподаватель отсутствует</button>
+                      <button class="control-panel-btn" type="button" name="button">Преподаватель спит</button>
+                      <button class="control-panel-btn" type="button" name="button">Студенты бездельничают</button>
+                      <button class="control-panel-btn" type="button" name="button">Камера не работает</button>
+                    </div>
+                    <div class="col-6">
+                      <b>Комментарий:</b>
+                      <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
+                      <button class="control-panel-btn" type="button" name="button">Отправить информацию</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-3 p-0">
+          <div class="status-log d-flex flex-column overflow-auto">
+            {% if not incidents_data %}
+            <div class="status d-block">
+              <div class="status-head-placeholder d-flex">
+                <div class="status-head">Статус</div>
+              </div>  
+              <hr class="mt-0">
+              <div class="status-inc-description">   
+                Пока новых статусов нет             
+              </div>
+            </div>
+            {% endif %}
+            {% for incident_data in incidents_data  %}
+            <div class="status inc-{% if incident_data.status == 0 %}alright {% elif incident_data.status == 2 %}alert {% elif incident_data.status == 3 %}control {% endif %} d-block">
+              <div class="status-head-placeholder d-flex">
+                {% if incident_data.status == 0 %}
+                <img class="d-inline" src="{{ url_for('static', path='img/alright.png') }}" alt="">
+                <div class="status-head">Всё хорошо</div>
+                {% endif %}
+                {% if incident_data.status == 2 %}
+                <img class="d-inline" src="{{ url_for('static', path='img/alert.png') }}" alt="">
+                <div class="status-head">Инцидент</div>
+                {% endif %}
+                {% if incident_data.status == 3 %}
+                <img class="d-inline" src="{{ url_for('static', path='img/control.png') }}" alt="">
+                <div class="status-head">Контроль</div>
+                {% endif %}
+
+              </div>
+              <hr class="mt-0">
+              <div class="status-inc-description">
+                <b>Визор:</b> {{ incident_data.current_visor}}<br>
+                <b>Время:</b> {{ incident_data.time_created.strftime('%d.%m.%Y %H:%M') }}<br>
+                <br>
+                <b>Занятие:</b><br>
+                {{ incident_data.current_schedule }}<br>
+                <b>Преподаватель:</b><br>
+                {{ incident_data.current_teacher }}<br>
+                <b>Группа:</b><br>
+                {{ incident_data.current_group }}<br>
+                {% if incident_data.status in (2,3) %}
+                <br>
+                <b>{% if incident_data.status == 2 %}Инцидент{% elif incident_data.status == 3 %}Контроль{% endif %}:</b><br>
+                {{ incident_data.comment }}<br>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% for camera in cameras %}
+  <div class="modal fade" id="cam{{ cameras.index(camera) + 1 }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Камера №{{ cameras.index(camera) + 1 }} | {{ monitoring_data.current_classroom }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <img src="/camera_view/{{ camera.id }}" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+{% endblock %}

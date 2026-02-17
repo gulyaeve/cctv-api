@@ -65,23 +65,23 @@ async def register_user(
     logging.info(f"User saved to db: {email}")
 
 
-@router.post("/token")
-async def check_token(data: OAuth2PasswordRequestForm = Depends()):
-    email = data.username
-    password = data.password
+# @router.post("/token")
+# async def check_token(data: OAuth2PasswordRequestForm = Depends()):
+#     email = data.username
+#     password = data.password
 
-    user = await load_user(email)
-    logging.info(f"{data.__dict__=} {user=}")
-    if not user:
-        raise InvalidCredentialsException
-    elif not verify_password(password, user.hashed_password):
-        raise InvalidCredentialsException
+#     user = await load_user(email)
+#     logging.info(f"{data.__dict__=} {user=}")
+#     if not user:
+#         raise InvalidCredentialsException
+#     elif not verify_password(password, user.hashed_password):
+#         raise InvalidCredentialsException
 
-    access_token = manager.create_access_token(
-        data=dict(sub=email),
-        expires=(timedelta(minutes=settings.TOKEN_TTL_MINUTES))
-    )
-    return {'access_token': access_token, 'token_type': 'bearer'}
+#     access_token = manager.create_access_token(
+#         data=dict(sub=email),
+#         expires=(timedelta(minutes=settings.TOKEN_TTL_MINUTES))
+#     )
+#     return {'access_token': access_token, 'token_type': 'bearer'}
 
 
 # @router.post("/login")
@@ -91,30 +91,31 @@ async def check_token(data: OAuth2PasswordRequestForm = Depends()):
 #     response.set_cookie(key="access_token", value=access_token)
 #     # return {"access_token": access_token}
 
+# @router.post("/login")
+# async def login_user(
+#     response: Response,
+#     data: OAuth2PasswordRequestForm = Depends()
+# ):
+#     user = await auth_user(data.username, data.password)
+#     access_token = create_token({"sub": str(user.id)})
+#     response.set_cookie(key="access_token", value=access_token)
+#     return {"access_token": access_token}
 
 @router.post("/login")
 async def login_user(
     response: Response,
     data: OAuth2PasswordRequestForm = Depends()
-    # username: Annotated[EmailStr, Form()],
-    # password: Annotated[str, Form()],
 ):
-    email = data.username
-    password = data.password
-    user = await auth_user(email, password)
-    # access_token = create_token({"sub": str(user.id)})
-    access_token=manager.create_access_token(
-        data=dict(sub=str(user.id)),
-        expires=(timedelta(minutes=settings.TOKEN_TTL_MINUTES))
-    )
+    user = await auth_user(data.username, data.password)
+    access_token = create_token({"sub": str(user.id)})
+    response = RedirectResponse("/active_monitoring", status_code=status.HTTP_302_FOUND)
     response.set_cookie(
         key="access_token",
-        value=f"Bearer {access_token}",
+        value=access_token,
         httponly=True,
-        # domain=settings.DOMAIN,
         expires=datetime.now(timezone.utc) + timedelta(minutes=settings.TOKEN_TTL_MINUTES)
         )
-    return RedirectResponse("/buildings", status_code=status.HTTP_302_FOUND)
+    return response
 
 
 @router.post("/logout")

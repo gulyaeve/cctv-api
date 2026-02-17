@@ -41,43 +41,84 @@
             </div>
             <div class="col-8 p-3 m-0">
               <div class="control-panel-addinc">
+              <form method="post" action="/create_incident" enctype="multipart/form-data">
+              <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
+              <input class="d-none" type="text" name="status" class="d-none" value="0">
+              <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
+              <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                 <div class="control-panel-buttons d-flex">
-                  <button class="control-panel-btn btn-inc-alright" type="button" name="button">Всё хорошо</button>
+                  <button class="control-panel-btn btn-inc-alright" type="submit" name="button">Всё хорошо</button>
+                  </form> 
                   <button class="control-panel-btn btn-inc-control" type="button" name="button">Контроль</button>
                   <button class="control-panel-btn btn-inc-alert" type="button" name="button">Инцидент</button>
                 </div>
 
-                <div class="control-panel-details st-inc-control d-none">
-                  <div class="row">
-                    <div class="col-6">
-                      <b>Быстрый ввод</b>
-                      <button class="control-panel-btn" type="button" name="button">Студент(ы) спит(ят)</button>
-                      <button class="control-panel-btn" type="button" name="button">Преподаватель отсутствует</button>
-                      <button class="control-panel-btn" type="button" name="button">Преподаватель спит</button>
-                      <button class="control-panel-btn" type="button" name="button">Студенты бездельничают</button>
-                    </div>
-                    <div class="col-6">
-                      <b>Комментарий:</b>
-                      <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
-                      <button class="control-panel-btn" type="button" name="button">Отправить информацию</button>
+                <form method="post" action="/create_incident" enctype="multipart/form-data">
+                  <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}" >
+                  <input class="d-none" type="text" name="status" class="d-none" value="3" >
+                  <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}' >
+                  <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}" >
+                  <div class="control-panel-details st-inc-control d-none">
+                    <div class="row">
+                      <div class="col-6">
+                        
+                        <b>Быстрый ввод</b>
+                        <form method="post" action="/create_incident" enctype="multipart/form-data">
+                        <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
+                        <input class="d-none" type="text" name="status" class="d-none" value="3">
+                        <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
+                        <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
+                        <button class="control-panel-btn" type="submit" name="comment" value="Студент(ы) спит(ят)">Студент(ы) спит(ят)</button>
+                        <button class="control-panel-btn" type="submit" name="comment" value="Преподаватель отсутствует">Преподаватель отсутствует</button>
+                        <button class="control-panel-btn" type="submit" name="comment" value="Преподаватель спит">Преподаватель спит</button>
+                        <button class="control-panel-btn" type="submit" name="comment" value="Студенты бездельничают">Студенты бездельничают</button>
+                        </form>
+                      </div>
+                      <div class="col-6">
+                        <b>Комментарий:</b>
+                        <form method="post" action="/create_incident" enctype="multipart/form-data">
+                        <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
+                        <input class="d-none" type="text" name="status" class="d-none" value="3">
+                        <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
+                        <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
+                        <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
+                        <button class="control-panel-btn" type="submit" name="button">Отправить информацию</button>
+                        </form>
+                      </div>
                     </div>
                   </div>
-                </div>
-
+                </form>
+                <form method="post" action="/create_incident" enctype="multipart/form-data">
+                <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
+                <input class="d-none" type="text" name="status" class="d-none" value="2">
+                <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
+                <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                 <div class="control-panel-details st-inc-alert d-none">
                   <div class="row">
                     <div class="col-6">
                       <b>Быстрый ввод</b>
-                      <button class="control-panel-btn" type="button" name="button">Студент(ы) спит(ят)</button>
-                      <button class="control-panel-btn" type="button" name="button">Преподаватель отсутствует</button>
-                      <button class="control-panel-btn" type="button" name="button">Преподаватель спит</button>
-                      <button class="control-panel-btn" type="button" name="button">Студенты бездельничают</button>
-                      <button class="control-panel-btn" type="button" name="button">Камера не работает</button>
+                        <form method="post" action="/create_incident" enctype="multipart/form-data">
+                        <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
+                        <input class="d-none" type="text" name="status" class="d-none" value="2">
+                        <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
+                        <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
+                        <button class="control-panel-btn" type="submit" name="comment" value="Студент(ы) спит(ят)">Студент(ы) спит(ят)</button>
+                        <button class="control-panel-btn" type="submit" name="comment" value="Преподаватель отсутствует">Преподаватель отсутствует</button>
+                        <button class="control-panel-btn" type="submit" name="comment" value="Преподаватель спит">Преподаватель спит</button>
+                        <button class="control-panel-btn" type="submit" name="comment" value="Студенты бездельничают">Студенты бездельничают</button>
+                        <button class="control-panel-btn" type="submit" name="comment" value="Камера не работает">Камера не работает</button>
+                        </form>
                     </div>
                     <div class="col-6">
                       <b>Комментарий:</b>
+                      <form method="post" action="/create_incident" enctype="multipart/form-data">
+                      <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
+                      <input class="d-none" type="text" name="status" class="d-none" value="2">
+                      <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
+                      <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                       <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
-                      <button class="control-panel-btn" type="button" name="button">Отправить информацию</button>
+                      <button class="control-panel-btn" type="submit" name="button">Отправить информацию</button>
+                      </form>
                     </div>
                   </div>
                 </div>

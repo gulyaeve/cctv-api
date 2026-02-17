@@ -15,7 +15,7 @@ router = APIRouter(
 
 
 @router.get("/active_monitoring")
-async def get_active_monitoring(current_user: UserModel = Depends(get_fake_user)): # TODO: Убрать fake
+async def get_active_monitoring(current_user: UserModel = Depends(get_current_user)):
     schedule_for_monitoring = await ScheduleDAO.get_schedule_for_active_monitoring(visor_id=(current_user.id))
     return schedule_for_monitoring
 
