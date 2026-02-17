@@ -9,7 +9,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./cctv.itmoscow.key.pem:/etc/nginx/ssl/cctv.itmoscow.key.pem
       - ./cctv.itmoscow.pem:/etc/nginx/ssl/cctv.itmoscow.pem
-      - /home/user/screnshots:/src/app/static/screenshots
+      - /home/user/screenshots:/src/app/static/screenshots
     restart: on-failure
 
   db:

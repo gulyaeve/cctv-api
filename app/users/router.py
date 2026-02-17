@@ -112,7 +112,7 @@ async def login_user(
         key="access_token",
         value=access_token,
         httponly=True,
-        # expires=datetime.now(timezone.utc) + timedelta(minutes=settings.TOKEN_TTL_MINUTES)
+        expires=datetime.now(timezone.utc) + timedelta(hours=settings.TOKEN_TTL_MINUTES)
         )
     return response
 

@@ -59,7 +59,6 @@ async def add_incident(data: IncidentAppendScheme):
     new_object: IncidentModel = await IncidentsDAO.add(
         **data_to_save
     )
-
     if new_object is None:
         raise ObjectMissingException
     else:
