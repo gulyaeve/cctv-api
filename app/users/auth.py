@@ -14,7 +14,7 @@ pwd_context = CryptContext(schemes=["md5_crypt"], deprecated="auto")
 
 
 def noauth_handler(request, exc):
-    return RedirectResponse(url='/pages/login')
+    return RedirectResponse(url='/login')
 
 
 def get_password_hash(password: str) -> str:

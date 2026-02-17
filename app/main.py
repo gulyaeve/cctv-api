@@ -22,7 +22,7 @@ from app.classrooms.router import router as classrooms_router
 
 # from app.admin.auth import authentication_backend
 from app.database import engine
-from app.exceptions import IncorrectEmailOrPassword, NotAuthenticatedException
+from app.exceptions import IncorrectEmailOrPassword
 from app.groups.router import router as groups_router
 from app.incidents.router import router as incidents_router
 from app.pages.router import router as pages_router
@@ -82,4 +82,4 @@ admin.add_view(IncidentsAdmin)
 
 @app.get("/", response_class=RedirectResponse)
 def redirect_to_login_page():
-    return RedirectResponse("/pages/login")
+    return RedirectResponse("/login")

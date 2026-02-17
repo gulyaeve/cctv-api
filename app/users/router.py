@@ -65,29 +65,32 @@ async def register_user(
     logging.info(f"User saved to db: {email}")
 
 
-# @router.post("/login")
-# async def login_user(data: OAuth2PasswordRequestForm = Depends()):
-#     email = data.username
-#     password = data.password
+@router.post("/token")
+async def check_token(data: OAuth2PasswordRequestForm = Depends()):
+    email = data.username
+    password = data.password
 
-#     user = await load_user(email)
-#     logging.info(f"{data.__dict__=} {user=}")
-#     if not user:
-#         raise InvalidCredentialsException
-#     elif not verify_password(password, user.hashed_password):
-#         raise InvalidCredentialsException
+    user = await load_user(email)
+    logging.info(f"{data.__dict__=} {user=}")
+    if not user:
+        raise InvalidCredentialsException
+    elif not verify_password(password, user.hashed_password):
+        raise InvalidCredentialsException
 
-#     manager.create_access_token(
-#         data=dict(sub=email),
-#         expires=(timedelta(minutes=settings.TOKEN_TTL_MINUTES))
-#     )
-    # return {'access_token': access_token, 'token_type': 'bearer'}
+    access_token = manager.create_access_token(
+        data=dict(sub=email),
+        expires=(timedelta(minutes=settings.TOKEN_TTL_MINUTES))
+    )
+    return {'access_token': access_token, 'token_type': 'bearer'}
+
+
 # @router.post("/login")
 # async def login_user(response: Response, user_data: UserLogin):
 #     user = await auth_user(user_data.email, user_data.password)
 #     access_token = create_token({"sub": str(user.id)})
 #     response.set_cookie(key="access_token", value=access_token)
 #     # return {"access_token": access_token}
+
 
 @router.post("/login")
 async def login_user(
@@ -99,13 +102,19 @@ async def login_user(
     email = data.username
     password = data.password
     user = await auth_user(email, password)
-    access_token = create_token({"sub": str(user.id)})
+    # access_token = create_token({"sub": str(user.id)})
+    access_token=manager.create_access_token(
+        data=dict(sub=str(user.id)),
+        expires=(timedelta(minutes=settings.TOKEN_TTL_MINUTES))
+    )
     response.set_cookie(
-        access_token,
-        domain=settings.DOMAIN,
+        key="access_token",
+        value=f"Bearer {access_token}",
+        httponly=True,
+        # domain=settings.DOMAIN,
         expires=datetime.now(timezone.utc) + timedelta(minutes=settings.TOKEN_TTL_MINUTES)
         )
-    return RedirectResponse("/pages/buildings", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse("/buildings", status_code=status.HTTP_302_FOUND)
 
 
 @router.post("/logout")

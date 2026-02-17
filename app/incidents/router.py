@@ -49,11 +49,12 @@ async def add_incident(data: IncidentBaseScheme):
     """
     Add incident with cameras
     """
-    filenames = []
-    for camera in data.cameras_ids:
-        filenames.append(f"app/static/screenshots/{data.event}_{camera}_{datetime.now()}.jpg")
     data_to_save = data.model_dump()
-    data_to_save["cameras_screenshots"] = filenames
+    if data.cameras_ids:
+        filenames = []
+        for camera in data.cameras_ids:
+            filenames.append(f"app/static/screenshots/{data.event}_{camera}_{datetime.now().strftime('%d.%m.%Y_%T')}.jpg")
+        data_to_save["cameras_screenshots"] = filenames
 
     new_object: IncidentModel = await IncidentsDAO.add(
         **data_to_save

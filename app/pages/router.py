@@ -18,7 +18,6 @@ from app.users.models import UserModel
 
 
 router = APIRouter(
-    prefix="/pages",
     tags=["Фронтенд"]
 )
 

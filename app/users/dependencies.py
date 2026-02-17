@@ -1,11 +1,13 @@
 
 from fastapi import Depends, Request
-from fastapi.responses import RedirectResponse
+from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from app.exceptions import TokenMissing, TokenIncorrect, UserNotPresent
 from app.config import settings
 from app.users.dao import UsersDAO
-from app.users.models import UserModel
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
 
 
 def get_token(request: Request):
