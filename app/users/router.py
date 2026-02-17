@@ -1,7 +1,8 @@
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 import logging
 from typing import Sequence, Annotated
-from fastapi import APIRouter, Depends, Form, Query, Response
+from fastapi import APIRouter, Depends, Form, Query, Request, Response, status
+from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login import LoginManager
 from fastapi_login.exceptions import InvalidCredentialsException
@@ -91,17 +92,20 @@ async def register_user(
 @router.post("/login")
 async def login_user(
     response: Response,
-    email: Annotated[EmailStr, Form()],
-    password: Annotated[str, Form()],
+    data: OAuth2PasswordRequestForm = Depends()
+    # username: Annotated[EmailStr, Form()],
+    # password: Annotated[str, Form()],
 ):
+    email = data.username
+    password = data.password
     user = await auth_user(email, password)
     access_token = create_token({"sub": str(user.id)})
     response.set_cookie(
-        key="access_token",
-        value=access_token,
-        domain=settings.DOMAIN
+        access_token,
+        domain=settings.DOMAIN,
+        expires=datetime.now(timezone.utc) + timedelta(minutes=settings.TOKEN_TTL_MINUTES)
         )
-    return {"access_token": access_token}
+    return RedirectResponse("/pages/buildings", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @router.post("/logout")
