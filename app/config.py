@@ -3,7 +3,10 @@
 # во 2 версии Pydantic модуль BaseSettings 
 # был вынесен в отдельную библиотеку pydantic-settings
 # from pydantic import BaseSettings
+from faststream.rabbit import RabbitBroker
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from urllib.parse import quote
+
 
 
 class Settings(BaseSettings):
@@ -44,6 +47,21 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
 
+    # RabbitMQ
+    RABBITMQ_HOST: str
+    RABBITMQ_PORT: int
+    RABBITMQ_USER: str
+    RABBITMQ_PASSWORD: str
+
+    @property
+    def rabbitmq_url(self) -> str:
+        return (
+            f"amqp://{self.RABBITMQ_USER}:{quote(self.RABBITMQ_PASSWORD)}@" f"{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}"
+        )
+    
+    QUEUE_NAME: str
+    EXCHANGE_NAME: str
+
     # SENTRY_DSN: str
 
     SECRET_KEY: str
@@ -53,3 +71,5 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env")
 
 settings = Settings()
+
+broker = RabbitBroker(url=settings.rabbitmq_url)

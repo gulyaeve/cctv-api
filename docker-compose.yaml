@@ -10,6 +10,8 @@ services:
       - ./cctv.itmoscow.key.pem:/etc/nginx/ssl/cctv.itmoscow.key.pem
       - ./cctv.itmoscow.pem:/etc/nginx/ssl/cctv.itmoscow.pem
     restart: on-failure
+    networks:
+      - default
 
   db:
     image: postgres:15
@@ -18,8 +20,22 @@ services:
       - postgresdata:/var/lib/postgresql/data
     env_file:
       - .env
+    networks:
+      - default
     # ports:
     #   - 5432:5432
+
+  rabbitmq:
+    # image: rabbitmq:4-management-alpine
+    image: rabbitmq:4-alpine
+    container_name: 'rabbitmq'
+    hostname: 'rabbitmq'
+    # ports:
+        # - 5672:5672
+        # - 15672:15672
+    volumes:
+        - rabbitmq_data:/var/lib/rabbitmq/
+        - rabbitmq_log:/var/log/rabbitmq
 
   # redis:
   #   image: redis:7
@@ -40,6 +56,15 @@ services:
     command: ["/src/docker/entry_point.sh"]
     ports:
       - 8000:8000
+    networks:
+      - default
        
 volumes:
   postgresdata:
+  rabbitmq_data:
+  rabbitmq_log:
+
+networks:
+  default:
+    name: cctv_network
+    driver: bridge

@@ -5,12 +5,14 @@ description = "Система видеонаблюдения"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "aio-pika>=9.5.8",
     "alembic>=1.18.3",
     "asyncpg>=0.31.0",
     "fastapi>=0.128.1",
     "fastapi-cache2[redis]>=0.2.2",
     "fastapi-csrf-protect>=1.0.7",
     "fastapi-login>=1.10.3",
+    "faststream>=0.6.6",
     "gunicorn>=25.0.3",
     "itsdangerous>=2.2.0",
     "opencv-python-headless>=4.13.0.92",
