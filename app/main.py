@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+import logging
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
@@ -16,13 +18,14 @@ from app.admin.views import (
     TeachersAdmin,
     UsersAdmin,
 )
+from app.broker_utils.broker_init import declare_exchange_and_queue
 from app.buildings.router import router as buildings_router
 from app.cameras.router import router as cameras_router
 from app.classrooms.router import router as classrooms_router
 
 # from app.admin.auth import authentication_backend
 from app.database import engine
-from app.exceptions import IncorrectEmailOrPassword
+from app.exceptions import IncorrectEmailOrPassword, TokenMissing, TokenIncorrect, UserNotPresent
 from app.groups.router import router as groups_router
 from app.incidents.router import router as incidents_router
 from app.pages.router import router as pages_router
@@ -53,6 +56,23 @@ app.include_router(pages_router)
 app.include_router(active_monitoring_router)
 
 app.add_exception_handler(IncorrectEmailOrPassword, noauth_handler)
+app.add_exception_handler(TokenIncorrect, noauth_handler)
+app.add_exception_handler(TokenMissing, noauth_handler)
+app.add_exception_handler(UserNotPresent, noauth_handler)
+
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Before startup
+
+    # Create exchange and queue in RabbitMQ
+    await declare_exchange_and_queue()
+
+    yield
+    # After shutdown
+    logging.info("Application shutdown")
+    logging.shutdown()
 
 
 # CORS
@@ -84,4 +104,5 @@ admin.add_view(IncidentsAdmin)
 
 @app.get("/", response_class=RedirectResponse)
 def redirect_to_login_page():
-    return RedirectResponse("/login")
+    return RedirectResponse("/active_monitoring")
+

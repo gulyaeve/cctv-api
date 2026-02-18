@@ -1,3 +1,4 @@
+from fastapi import status
 from fastapi.responses import RedirectResponse
 from passlib.context import CryptContext
 from pydantic import EmailStr
@@ -14,7 +15,7 @@ pwd_context = CryptContext(schemes=["md5_crypt"], deprecated="auto")
 
 
 def noauth_handler(request, exc):
-    return RedirectResponse(url='/login')
+    return RedirectResponse(url='/login', status_code=status.HTTP_303_SEE_OTHER)
 
 
 def get_password_hash(password: str) -> str:

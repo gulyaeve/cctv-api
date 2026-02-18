@@ -106,6 +106,8 @@ async def login_user(
     data: OAuth2PasswordRequestForm = Depends()
 ):
     user = await auth_user(data.username, data.password)
+    if not user:
+        return RedirectResponse("/login")
     access_token = create_token({"sub": str(user.id)})
     response = RedirectResponse("/active_monitoring", status_code=status.HTTP_302_FOUND)
     response.set_cookie(
