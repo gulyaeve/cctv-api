@@ -29,7 +29,7 @@ services:
     image: cctv_backend
     build:
       context: .
-    mount:
+    volumes:
       - /home/user/screenshots:/src/app/static/screenshots
     container_name: cctv_backend
     env_file:
