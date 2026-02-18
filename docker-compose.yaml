@@ -9,7 +9,6 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./cctv.itmoscow.key.pem:/etc/nginx/ssl/cctv.itmoscow.key.pem
       - ./cctv.itmoscow.pem:/etc/nginx/ssl/cctv.itmoscow.pem
-      - /home/user/screenshots:/src/app/static/screenshots
     restart: on-failure
 
   db:
@@ -30,6 +29,8 @@ services:
     image: cctv_backend
     build:
       context: .
+    mount:
+      - /home/user/screenshots:/src/app/static/screenshots
     container_name: cctv_backend
     env_file:
       - .env
