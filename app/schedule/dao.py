@@ -44,30 +44,22 @@ class ScheduleDAO(BaseDAO):
                     incident_subquery.c.time_created.label('time_created_incident'),
                     # логика для cooldown
                     case(
-                        # [
-                        # (
-                            # or_(
-                            (
+                        (
+                            and_(
+                                incident_subquery.c.status.in_([2, 3]), 
+                                current_time >= incident_subquery.c.time_created + text("INTERVAL '3 minutes'")
+                            ),
+                            1
+                        ),
+                        (
                                 and_(
-                                    incident_subquery.c.status.in_([2, 3]), 
-                                    current_time >= incident_subquery.c.time_created + text("INTERVAL '3 minutes'")
-                                ),
-                                1
+                                incident_subquery.c.status == 0, 
+                                current_time >= incident_subquery.c.time_created + text("INTERVAL '6 minutes'")
                             ),
-                            (
-                                 and_(
-                                    incident_subquery.c.status == 0, 
-                                    current_time >= incident_subquery.c.time_created + text("INTERVAL '6 minutes'")
-                                ),
-                                1
-                            ),
-                            (incident_subquery.c.status.is_(null()), 1),
-                            else_=0,
-                            # ),
-                            # 1
-                        # ),
-                        # ],
-                        
+                            1
+                        ),
+                        (incident_subquery.c.status.is_(null()), 1),
+                        else_=0,
                     ).label('cooldown')
                 )
                 .select_from(ScheduleModel)

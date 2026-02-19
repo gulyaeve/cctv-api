@@ -51,12 +51,12 @@ class Settings(BaseSettings):
     RABBITMQ_HOST: str
     RABBITMQ_PORT: int
     RABBITMQ_DEFAULT_USER: str
-    RABBITMQ_DEFAULT_PASSWORD: str
+    RABBITMQ_DEFAULT_PASS: str
 
     @property
     def rabbitmq_url(self) -> str:
         return (
-            f"amqp://{self.RABBITMQ_DEFAULT_USER}:{quote(self.RABBITMQ_DEFAULT_PASSWORD)}@" f"{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}"
+            f"amqp://{self.RABBITMQ_DEFAULT_USER}:{quote(self.RABBITMQ_DEFAULT_PASS)}@" f"{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}"
         )
     
     QUEUE_NAME: str

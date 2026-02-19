@@ -1,12 +1,11 @@
 from datetime import datetime
-import logging
 from typing import Sequence, Annotated
 from fastapi import APIRouter, Query, status, Depends
 
 from app.broker_utils.incident_tg import message_to_tg
 from app.cameras.dao import CamerasDAO
 from app.incidents.models import IncidentModel
-from app.incidents.schemas import IncidentAppendScheme, IncidentScheme, IncidentSearch
+from app.incidents.schemas import IncidentAppendScheme, IncidentFullInfo, IncidentScheme, IncidentSearch
 from app.incidents.dao import IncidentsDAO
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import get_current_user
@@ -73,9 +72,11 @@ async def add_incident(data: IncidentAppendScheme):
                     camera_rtsp = camera_data.rtsp_url
                     frame = Camera(camera_rtsp)
                     frame.save_screenshot(f"{screenshot_dir}/{filename}")
-        data = await IncidentsDAO.get_incident_full_info(new_object.id)
-        # logging.info(f"{data}")
-        # await message_to_tg(data) # TODO: Fix broker
+
+        incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
+        incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
+        await message_to_tg(incident_full_info)
+
         return new_object
 
 
