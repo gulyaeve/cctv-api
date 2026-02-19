@@ -11,7 +11,7 @@ services:
       - ./cctv.itmoscow.pem:/etc/nginx/ssl/cctv.itmoscow.pem
     restart: on-failure
     depends_on:
-      - cctv_backend
+      - backend
     networks:
       - default
 
