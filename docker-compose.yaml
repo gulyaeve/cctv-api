@@ -61,6 +61,26 @@ services:
       - 8000:8000
     networks:
       - default
+
+  cctv_tg_worker:
+    image: cctv_tg_worker
+    # build:
+    #   context: .
+    volumes:
+      - /home/user/screenshots:/screenshots
+    container_name: cctv_tg_worker
+    env_file:
+      - .env
+    # depends_on:
+    #   - db
+    #   - rabbitmq
+      # - redis
+    command: ["python", "main.py"]
+    # ports:
+    #   - 8000:8000
+    networks:
+       - default
+
        
 volumes:
   postgresdata:
