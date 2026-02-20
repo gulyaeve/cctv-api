@@ -32,6 +32,8 @@ services:
     image: rabbitmq:4-alpine
     container_name: 'rabbitmq'
     hostname: 'rabbitmq'
+    env_file:
+      - .env
     # ports:
         # - 5672:5672
         # - 15672:15672
@@ -70,18 +72,16 @@ services:
       - /home/user/screenshots:/screenshots
     container_name: cctv_tg_worker
     env_file:
-      - .env
-    # depends_on:
-    #   - db
-    #   - rabbitmq
-      # - redis
+      - .env.tg
+    depends_on:
+      - rabbitmq
     command: ["python", "main.py"]
     # ports:
     #   - 8000:8000
     networks:
        - default
 
-       
+
 volumes:
   postgresdata:
   rabbitmq_data:
