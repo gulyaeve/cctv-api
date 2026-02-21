@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from app.version import version
 import logging
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -49,7 +50,7 @@ api.include_router(groups_router)
 api.include_router(incidents_router)
 
 
-app = FastAPI(title="Система видеонаблюдения", version="0.1.0")
+app = FastAPI(title="Система видеонаблюдения", version=version)
 app.mount("/static", StaticFiles(directory="app/static"), "static")
 app.include_router(api)
 app.include_router(pages_router)

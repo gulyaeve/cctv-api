@@ -1,6 +1,6 @@
 [project]
 name = "cctv-api"
-version = "0.1.0"
+version = "0.1.1"
 description = "Система видеонаблюдения"
 readme = "README.md"
 requires-python = ">=3.14"
