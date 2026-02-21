@@ -68,7 +68,7 @@ async def bulk_add_classrooms(items: Sequence[ClassroomAddScheme]) -> Sequence[C
 )
 async def del_classroom(id: int):
     """
-    Удалить здание
+    Удалить classroom
     """
     existing_object = await ClassroomsDAO.find_one_or_none(id=id)
     if existing_object is None:
@@ -84,12 +84,7 @@ async def del_classroom(id: int):
 )
 async def update_classroom(id: int, data: ClassroomAddScheme):
     """
-    update building
-    
-    :param id: building id
-    :type id: int
-    :param building: building attributes
-    :type building: BuildingAddScheme
+    update classroom
     """
     existing_object = await ClassroomsDAO.find_one_or_none(id=id)
     if existing_object is None:
