@@ -13,6 +13,30 @@ class UsersDAO(BaseDAO):
 class RolesDAO(BaseDAO):
     model = Role
 
+    @classmethod
+    async def check_user_role(cls, user_id: int, role_name: str):
+        try:
+            query = select(
+                    Role.name, user_roles
+                ).join(
+                    user_roles, user_roles.c.role_id == Role.id
+                ).filter(
+                user_roles.c.user_id == user_id, Role.name == role_name
+            )
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                await session.commit()
+                return result.mappings().one_or_none()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Cannot get data"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Cannot get data"
+
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
+
+
 
 class PermissionDAO(BaseDAO):
     model = Permission
@@ -20,7 +44,7 @@ class PermissionDAO(BaseDAO):
     @classmethod
     async def check_user_permissions(cls, user_id: int, permission_name: str):
         try:
-            count = select(
+            query = select(
                     Permission, role_permissions, user_roles
                 ).join(
                     role_permissions, Permission.id == role_permissions.c.permisson_id
@@ -30,7 +54,7 @@ class PermissionDAO(BaseDAO):
                 Permission.name == permission_name, user_roles.c.user_id == user_id
             )
             async with async_session_maker() as session:
-                result = await session.execute(count)
+                result = await session.execute(query)
                 await session.commit()
                 return result.mappings().one_or_none()
         except (SQLAlchemyError, Exception) as e:

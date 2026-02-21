@@ -87,6 +87,8 @@ async def login_user(
 @router.post("/logout")
 async def logout_user(response: Response):
     response.delete_cookie("access_token")
+    response = RedirectResponse("/login", status_code=status.HTTP_303_SEE_OTHER)
+    return response
 
 
 @router.get("/me")

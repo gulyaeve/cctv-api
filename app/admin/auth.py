@@ -2,9 +2,10 @@ from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
+from app.logger import logger
 from app.config import settings
 from app.users.auth import auth_user, create_token
-from app.users.dependencies import get_current_user, permission_checker
+from app.users.dependencies import get_current_user, permission_checker, role_checker
 
 
 class AdminAuth(AuthenticationBackend):
@@ -37,10 +38,14 @@ class AdminAuth(AuthenticationBackend):
         user = await get_current_user(token)
         if not user:
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
-    
-        superadmin = await permission_checker(user.id, "superadmin")
-        if not superadmin:
-            print("NOT superadmin")
+        
+        superadmin_role = await role_checker(user.id, "superadmin")
+        if superadmin_role:
+            return True
+
+        superadmin_permission = await permission_checker(user.id, "superadmin")
+        if not superadmin_permission:
+            logger.info(f"{user.id} NOT superadmin")
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
 
         # Check the token in depth

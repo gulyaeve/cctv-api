@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <title>Авторизация | CCTV.ITMOSCOW</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{ url_for('static', path='css/bootstrap.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', path='css/font-awesome.min.css') }}" />
+  <!-- Fonts Montserrat -->
+  <link rel="stylesheet" href="{{ url_for('static', path='css/monserrat.css') }}" />
+  <!-- Main style -->
+  <link rel="stylesheet" href="{{ url_for('static', path='css/custom-style.css') }}" />
+  <!-- <script src="{{ url_for('static', path='scripts/script.js') }}"></script> -->
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', path='css/signin.css') }}" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!--Main layout-->
+  <main class="text-center">
+    <form class="form-signin" method="post" enctype="multipart/form-data" action="/api/users/logout">
+      <div class="logo-signin">
+        <strong>
+          <i style="color: #5388FF;">CCTV.</i>ITMOSCOW
+        </strong>
+      </div>
+      <h1 class="h3 mb-3 font-weight-normal">У вас нет прав на доступ к данному ресурсу</h1>
+      <!-- <label for="inputEmail" class="sr-only">Email</label> -->
+      <!-- <input name="username" type="email" id="username" class="form-control" placeholder="user@example.com" required autofocus=""> -->
+      <!-- <label for="inputPassword" class="sr-only">Пароль</label> -->
+      <!-- <input name="password" type="password" id="password" class="form-control" placeholder="Пароль" required=""> -->
+      <!-- <div class="checkbox mb-3"> -->
+      <!--   <label> -->
+      <!--     <input type="checkbox" value="remember-me"> Запомнить меня -->
+      <!--   </label> -->
+      <!-- </div> -->
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Выйти</button>
+      <p class="mt-5 mb-3 text-muted">© 2026</p>
+    </form>
+  </main>
+  <!--Main layout-->
+
+  <!--Footer-->
+  <footer class="bg-light fixed-bottom text-lg-start">
+    <!-- Copyright -->
+    <div class="p-3" style="background-color: rgba(40, 40, 40, 1);">
+      <div class="container">
+        <div class="row">
+          <div class="col-6 text-left">
+            <strong style="color: #FFFFFF;">2026</strong>
+          </div>
+          <div class="col-6">
+            <a style="float: right;" target="_blank" href="https://itmoscow.mskobr.ru/">
+              <strong style="color: #FFFFFF;"><i style="color: #5388FF !important;">IT.</i>МОСКВА</strong>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Copyright -->
+  </footer>
+  <!--Footer-->
+
+
+<script src="{{ url_for('static', path='js/jquery-3.4.1.slim.min.js') }}"></script>
+<script src="{{ url_for('static', path='js/bootstrap.min.js') }}"></script>
+
+</html>

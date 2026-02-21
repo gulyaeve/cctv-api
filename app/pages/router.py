@@ -19,7 +19,6 @@ from app.users.models import UserModel
 
 router = APIRouter(
     tags=["Фронтенд"],
-    dependencies=[Depends(permission_required("frontend"))]
 )
 
 templates = Jinja2Templates(
@@ -27,7 +26,11 @@ templates = Jinja2Templates(
 )
 
 
-@router.get("/buildings", response_class=HTMLResponse)
+@router.get(
+    "/buildings",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
 async def page_get_buildings_page(
     request: Request,
     buildings: BuildingModel=Depends(get_all_buildings),
@@ -43,7 +46,11 @@ async def page_get_buildings_page(
     )
 
 
-@router.get("/building_classrooms/{id}", response_class=HTMLResponse)
+@router.get(
+    "/building_classrooms/{id}",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
 async def page_get_building_classrooms_page(
     id: int,
     request: Request,
@@ -62,7 +69,11 @@ async def page_get_building_classrooms_page(
     )
 
 
-@router.get("/classroom_cameras_view/{id}", response_class=HTMLResponse)
+@router.get(
+    "/classroom_cameras_view/{id}",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
 async def page_get_cameras_view_page(
     id: int,
     request: Request,
@@ -84,6 +95,7 @@ async def page_get_cameras_view_page(
 @router.get(
     "/active_monitoring",
     response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
 )
 async def page_get_active_monitoring(
     request: Request,
@@ -110,7 +122,11 @@ async def page_get_active_monitoring(
         )
 
 
-@router.get("/camera_view/{id}", response_class=StreamingResponse)
+@router.get(
+    "/camera_view/{id}",
+    response_class=StreamingResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
 async def camera_stream(
     # id: int,
     camera: CameraModel=Depends(get_camera),
@@ -127,3 +143,8 @@ async def page_get_login(request: Request):
 @router.get("/register", response_class=HTMLResponse)
 async def get_register_page(request: Request):
     return templates.TemplateResponse("auth/register.html", {"request": request})
+
+
+@router.get("/403", response_class=HTMLResponse)
+async def get_403_page(request: Request):
+    return templates.TemplateResponse("auth/403.html", {"request": request})

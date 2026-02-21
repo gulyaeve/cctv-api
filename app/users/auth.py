@@ -18,6 +18,10 @@ def noauth_handler(request, exc):
     return RedirectResponse(url='/login', status_code=status.HTTP_303_SEE_OTHER)
 
 
+def noperm_handler(request, exc):
+    return RedirectResponse(url='/403', status_code=status.HTTP_303_SEE_OTHER)
+
+
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 

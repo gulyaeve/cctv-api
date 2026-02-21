@@ -25,13 +25,13 @@ from app.cameras.router import router as cameras_router
 from app.classrooms.router import router as classrooms_router
 
 from app.database import engine
-from app.exceptions import IncorrectEmailOrPassword, TokenMissing, TokenIncorrect, UserNotPresent
+from app.exceptions import IncorrectEmailOrPassword, OperationNotPermited, TokenMissing, TokenIncorrect, UserNotPresent
 from app.groups.router import router as groups_router
 from app.incidents.router import router as incidents_router
 from app.pages.router import router as pages_router
 from app.schedule.router import router as schedule_router
 from app.teachers.router import router as teachers_router
-from app.users.auth import noauth_handler
+from app.users.auth import noauth_handler, noperm_handler
 from app.users.router import router as users_router
 from app.active_monitoring.router import router as active_monitoring_router
 from app.config import settings
@@ -55,6 +55,7 @@ app.include_router(api)
 app.include_router(pages_router)
 app.include_router(active_monitoring_router)
 
+app.add_exception_handler(OperationNotPermited, noperm_handler)
 app.add_exception_handler(IncorrectEmailOrPassword, noauth_handler)
 app.add_exception_handler(TokenIncorrect, noauth_handler)
 app.add_exception_handler(TokenMissing, noauth_handler)

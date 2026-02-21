@@ -11,8 +11,8 @@ from pydantic import BaseModel
 class CameraScheme(BaseModel):
     id: int
     classroom_id: int
-    camera_ip: str
-    reg_ip: str
+    camera_ip: Optional[str] = None
+    reg_ip: Optional[str] = None
     view: str
     rtsp_url: str
 
@@ -23,8 +23,8 @@ class CameraScheme(BaseModel):
 class CameraAddScheme(BaseModel):
     # id: int
     classroom_id: int
-    camera_ip: str
-    reg_ip: str
+    camera_ip: Optional[str] = None
+    reg_ip: Optional[str] = None
     view: str
     rtsp_url: str
 
