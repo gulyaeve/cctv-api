@@ -1,14 +1,16 @@
 from typing import Annotated, Sequence
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.buildings.dao import BuildingsDAO
 from app.buildings.schemas import BuildingAddScheme, BuildingScheme, BuildingSearch
 from app.exceptions import ObjectMissingException
+from app.users.dependencies import permission_required
 
 
 router = APIRouter(
     prefix="/buildings",
-    tags=["Здания"]
+    tags=["Здания"],
+    dependencies=[Depends(permission_required("buildings"))]
     )
 
 
@@ -31,7 +33,12 @@ async def get_building(id: int):
         return building
 
 
-@router.post("", response_model=BuildingScheme, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=BuildingScheme,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("building_create"))]
+)
 async def add_building(building: BuildingAddScheme):
     """
     Add building
@@ -42,12 +49,20 @@ async def add_building(building: BuildingAddScheme):
     return new_building
 
 
-@router.post("/bulk", status_code=status.HTTP_201_CREATED)
-async def bulk_add_buildings(items: Sequence[BuildingAddScheme]):
-    await BuildingsDAO.add_bulk([item.model_dump() for item in items])
+@router.post(
+    "/bulk",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("building_create"))]
+)
+async def bulk_add_buildings(items: Sequence[BuildingAddScheme]) -> Sequence[BuildingScheme]:
+    return await BuildingsDAO.add_bulk([item.model_dump() for item in items])
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(permission_required("building_delete"))]
+)
 async def del_buildings(id: int):
     """
     Удалить здание
@@ -59,7 +74,11 @@ async def del_buildings(id: int):
         return await BuildingsDAO.delete(id=id)
 
 
-@router.put("/{id}", response_model=BuildingScheme)
+@router.put(
+    "/{id}",
+    response_model=BuildingScheme,
+    dependencies=[Depends(permission_required("building_create"))]
+)
 async def update_building(id: int, building: BuildingAddScheme):
     """
     update building

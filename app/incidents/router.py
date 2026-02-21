@@ -8,7 +8,7 @@ from app.incidents.models import IncidentModel
 from app.incidents.schemas import IncidentAppendScheme, IncidentFullInfo, IncidentScheme, IncidentSearch
 from app.incidents.dao import IncidentsDAO
 from app.exceptions import ObjectMissingException
-from app.users.dependencies import get_current_user
+from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 from app.camera_utils.streaming import Camera
 # from fastapi_cache.decorator import cache
@@ -17,6 +17,7 @@ from app.camera_utils.streaming import Camera
 router = APIRouter(
     prefix="/incidents",
     tags=["Incidents"],
+    dependencies=[Depends(permission_required("incidents"))]
 )
 
 
@@ -45,7 +46,12 @@ async def get_incident(id: int):
         return item
 
 
-@router.post("", response_model=IncidentScheme, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=IncidentScheme,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("incident_create"))]
+)
 async def add_incident(data: IncidentAppendScheme):
     """
     Add incident with cameras
@@ -80,12 +86,20 @@ async def add_incident(data: IncidentAppendScheme):
         return new_object
 
 
-@router.post("/bulk", status_code=status.HTTP_201_CREATED)
-async def bulk_add_incidents(items: Sequence[IncidentAppendScheme]):
-    await IncidentsDAO.add_bulk([item.model_dump() for item in items])
+@router.post(
+    "/bulk",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("incident_create"))]
+)
+async def bulk_add_incidents(items: Sequence[IncidentAppendScheme]) -> Sequence[IncidentScheme]:
+    return await IncidentsDAO.add_bulk([item.model_dump() for item in items])
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(permission_required("incident_delete"))]
+)
 async def del_incident(id: int):
     """
     Удалить incident
@@ -97,7 +111,11 @@ async def del_incident(id: int):
         return await IncidentsDAO.delete(id=id)
 
 
-@router.put("/{id}", response_model=IncidentScheme)
+@router.put(
+    "/{id}",
+    response_model=IncidentScheme,
+    dependencies=[Depends(permission_required("incident_create"))]
+)
 async def update_incident(id: int, data: IncidentAppendScheme):
     """
     update group

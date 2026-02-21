@@ -1,14 +1,16 @@
 from typing import Annotated, Sequence
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.classrooms.dao import ClassroomsDAO
 from app.classrooms.schemas import ClassroomAddScheme, ClassroomScheme, ClassroomSearch
 from app.exceptions import ObjectMissingException
+from app.users.dependencies import permission_required
 
 
 router = APIRouter(
     prefix="/classrooms",
-    tags=["Кабинеты"]
+    tags=["Кабинеты"],
+    dependencies=[Depends(permission_required("classrooms"))]
 )
 
 
@@ -31,7 +33,12 @@ async def get_classroom(id: int):
         return classroom
 
 
-@router.post("", response_model=ClassroomScheme, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=ClassroomScheme,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("classroom_create"))]
+)
 async def add_classroom(data: ClassroomAddScheme):
     """
     Add classroom
@@ -45,12 +52,20 @@ async def add_classroom(data: ClassroomAddScheme):
         return new_object
 
 
-@router.post("/bulk", status_code=status.HTTP_201_CREATED)
-async def bulk_add_classrooms(items: Sequence[ClassroomAddScheme]):
-    await ClassroomsDAO.add_bulk([item.model_dump() for item in items])
+@router.post(
+    "/bulk",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("classroom_create"))]
+)
+async def bulk_add_classrooms(items: Sequence[ClassroomAddScheme]) -> Sequence[ClassroomScheme]:
+    return await ClassroomsDAO.add_bulk([item.model_dump() for item in items])
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(permission_required("classroom_delete"))]
+)
 async def del_classroom(id: int):
     """
     Удалить здание
@@ -62,7 +77,11 @@ async def del_classroom(id: int):
         return await ClassroomsDAO.delete(id=id)
 
 
-@router.put("/{id}", response_model=ClassroomScheme)
+@router.put(
+    "/{id}",
+    response_model=ClassroomScheme,
+    dependencies=[Depends(permission_required("classroom_create"))]
+)
 async def update_classroom(id: int, data: ClassroomAddScheme):
     """
     update building

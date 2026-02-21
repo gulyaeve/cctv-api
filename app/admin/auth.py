@@ -4,7 +4,7 @@ from starlette.responses import RedirectResponse
 
 from app.config import settings
 from app.users.auth import auth_user, create_token
-from app.users.dependencies import get_current_user
+from app.users.dependencies import get_current_user, permission_checker
 
 
 class AdminAuth(AuthenticationBackend):
@@ -17,7 +17,7 @@ class AdminAuth(AuthenticationBackend):
         if user:
             token = create_token({"sub": str(user.id)})
             request.session.update({"token": token})
-
+        
         # And update session
         # request.session.update({"token": "..."})
 
@@ -36,6 +36,11 @@ class AdminAuth(AuthenticationBackend):
         
         user = await get_current_user(token)
         if not user:
+            return RedirectResponse(request.url_for("admin:login"), status_code=302)
+    
+        superadmin = await permission_checker(user.id, "superadmin")
+        if not superadmin:
+            print("NOT superadmin")
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
 
         # Check the token in depth

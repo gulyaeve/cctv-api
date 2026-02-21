@@ -1,14 +1,16 @@
 from typing import Annotated, Sequence
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.cameras.dao import CamerasDAO
 from app.cameras.schemas import CameraAddScheme, CameraScheme, CameraSearch
 from app.exceptions import ObjectMissingException
+from app.users.dependencies import permission_required
 
 
 router = APIRouter(
     prefix="/cameras",
-    tags=["Камеры"]
+    tags=["Камеры"],
+    dependencies=[Depends(permission_required("cameras"))]
 )
 
 
@@ -31,7 +33,12 @@ async def get_camera(id: int):
         return camera
 
 
-@router.post("", response_model=CameraScheme, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=CameraScheme,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("camera_create"))]
+)
 async def add_camera(data: CameraAddScheme):
     """
     Add camera
@@ -45,12 +52,20 @@ async def add_camera(data: CameraAddScheme):
         return new_object
 
 
-@router.post("/bulk", status_code=status.HTTP_201_CREATED)
-async def bulk_add_cameras(items: Sequence[CameraAddScheme]):
-    await CamerasDAO.add_bulk([item.model_dump() for item in items])
+@router.post(
+    "/bulk",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("camera_create"))]
+)
+async def bulk_add_cameras(items: Sequence[CameraAddScheme]) -> Sequence[CameraScheme]:
+    return await CamerasDAO.add_bulk([item.model_dump() for item in items])
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(permission_required("camera_delete"))]
+)
 async def del_camera(id: int):
     """
     Удалить camera
@@ -62,7 +77,11 @@ async def del_camera(id: int):
         return await CamerasDAO.delete(id=id)
 
 
-@router.put("/{id}", response_model=CameraScheme)
+@router.put(
+    "/{id}",
+    response_model=CameraScheme,
+    dependencies=[Depends(permission_required("camera_create"))]
+)
 async def update_camera(id: int, data: CameraAddScheme):
     """
     update camera

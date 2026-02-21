@@ -13,12 +13,13 @@ from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
 from app.incidents.dao import IncidentsDAO
 from app.schedule.router import get_active_monitoring
-from app.users.dependencies import get_current_user
+from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 
 
 router = APIRouter(
-    tags=["Фронтенд"]
+    tags=["Фронтенд"],
+    dependencies=[Depends(permission_required("frontend"))]
 )
 
 templates = Jinja2Templates(
@@ -80,7 +81,10 @@ async def page_get_cameras_view_page(
     )
 
 
-@router.get("/active_monitoring", response_class=HTMLResponse)
+@router.get(
+    "/active_monitoring",
+    response_class=HTMLResponse,
+)
 async def page_get_active_monitoring(
     request: Request,
     monitoring_data = Depends(get_active_monitoring),

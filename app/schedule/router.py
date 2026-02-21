@@ -4,13 +4,14 @@ from fastapi import APIRouter, Depends, Query, status
 from app.schedule.dao import ScheduleDAO
 from app.schedule.schemas import ScheduleAddScheme, ScheduleScheme, ScheduleSearch
 from app.exceptions import ObjectMissingException
-from app.users.dependencies import get_current_user, get_fake_user
+from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 
 
 router = APIRouter(
     prefix="/schedule",
-    tags=["Расписание"]
+    tags=["Расписание"],
+    dependencies=[Depends(permission_required("schedule"))]
 )
 
 
@@ -39,7 +40,12 @@ async def get_schedule(id: int):
         return schedule
 
 
-@router.post("", response_model=ScheduleScheme, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=ScheduleScheme,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("schedule_create"))]
+)
 async def add_schedule(data: ScheduleAddScheme):
     """
     Add schedule
@@ -53,12 +59,20 @@ async def add_schedule(data: ScheduleAddScheme):
         return new_object
 
 
-@router.post("/bulk", status_code=status.HTTP_201_CREATED)
-async def bulk_add_schedules(items: Sequence[ScheduleAddScheme]):
-    await ScheduleDAO.add_bulk([item.model_dump() for item in items])
+@router.post(
+    "/bulk",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("schedule_create"))]
+)
+async def bulk_add_schedules(items: Sequence[ScheduleAddScheme]) -> Sequence[ScheduleScheme]:
+    return await ScheduleDAO.add_bulk([item.model_dump() for item in items])
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(permission_required("schedule_delete"))]
+)
 async def del_schedule(id: int):
     existing_object = await ScheduleDAO.find_one_or_none(id=id)
     if existing_object is None:
@@ -67,7 +81,11 @@ async def del_schedule(id: int):
         return await ScheduleDAO.delete(id=id)
 
 
-@router.put("/{id}", response_model=ScheduleScheme)
+@router.put(
+    "/{id}",
+    response_model=ScheduleScheme,
+    dependencies=[Depends(permission_required("schedule_create"))]
+)
 async def update_schedule(id: int, data: ScheduleAddScheme):
 
     existing_object = await ScheduleDAO.find_one_or_none(id=id)

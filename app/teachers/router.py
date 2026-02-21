@@ -1,15 +1,17 @@
 from typing import Sequence, Annotated
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.teachers.schemas import TeacherScheme, TeacherSearch, TeacherBaseScheme
 from app.teachers.dao import TeachersDAO
 from app.exceptions import ObjectMissingException
+from app.users.dependencies import permission_required
 # from fastapi_cache.decorator import cache
 
 
 router = APIRouter(
     prefix="/teachers",
     tags=["Teachers"],
+    dependencies=[Depends(permission_required("teachers"))]
 )
 
 
@@ -32,7 +34,12 @@ async def get_teacher(id: int):
         return teacher
 
 
-@router.post("", response_model=TeacherScheme, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=TeacherScheme,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("teacher_create"))]
+)
 async def add_teacher(data: TeacherBaseScheme):
     """
     Add teacher
@@ -46,12 +53,20 @@ async def add_teacher(data: TeacherBaseScheme):
         return new_object
 
 
-@router.post("/bulk", status_code=status.HTTP_201_CREATED)
-async def bulk_add_teachers(items: Sequence[TeacherBaseScheme]):
-    await TeachersDAO.add_bulk([item.model_dump() for item in items])
+@router.post(
+    "/bulk",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("teacher_create"))]
+)
+async def bulk_add_teachers(items: Sequence[TeacherBaseScheme]) -> Sequence[TeacherScheme]:
+    return await TeachersDAO.add_bulk([item.model_dump() for item in items])
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(permission_required("teacher_delete"))]
+)
 async def del_teacher(id: int):
     """
     Удалить teacher
@@ -63,7 +78,11 @@ async def del_teacher(id: int):
         return await TeachersDAO.delete(id=id)
 
 
-@router.put("/{id}", response_model=TeacherScheme)
+@router.put(
+    "/{id}",
+    response_model=TeacherScheme,
+    dependencies=[Depends(permission_required("teacher_create"))]
+)
 async def update_teacher(id: int, data: TeacherBaseScheme):
     """
     update teacher

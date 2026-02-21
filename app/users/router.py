@@ -9,7 +9,7 @@ from pydantic import EmailStr
 
 
 from app.users.auth import auth_user, get_password_hash, create_token
-from app.users.dependencies import get_current_user
+from app.users.dependencies import get_current_user, permission_required
 # from app.users.models import UserModel
 from app.users.schemas import UserScheme, UserSearch
 from app.users.dao import UsersDAO
@@ -37,9 +37,10 @@ router = APIRouter(
 #     return user
 
 
-@router.get("", dependencies=[Depends(get_current_user)])
-# @cache(expire=60)
-async def get_all_users(filter_query: Annotated[UserSearch, Query()]) -> Sequence[UserScheme]:
+@router.get("", dependencies=[Depends(permission_required("superadmin"))])
+async def get_all_users(
+        filter_query: Annotated[UserSearch, Query()]
+) -> Sequence[UserScheme]:
     """
     Get all users
     """
@@ -63,42 +64,6 @@ async def register_user(
     )
     logging.info(f"User saved to db: {email}")
 
-
-# @router.post("/token")
-# async def check_token(data: OAuth2PasswordRequestForm = Depends()):
-#     email = data.username
-#     password = data.password
-
-#     user = await load_user(email)
-#     logging.info(f"{data.__dict__=} {user=}")
-#     if not user:
-#         raise InvalidCredentialsException
-#     elif not verify_password(password, user.hashed_password):
-#         raise InvalidCredentialsException
-
-#     access_token = manager.create_access_token(
-#         data=dict(sub=email),
-#         expires=(timedelta(minutes=settings.TOKEN_TTL_MINUTES))
-#     )
-#     return {'access_token': access_token, 'token_type': 'bearer'}
-
-
-# @router.post("/login")
-# async def login_user(response: Response, user_data: UserLogin):
-#     user = await auth_user(user_data.email, user_data.password)
-#     access_token = create_token({"sub": str(user.id)})
-#     response.set_cookie(key="access_token", value=access_token)
-#     # return {"access_token": access_token}
-
-# @router.post("/login")
-# async def login_user(
-#     response: Response,
-#     data: OAuth2PasswordRequestForm = Depends()
-# ):
-#     user = await auth_user(data.username, data.password)
-#     access_token = create_token({"sub": str(user.id)})
-#     response.set_cookie(key="access_token", value=access_token)
-#     return {"access_token": access_token}
 
 @router.post("/login")
 async def login_user(
@@ -129,6 +94,6 @@ async def user_get_itself(current_user = Depends(get_current_user)) -> UserSchem
     return current_user
     
 
-@router.get("/{id}")
+@router.get("/{id}", dependencies=[Depends(permission_required("superadmin"))])
 async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Optional[UserScheme]:
     return await UsersDAO.find_one_or_none(id=id)

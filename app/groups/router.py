@@ -1,15 +1,17 @@
 from typing import Sequence, Annotated
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.groups.schemas import GroupScheme, GroupSearch, GroupBaseScheme
 from app.groups.dao import GroupsDAO
 from app.exceptions import ObjectMissingException
+from app.users.dependencies import permission_required
 # from fastapi_cache.decorator import cache
 
 
 router = APIRouter(
     prefix="/groups",
     tags=["Groups"],
+    dependencies=[Depends(permission_required("groups"))]
 )
 
 
@@ -32,7 +34,12 @@ async def get_group(id: int):
         return item
 
 
-@router.post("", response_model=GroupScheme, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=GroupScheme,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("group_create"))]
+)
 async def add_group(data: GroupBaseScheme):
     """
     Add group
@@ -46,12 +53,20 @@ async def add_group(data: GroupBaseScheme):
         return new_object
 
 
-@router.post("/bulk", status_code=status.HTTP_201_CREATED)
-async def bulk_add_groups(items: Sequence[GroupBaseScheme]):
-    await GroupsDAO.add_bulk([item.model_dump() for item in items])
+@router.post(
+    "/bulk",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(permission_required("group_create"))]
+)
+async def bulk_add_groups(items: Sequence[GroupBaseScheme]) -> Sequence[GroupScheme]:
+    return await GroupsDAO.add_bulk([item.model_dump() for item in items])
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(permission_required("group_delete"))]
+)
 async def del_group(id: int):
     """
     Удалить group
@@ -63,7 +78,11 @@ async def del_group(id: int):
         return await GroupsDAO.delete(id=id)
 
 
-@router.put("/{id}", response_model=GroupScheme)
+@router.put(
+    "/{id}",
+    response_model=GroupScheme,
+    dependencies=[Depends(permission_required("group_create"))]
+)
 async def update_groups(id: int, data: GroupBaseScheme):
     """
     update group

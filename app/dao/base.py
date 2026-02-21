@@ -85,7 +85,7 @@ class BaseDAO:
     @classmethod
     async def add_bulk(cls, *data):
         try:
-            query = insert(cls.model).values(*data).returning(cls.model)
+            query = insert(cls.model).values(*data).returning(cls.model.__table__)
             async with async_session_maker() as session:
                 result = await session.execute(query)
                 await session.commit()

@@ -1,10 +1,12 @@
 
+from typing import Callable
 from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
-from app.exceptions import TokenMissing, TokenIncorrect, UserNotPresent
+from app.exceptions import OperationNotPermited, TokenMissing, TokenIncorrect, UserNotPresent
 from app.config import settings
-from app.users.dao import UsersDAO
+from app.users.dao import PermissionDAO, UsersDAO
+from app.users.models import UserModel
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
@@ -38,7 +40,22 @@ async def get_current_user(token: str = Depends(get_token)):
 async def get_fake_user():
     return await UsersDAO.find_one_or_none(id=1)
 
+def permission_required(permission: str) -> Callable:
+    async def permission_checker(current_user: UserModel = Depends(get_current_user)):
+        check_permission = await PermissionDAO.check_user_permissions(current_user.id, permission)
+        if not check_permission:
+            raise OperationNotPermited
+        else:
+            return check_permission
+    return permission_checker
 
+
+async def permission_checker(user_id: int, permission: str):
+    check_permission = await PermissionDAO.check_user_permissions(user_id, permission)
+    if not check_permission:
+        raise OperationNotPermited
+    else:
+        return check_permission
 # async def get_current_user_roles(current_user: UserModel = Depends(get_current_user)):
 #     return await RolesDAO.find_user_roles(user_id=current_user.id)
 #
