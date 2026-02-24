@@ -115,6 +115,8 @@ class ScheduleAdmin(ModelView, model=ScheduleModel):
         ScheduleModel.subject,
         ScheduleModel.classroom,
         ScheduleModel.teacher,
+        ScheduleModel.timestamp_start,
+        ScheduleModel.timestamp_end
     ]
 
 

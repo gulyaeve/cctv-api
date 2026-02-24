@@ -79,9 +79,10 @@ async def add_incident(data: IncidentAppendScheme):
                     frame = Camera(camera_rtsp)
                     frame.save_screenshot(f"{screenshot_dir}/{filename}")
 
-        incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
-        incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
-        await message_to_tg(incident_full_info)
+        if new_object.status == 2:
+            incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
+            incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
+            await message_to_tg(incident_full_info)
 
         return new_object
 

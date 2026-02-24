@@ -41,32 +41,37 @@
             </div>
             <div class="col-8 p-3 m-0">
               <div class="control-panel-addinc">
-              <form method="post" action="/create_incident" enctype="multipart/form-data">
-              <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
-              <input class="d-none" type="text" name="status" class="d-none" value="0">
-              <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
-              <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
+                <form method="post" action="/create_incident" enctype="multipart/form-data">
+                <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
+                <input class="d-none" type="text" name="status" class="d-none" value="0">
+                <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
+                <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                 <div class="control-panel-buttons d-flex">
                   <button class="control-panel-btn btn-inc-alright" type="submit" name="button">Всё хорошо</button>
-                  </form> 
+                  </form>
                   <button class="control-panel-btn btn-inc-control" type="button" name="button">Контроль</button>
                   <button class="control-panel-btn btn-inc-alert" type="button" name="button">Инцидент</button>
                 </div>
 
-                <form method="post" action="/create_incident" enctype="multipart/form-data">
                   <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}" >
                   <input class="d-none" type="text" name="status" class="d-none" value="3" >
-                  <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}' >
+                  <input name="cameras_ids" type="text" class="d-none cameras_ids_control">
+                  <!-- <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}' > -->
                   <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}" >
                   <div class="control-panel-details st-inc-control d-none">
                     <div class="row">
                       <div class="col-6">
-                        
+                        {% for camera in cameras %}
+                          <div class="cam">
+                            <input type="checkbox" id="cam-control-{{ cameras.index(camera) + 1 }}" value="{{ camera.id }}">
+                            <label for="cam-control-{{ cameras.index(camera) + 1 }}">Камера {{ cameras.index(camera) + 1 }}</label>
+                          </div>
+                        {% endfor %}
                         <b>Быстрый ввод</b>
                         <form method="post" action="/create_incident" enctype="multipart/form-data">
                         <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
                         <input class="d-none" type="text" name="status" class="d-none" value="3">
-                        <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
+                        <input name="cameras_ids" type="text" class="cameras_ids_control d-none">
                         <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                         <button class="control-panel-btn" type="submit" name="comment" value="Студент(ы) спит(ят)">Студент(ы) спит(ят)</button>
                         <button class="control-panel-btn" type="submit" name="comment" value="Преподаватель отсутствует">Преподаватель отсутствует</button>
@@ -77,9 +82,9 @@
                       <div class="col-6">
                         <b>Комментарий:</b>
                         <form method="post" action="/create_incident" enctype="multipart/form-data">
+                        <input name="cameras_ids" type="text" class="cameras_ids_control d-none">
                         <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
                         <input class="d-none" type="text" name="status" class="d-none" value="3">
-                        <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
                         <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                         <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
                         <button class="control-panel-btn" type="submit" name="button">Отправить информацию</button>
@@ -88,19 +93,20 @@
                     </div>
                   </div>
                 </form>
-                <form method="post" action="/create_incident" enctype="multipart/form-data">
-                <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
-                <input class="d-none" type="text" name="status" class="d-none" value="2">
-                <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
-                <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                 <div class="control-panel-details st-inc-alert d-none">
                   <div class="row">
                     <div class="col-6">
+                      {% for camera in cameras %}
+                        <div class="cam-inc">
+                          <input type="checkbox" id="cam-inc-{{ cameras.index(camera) + 1 }}" value="{{ camera.id }}">
+                          <label for="cam-inc-{{ cameras.index(camera) + 1 }}">Камера {{ cameras.index(camera) + 1 }}</label>
+                        </div>
+                      {% endfor %}
                       <b>Быстрый ввод</b>
                         <form method="post" action="/create_incident" enctype="multipart/form-data">
+                        <input type="text" name="cameras_ids" class="cameras_ids_inc d-none">
                         <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
                         <input class="d-none" type="text" name="status" class="d-none" value="2">
-                        <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
                         <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                         <button class="control-panel-btn" type="submit" name="comment" value="Студент(ы) спит(ят)">Студент(ы) спит(ят)</button>
                         <button class="control-panel-btn" type="submit" name="comment" value="Преподаватель отсутствует">Преподаватель отсутствует</button>
@@ -112,9 +118,9 @@
                     <div class="col-6">
                       <b>Комментарий:</b>
                       <form method="post" action="/create_incident" enctype="multipart/form-data">
+                      <input type="text" name="cameras_ids" class="cameras_ids_inc d-none">
                       <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
                       <input class="d-none" type="text" name="status" class="d-none" value="2">
-                      <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
                       <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                       <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
                       <button class="control-panel-btn" type="submit" name="button">Отправить информацию</button>
@@ -132,10 +138,10 @@
             <div class="status d-block">
               <div class="status-head-placeholder d-flex">
                 <div class="status-head">Статус</div>
-              </div>  
+              </div>
               <hr class="mt-0">
-              <div class="status-inc-description">   
-                Пока новых статусов нет             
+              <div class="status-inc-description">
+                Пока новых статусов нет
               </div>
             </div>
             {% endif %}
@@ -199,4 +205,42 @@
     </div>
   </div>
 {% endfor %}
+<script>
+  function collectValuesByPrefix(prefix) {
+      // ВАЖНО: Весь селектор должен быть строкой в кавычках ` `
+      const selector = `input[type="checkbox"][id^="cam-${prefix}-"]`;
+
+      return Array.from(document.querySelectorAll(selector))
+          .filter(cb => cb.checked)
+          .map(cb => cb.value)
+          .join(",");
+  }
+
+  function updateInputs(prefix) {
+      const str = collectValuesByPrefix(prefix);
+
+      const selector = prefix === "control"
+          ? "input.cameras_ids_control"
+          : "input.cameras_ids_inc";
+
+      document.querySelectorAll(selector).forEach(inp => {
+          inp.value = str;
+      });
+  }
+
+  document.addEventListener("change", (e) => {
+      // Проверяем, что кликнули именно по нужному чекбоксу
+      if (e.target.matches('input[type="checkbox"][id^="cam-control-"]')) {
+          updateInputs("control");
+      }
+      if (e.target.matches('input[type="checkbox"][id^="cam-inc-"]')) {
+          updateInputs("inc");
+      }
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+      updateInputs("control");
+      updateInputs("inc");
+  });
+</script>
 {% endblock %}
