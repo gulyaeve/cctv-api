@@ -57,34 +57,37 @@ async def add_incident(data: IncidentAppendScheme):
     Add incident with cameras
     """
     screenshot_dir = "app/static/screenshots"
-    data_to_save = data.model_dump()
-    if data.cameras_ids:
-        filenames = []
-        for camera in data.cameras_ids:
-            filename = f"{data.event}_{camera}_{datetime.now().strftime('%d.%m.%Y_%T')}.jpg"
-            filenames.append(f"{filename}")
-        data_to_save["cameras_screenshots"] = filenames
 
-    new_object: IncidentModel = await IncidentsDAO.add(
-        **data_to_save
-    )
+    # Save to db, without screenshots
+    data_to_save = data.model_dump()
+    new_object: IncidentModel = await IncidentsDAO.add(**data_to_save)
     if new_object is None:
         raise ObjectMissingException
-    else:
-        if data.cameras_ids:
-            for camera, filename in zip(data.cameras_ids, filenames):
-                camera_data = await CamerasDAO.find_one_or_none(id=camera)
-                if camera_data:
-                    camera_rtsp = camera_data.rtsp_url
-                    frame = Camera(camera_rtsp)
-                    frame.save_screenshot(f"{screenshot_dir}/{filename}")
+    
+    if data.cameras_ids:
+        # Update in db with screenshots
+        filenames = []
+        for camera in data.cameras_ids:
+            filename = f"{new_object.id}_{data.event}_{camera}_{datetime.now().strftime('%d.%m.%Y_%T')}.jpg"
+            filenames.append(f"{filename}")
+        data_to_save["cameras_screenshots"] = filenames
+        updated_object: IncidentModel = await IncidentsDAO.update(new_object.id, **data_to_save)
 
-        if new_object.status == 2:
-            incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
-            incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
-            await message_to_tg(incident_full_info)
+        # Save screenshots to disk
+        for camera, filename in zip(data.cameras_ids, filenames):
+            camera_data = await CamerasDAO.find_one_or_none(id=camera)
+            if camera_data:
+                camera_rtsp = camera_data.rtsp_url
+                frame = Camera(camera_rtsp)
+                frame.save_screenshot(f"{screenshot_dir}/{filename}")
 
-        return new_object
+    # Send to tg
+    if new_object.status == 2:
+        incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
+        incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
+        await message_to_tg(incident_full_info)
+
+    return updated_object
 
 
 @router.post(
