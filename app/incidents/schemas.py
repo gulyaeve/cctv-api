@@ -27,7 +27,7 @@ class IncidentAppendScheme(IncidentBaseScheme):
 class IncidentScheme(IncidentAppendScheme):
     id: int
     time_created: datetime
-    cameras_screenshots: list[str] = []
+    cameras_screenshots: Optional[list[str]] = None
 
     class Config:
         from_attributes = True

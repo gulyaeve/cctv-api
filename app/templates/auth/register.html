@@ -23,29 +23,32 @@
 
   <!--Main layout-->
     <main class="text-center">
-        <div class="flex flex-col items-center justify-center h-screen">
-                <span class="font-bold text-3xl mb-10"> ИТ.Москва | Система видеонаблюдения </span>
-                <span class="font-bold text-3xl mb-10"> РЕГИСТРАЦИЯ </span>
-
-            <div>
-                <div class="flex flex-col items-start text-xl mb-5">
-                    <label for="email" class="mb-1">Email</label>
-                    <input class="border-b-2 border-yellow-400 mb-4" id="email" name="email" type="text" value="" placeholder="user@mail.ru">
-
-                    <label for="password" class="mb-1">Пароль</label>
-                    <input class="border-b-2 border-yellow-400" id="password" name="password" type="password" value="" placeholder="********">
-                    <span id="wrong_credentials" class="text-sm text-red-400"></span>
-                </div>
-            </div>
-            <button onclick="" class="text-xl bg-yellow-400 px-3 py-2 rounded-3xl mb-3">Зарегистрироваться</button>
-            <span>
-                Уже зарегистрированы?
-                <a href="/login"
-                class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                    Войти
-                </a>
-            </span>
+      <form class="form-signin" method="post" enctype="multipart/form-data" action="/api/users/register">
+        <div class="logo-signin">
+          <strong>
+            <i style="color: #5388FF;">CCTV.</i>ITMOSCOW
+          </strong>
         </div>
+        <h1 class="h3 mb-3 font-weight-normal">Регистрация</h1>
+
+        <label for="inputEmail" class="sr-only">Username</label>
+        <input name="username" type="username" id="username" class="form-control" placeholder="username" required autofocus="">
+        
+        <label for="inputEmail" class="sr-only">Email</label>
+        <input name="email" type="email" id="email" class="form-control" placeholder="user@example.com" required autofocus="">
+        
+        <label for="inputPassword" class="sr-only">Пароль</label>
+        <input name="password" type="password" id="password" class="form-control" placeholder="Пароль" required="">
+        
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
+        <p class="mt-5 mb-3 text-muted">© 2026</p>
+      </form>
+      <span>
+        <p class="mt-5 mb-3 text-muted">Уже зарегистрированы?</p>
+        <a href="/login" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+            Войти
+        </a>
+      </span>
     </main>
   <!--Main layout-->
 

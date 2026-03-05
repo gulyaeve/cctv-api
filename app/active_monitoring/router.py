@@ -4,7 +4,7 @@ from fastapi.responses import RedirectResponse
 
 from app.incidents.router import add_incident
 from app.incidents.schemas import IncidentFormScheme
-from app.users.dependencies import get_current_user, permission_required
+from app.users.dependencies import permission_required
 
 
 router = APIRouter(

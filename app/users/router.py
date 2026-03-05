@@ -13,7 +13,7 @@ from app.users.dependencies import get_current_user, permission_required
 # from app.users.models import UserModel
 from app.users.schemas import UserScheme, UserSearch
 from app.users.dao import UsersDAO
-from app.exceptions import UserExistException
+from app.exceptions import UserExistException, UserNotPresent
 from app.config import settings
 # from fastapi_cache.decorator import cache
 
@@ -72,7 +72,7 @@ async def login_user(
 ):
     user = await auth_user(data.username, data.password)
     if not user:
-        return RedirectResponse("/login")
+        raise UserNotPresent
     access_token = create_token({"sub": str(user.id)})
     response = RedirectResponse("/active_monitoring", status_code=status.HTTP_302_FOUND)
     response.set_cookie(
@@ -86,8 +86,8 @@ async def login_user(
 
 @router.post("/logout")
 async def logout_user(response: Response):
-    response.delete_cookie("access_token")
     response = RedirectResponse("/login", status_code=status.HTTP_303_SEE_OTHER)
+    response.delete_cookie("access_token")
     return response
 
 
