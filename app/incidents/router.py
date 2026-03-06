@@ -48,7 +48,7 @@ async def get_incident(id: int):
 
 @router.post(
     "",
-    response_model=IncidentScheme,
+    response_model=IncidentFullInfo,
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(permission_required("incident_create"))]
 )
@@ -71,7 +71,7 @@ async def add_incident(data: IncidentAppendScheme):
             filename = f"{new_object.id}_{data.event}_{camera}_{datetime.now().strftime('%d.%m.%Y_%T')}.jpg"
             filenames.append(f"{filename}")
         data_to_save["cameras_screenshots"] = filenames
-        updated_object: IncidentModel = await IncidentsDAO.update(new_object.id, **data_to_save)
+        await IncidentsDAO.update(new_object.id, **data_to_save)
 
         # Save screenshots to disk
         for camera, filename in zip(data.cameras_ids, filenames):
@@ -81,13 +81,13 @@ async def add_incident(data: IncidentAppendScheme):
                 frame = Camera(camera_rtsp)
                 frame.save_screenshot(f"{screenshot_dir}/{filename}")
 
+    incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
     # Send to tg
     if new_object.status == 2:
-        incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
         incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
         await message_to_tg(incident_full_info)
 
-    return updated_object
+    return incident_full_info
 
 
 @router.post(
