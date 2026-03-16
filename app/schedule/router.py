@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, Query, status
 
@@ -11,11 +12,24 @@ from app.users.models import UserModel
 router = APIRouter(
     prefix="/schedule",
     tags=["Расписание"],
+)
+
+
+@router.get("/daily", response_model=Sequence[ScheduleScheme])
+async def find_daily_schedule(date: date):
+    daily_schedules = await ScheduleDAO.find_by_date(date)
+    print(daily_schedules)
+    return daily_schedules
+
+
+router2 = APIRouter(
+    prefix="/schedule",
+    tags=["Расписание"],
     dependencies=[Depends(permission_required("schedule"))]
 )
 
 
-@router.get("/active_monitoring")
+@router2.get("/active_monitoring")
 async def get_active_monitoring(current_user: UserModel = Depends(get_current_user)):
     schedule_for_monitoring = await ScheduleDAO.get_schedule_for_active_monitoring(visor_id=(current_user.id))
     return schedule_for_monitoring
@@ -31,16 +45,16 @@ async def get_all_schedules(filter_query: Annotated[ScheduleSearch, Query()]):
     return await ScheduleDAO.find_all(**filter_model)
 
 
-@router.get("/{id}", response_model=ScheduleScheme)
+@router2.get("/{id}", response_model=ScheduleScheme)
 async def get_schedule(id: int):
     schedule = await ScheduleDAO.find_one_or_none(id=id)
     if schedule is None:
         raise ObjectMissingException
     else:
         return schedule
+    
 
-
-@router.post(
+@router2.post(
     "",
     response_model=ScheduleScheme,
     status_code=status.HTTP_201_CREATED,
@@ -59,7 +73,7 @@ async def add_schedule(data: ScheduleAddScheme):
         return new_object
 
 
-@router.post(
+@router2.post(
     "/bulk",
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(permission_required("schedule_create"))]
@@ -68,7 +82,7 @@ async def bulk_add_schedules(items: Sequence[ScheduleAddScheme]) -> Sequence[Sch
     return await ScheduleDAO.add_bulk([item.model_dump() for item in items])
 
 
-@router.delete(
+@router2.delete(
     "/{id}",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(permission_required("schedule_delete"))]
@@ -81,7 +95,7 @@ async def del_schedule(id: int):
         return await ScheduleDAO.delete(id=id)
 
 
-@router.put(
+@router2.put(
     "/{id}",
     response_model=ScheduleScheme,
     dependencies=[Depends(permission_required("schedule_create"))]
@@ -97,3 +111,4 @@ async def update_schedule(id: int, data: ScheduleAddScheme):
 
 
     
+router.include_router(router2)

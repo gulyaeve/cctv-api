@@ -1,6 +1,6 @@
+from datetime import date
 import logging
-from sqlalchemy import and_, asc, case, desc, func, null, select, or_, text
-from sqlalchemy.orm import aliased
+from sqlalchemy import Date, and_, asc, case, desc, func, null, select, text, cast
 from sqlalchemy.exc import SQLAlchemyError
 from app.buildings.models import BuildingModel
 from app.classrooms.models import ClassroomModel
@@ -14,6 +14,24 @@ from app.database import async_session_maker
 
 class ScheduleDAO(BaseDAO):
     model = ScheduleModel
+
+    @classmethod
+    async def find_by_date(cls, search_date: date):
+        try:
+            query = select(ScheduleModel).filter(
+                cast(ScheduleModel.timestamp_start, Date) == search_date,
+            ).order_by(ScheduleModel.id)
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                return result.scalars().all()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Data not found"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Data not found"
+
+            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
 
     @classmethod
     async def get_schedule_for_active_monitoring(cls, visor_id: int):
