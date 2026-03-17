@@ -64,8 +64,8 @@ services:
       # - redis
     command: ["/src/docker/entry_point.sh"]
     restart: always
-    ports:
-      - 8000:8000
+    # ports:
+    #   - 8000:8000
     networks:
       - default
 
