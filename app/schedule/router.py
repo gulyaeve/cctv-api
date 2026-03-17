@@ -15,6 +15,7 @@ router = APIRouter(
 )
 
 
+# TODO: Add auth
 @router.get("/daily", response_model=Sequence[ScheduleScheme])
 async def find_daily_schedule(date: date):
     daily_schedules = await ScheduleDAO.find_by_date(date)
@@ -35,7 +36,7 @@ async def get_active_monitoring(current_user: UserModel = Depends(get_current_us
     return schedule_for_monitoring
 
 
-@router.get("", response_model=Sequence[ScheduleScheme])
+@router2.get("", response_model=Sequence[ScheduleScheme])
 # @cache(expire=60)
 async def get_all_schedules(filter_query: Annotated[ScheduleSearch, Query()]):
     """
