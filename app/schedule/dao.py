@@ -3,6 +3,7 @@ import logging
 from sqlalchemy import Date, and_, asc, case, desc, func, null, select, text, cast
 from sqlalchemy.exc import SQLAlchemyError
 from app.buildings.models import BuildingModel
+from app.cameras.models import CameraModel
 from app.classrooms.models import ClassroomModel
 from app.groups.models import GroupModel
 from app.incidents.models import IncidentModel
@@ -18,12 +19,22 @@ class ScheduleDAO(BaseDAO):
     @classmethod
     async def find_by_date(cls, search_date: date):
         try:
-            query = select(ScheduleModel).filter(
-                cast(ScheduleModel.timestamp_start, Date) == search_date,
-            ).order_by(ScheduleModel.id)
+            query = (
+                select(
+                    ScheduleModel.__table__,
+                    CameraModel.id.label("camera_id"),
+                    CameraModel.rtsp_url.label("camera_rtsp"),
+                )
+                .select_from(ScheduleModel)
+                .join(CameraModel, ScheduleModel.classroom_id == CameraModel.classroom_id)
+                .filter(
+                    cast(ScheduleModel.timestamp_start, Date) == search_date,
+                )
+                .order_by(ScheduleModel.id)
+            )
             async with async_session_maker() as session:
                 result = await session.execute(query)
-                return result.scalars().all()
+                return result.mappings().all()
         except (SQLAlchemyError, Exception) as e:
             if isinstance(e, SQLAlchemyError):
                 msg = "Database Exc: Data not found"

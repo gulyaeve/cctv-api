@@ -3,7 +3,7 @@ from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, Query, status
 
 from app.schedule.dao import ScheduleDAO
-from app.schedule.schemas import ScheduleAddScheme, ScheduleScheme, ScheduleSearch
+from app.schedule.schemas import ScheduleAddScheme, ScheduleDaily, ScheduleScheme, ScheduleSearch
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
@@ -16,11 +16,9 @@ router = APIRouter(
 
 
 # TODO: Add auth
-@router.get("/daily", response_model=Sequence[ScheduleScheme])
+@router.get("/daily", response_model=Sequence[ScheduleDaily])
 async def find_daily_schedule(date: date):
-    daily_schedules = await ScheduleDAO.find_by_date(date)
-    print(daily_schedules)
-    return daily_schedules
+    return await ScheduleDAO.find_by_date(date)
 
 
 router2 = APIRouter(

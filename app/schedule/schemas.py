@@ -43,3 +43,6 @@ class ScheduleSearch(BaseModel):
     # building_id: Optional[int] = None
     # floor: Optional[int] = None
 
+class ScheduleDaily(ScheduleScheme):
+    camera_id: int
+    camera_rtsp: str
