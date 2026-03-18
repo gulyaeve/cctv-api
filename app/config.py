@@ -68,6 +68,8 @@ class Settings(BaseSettings):
     ALGORITHM: str
     TOKEN_TTL_MINUTES: int = 30
 
+    TOKEN_BEARER: str = "Admin123"
+
     model_config = SettingsConfigDict(env_file=".env")
 
 settings = Settings()

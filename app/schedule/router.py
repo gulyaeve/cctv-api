@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, Query, status
 from app.schedule.dao import ScheduleDAO
 from app.schedule.schemas import ScheduleAddScheme, ScheduleDaily, ScheduleScheme, ScheduleSearch
 from app.exceptions import ObjectMissingException
+from app.users.auth import auth_bearer_token
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 
@@ -15,8 +16,7 @@ router = APIRouter(
 )
 
 
-# TODO: Add auth
-@router.get("/daily", response_model=Sequence[ScheduleDaily])
+@router.get("/daily", response_model=Sequence[ScheduleDaily], dependencies=[Depends(auth_bearer_token)])
 async def find_daily_schedule(date: date):
     return await ScheduleDAO.find_by_date(date)
 

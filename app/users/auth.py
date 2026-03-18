@@ -1,17 +1,32 @@
-from fastapi import status
+from typing import Optional
+
+from fastapi import Depends, status
 from fastapi.responses import RedirectResponse
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from pydantic import EmailStr
 from jose import jwt
 from datetime import datetime, timedelta
 
 from app.users.dao import UsersDAO
-from app.exceptions import IncorrectEmailOrPassword
+from app.exceptions import IncorrectEmailOrPassword, TokenIncorrect
 from app.config import settings
 
 
 
 pwd_context = CryptContext(schemes=["md5_crypt"], deprecated="auto")
+
+
+known_tokens = {settings.TOKEN_BEARER}
+get_bearer_token = HTTPBearer(auto_error=False)
+
+
+async def auth_bearer_token(
+    auth: Optional[HTTPAuthorizationCredentials] = Depends(get_bearer_token),
+) -> str:
+    if auth is None or (token := auth.credentials) not in known_tokens:
+        raise TokenIncorrect
+    return token
 
 
 def noauth_handler(request, exc):
