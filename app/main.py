@@ -31,6 +31,7 @@ from app.groups.router import router as groups_router
 from app.incidents.router import router as incidents_router
 from app.pages.router import router as pages_router
 from app.schedule.router import router as schedule_router
+from app.schedule.router import router_daily as schedule_router_daily
 from app.teachers.router import router as teachers_router
 from app.users.auth import noauth_handler, noperm_handler
 from app.users.router import router as users_router
@@ -46,6 +47,7 @@ api.include_router(users_router)
 api.include_router(cameras_router)
 api.include_router(teachers_router)
 api.include_router(schedule_router)
+api.include_router(schedule_router_daily)
 api.include_router(groups_router)
 api.include_router(incidents_router)
 
