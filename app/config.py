@@ -61,6 +61,7 @@ class Settings(BaseSettings):
     
     QUEUE_NAME: str
     EXCHANGE_NAME: str
+    CAMERA_EXCHANGE_NAME: str = "cameras"
 
     # SENTRY_DSN: str
 
@@ -70,7 +71,7 @@ class Settings(BaseSettings):
 
     TOKEN_BEARER: str = "Admin123"
 
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()
 

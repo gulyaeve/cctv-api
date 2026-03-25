@@ -65,6 +65,10 @@ def create_token(data: dict) -> str:
     return encoded_jwt
 
 
+# async def auth_checker(user = Depends(auth_user), token = Depends(auth_bearer_token)):
+#     if not (user or token):
+#         raise IncorrectEmailOrPassword
+
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, Query, status
 
+from app.broker_utils.camera_broker import camera_broker_sender
 from app.cameras.dao import CamerasDAO
 from app.cameras.schemas import CameraAddScheme, CameraScheme, CameraSearch
 from app.exceptions import ObjectMissingException
@@ -12,6 +13,26 @@ router = APIRouter(
     tags=["Камеры"],
     dependencies=[Depends(permission_required("cameras"))]
 )
+
+
+@router.post("/run_streams")
+async def run_all_streams():
+    cameras = await CamerasDAO.find_all()
+    for camera in cameras:
+        camera_broker_sender(
+            CameraScheme.model_validate(camera),
+            "add"
+        )
+
+
+@router.delete("/delete_streams")
+async def delete_all_streams():
+    cameras = await CamerasDAO.find_all()
+    for camera in cameras:
+        camera_broker_sender(
+            CameraScheme.model_validate(camera),
+            "remove"
+        )
 
 
 @router.get("", response_model=Sequence[CameraScheme])
@@ -49,16 +70,20 @@ async def add_camera(data: CameraAddScheme):
     if new_object is None:
         raise ObjectMissingException
     else:
+        await camera_broker_sender(
+            CameraScheme.model_validate(new_object),
+            "add"
+        )
         return new_object
 
 
-@router.post(
-    "/bulk",
-    status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(permission_required("camera_create"))]
-)
-async def bulk_add_cameras(items: Sequence[CameraAddScheme]) -> Sequence[CameraScheme]:
-    return await CamerasDAO.add_bulk([item.model_dump() for item in items])
+# @router.post(
+#     "/bulk",
+#     status_code=status.HTTP_201_CREATED,
+#     dependencies=[Depends(permission_required("camera_create"))]
+# )
+# async def bulk_add_cameras(items: Sequence[CameraAddScheme]) -> Sequence[CameraScheme]:
+#     return await CamerasDAO.add_bulk([item.model_dump() for item in items])
 
 
 @router.delete(
@@ -74,6 +99,10 @@ async def del_camera(id: int):
     if existing_object is None:
         raise ObjectMissingException
     else:
+        await camera_broker_sender(
+            CameraScheme.model_validate(existing_object),
+            "remove"
+        )
         return await CamerasDAO.delete(id=id)
 
 
@@ -91,5 +120,9 @@ async def update_camera(id: int, data: CameraAddScheme):
         raise ObjectMissingException
     else:
         updated_object = await CamerasDAO.update(id, **data.model_dump())
+        await camera_broker_sender(
+            CameraScheme.model_validate(updated_object),
+            "update"
+        )
         return updated_object
     
