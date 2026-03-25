@@ -19,7 +19,7 @@ router = APIRouter(
 async def run_all_streams():
     cameras = await CamerasDAO.find_all()
     for camera in cameras:
-        camera_broker_sender(
+        await camera_broker_sender(
             CameraScheme.model_validate(camera),
             "add"
         )
@@ -29,7 +29,7 @@ async def run_all_streams():
 async def delete_all_streams():
     cameras = await CamerasDAO.find_all()
     for camera in cameras:
-        camera_broker_sender(
+        await camera_broker_sender(
             CameraScheme.model_validate(camera),
             "remove"
         )
