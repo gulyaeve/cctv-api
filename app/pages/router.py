@@ -27,6 +27,26 @@ templates = Jinja2Templates(
 
 
 @router.get(
+    "/dashboard",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
+async def page_get_dashboard_page(
+    request: Request,
+    buildings: BuildingModel=Depends(get_all_buildings),
+    current_user: UserModel = Depends(get_current_user)
+    ):
+    return templates.TemplateResponse(
+        request=request,
+        name="monitoring/dashboard.html",
+        context={
+            "buildings": buildings,
+            "current_user": current_user,
+        }
+    )
+
+
+@router.get(
     "/buildings",
     response_class=HTMLResponse,
     dependencies=[Depends(permission_required("frontend"))]
@@ -47,7 +67,7 @@ async def page_get_buildings_page(
 
 
 @router.get(
-    "/building_classrooms/{id}",
+    "/buildings/{id}/classrooms",
     response_class=HTMLResponse,
     dependencies=[Depends(permission_required("frontend"))]
 )
@@ -61,6 +81,52 @@ async def page_get_building_classrooms_page(
     return templates.TemplateResponse(
         request=request,
         name="monitoring/building_classrooms.html",
+        context={
+            "classrooms": classrooms,
+            "building": building,
+            "current_user": current_user,
+        }
+    )
+
+
+@router.get(
+    "/buildings/{id}/classrooms/list",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
+async def page_get_building_classrooms_list_page(
+    id: int,
+    request: Request,
+    building: BuildingModel=Depends(get_building),
+    current_user: UserModel = Depends(get_current_user),
+    ):
+    classrooms = await ClassroomsDAO.find_all(building_id=id)
+    return templates.TemplateResponse(
+        request=request,
+        name="monitoring/list.html",
+        context={
+            "classrooms": classrooms,
+            "building": building,
+            "current_user": current_user,
+        }
+    )
+
+
+@router.get(
+    "/buildings/{id}/classrooms/map",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
+async def page_get_building_classrooms_map_page(
+    id: int,
+    request: Request,
+    building: BuildingModel=Depends(get_building),
+    current_user: UserModel = Depends(get_current_user),
+    ):
+    classrooms = await ClassroomsDAO.find_all(building_id=id)
+    return templates.TemplateResponse(
+        request=request,
+        name="monitoring/map.html",
         context={
             "classrooms": classrooms,
             "building": building,

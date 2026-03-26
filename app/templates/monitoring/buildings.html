@@ -15,10 +15,10 @@
         <tbody>
             {% for building in buildings %}
             <tr>
-                <td><a href="/building_classrooms/{{ building.id }}">{{ building.name }}</a></td>
+                <td><a href="/buildings/{{ building.id }}/classrooms">{{ building.name }}</a></td>
                 <td>{{ building.location }}</td>
-                <td>ГБПОУ ИТ.МОСКВВА</td>
-                <th><a href="/building_classrooms/{{ building.id }}"><i class="fa fa-eye" aria-hidden="true"></i></a></th>
+                <td>ГБПОУ ИТ.МОСКВА</td>
+                <th><a href="/buildings/{{ building.id }}/classrooms"><i class="fa fa-eye" aria-hidden="true"></i></a></th>
             </tr>
             {% endfor %}
         </tbody>
