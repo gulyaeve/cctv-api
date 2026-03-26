@@ -245,3 +245,14 @@ button:focus {
     margin-right: auto;
   }
 }
+
+.card.menu {
+  background-color: #444 !important;
+}
+.card.menu a{
+  color: #FFF;
+}
+
+.card.menu a:hover{
+  color: #5582FF;
+}

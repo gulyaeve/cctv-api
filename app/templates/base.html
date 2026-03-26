@@ -13,7 +13,11 @@
     <link rel="stylesheet" href="{{ url_for('static', path='css/stylesheet.css') }}" />
     <!-- Main style -->
     <link rel="stylesheet" href="{{ url_for('static', path='css/custom-style.css') }}" />
+    <link href="{{ url_for('static', path='css/datatables.css') }}" rel="stylesheet">
+
+
     <script src="{{ url_for('static', path='scripts/script.js') }}"></script>
+
     {% block head %}{% endblock %}
 </head>
 
@@ -27,7 +31,6 @@
           margin-top: -58.59px;
         }
       }
-
       .navbar .nav-link {
         color: #fff !important;
         background-color: #333333;
@@ -47,7 +50,7 @@
         <div class="d-flex">
           <div class="lk-link">
             <a class="nav-link" href="/lk" rel="nofollow" target="_blank">
-              {{ current_user.full_name }}<br><i style="color: #5388FF;">Визор</i>
+              {{ current_user.full_name }}<br><i style="color: #5388FF;">{{ current_user.full_name }}</i>
             </a>
           </div>
           <div class="avatar-placeholder">
@@ -62,7 +65,49 @@
   <main class="mt-0">
     {# <img style="min-width: 100%; min-height: 100%;" src={{ url_for('static', path='img/background.jpg') }} alt=""> #}
       <!--Section: Content-->
-      {% block content %}{% endblock %}
+      <div class="container">
+        <div class="row">
+          <div class="col-3">
+            <div class="accordion" id="accordionExample">
+              <div class="card menu">
+                <div class="card-header" id="headingOne">
+                  <h2 class="mb-0">
+                    <a class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                    </a>
+                  </h2>
+                </div>
+              </div>
+              <div class="card menu">
+                <div class="card-header" id="headingTwo">
+                  <h2 class="mb-0">
+                    <a class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      <i class="fa fa-building-o" aria-hidden="true"></i> Учебные корпуса
+                    </a>
+                  </h2>
+                </div>
+                <!-- <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                  <div class="card-body">
+                  </div>
+                </div> -->
+              </div>
+              <div class="card menu">
+                <div class="card-header" id="headingThree">
+                  <h2 class="mb-0">
+                    <a class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      <i class="fa fa-video-camera" aria-hidden="true"></i> Активный мониторинг
+                    </a>
+                  </h2>
+                </div>
+            </div>
+          </div>
+          </div>
+          <div class="col-9">
+            {% block content %}{% endblock %}
+          </div>
+        </div>
+
+      </div>
       <!--Section: Content-->
     </div>
   </main>
@@ -70,20 +115,21 @@
   <!--Footer-->
   <footer class="bg-light text-lg-start fixed-bottom">
     <!-- Copyright -->
-    {# <div class="container"> #}
-      <div class="p-3" style="background-color: rgba(40, 40, 40, 1);">
-        <div class="row">
-          <div class="col-6 text-left">
-            <strong style="color: #FFFFFF;">2026</strong>
-          </div>
-          <div class="col-6">
-            <a style="float: right;" target="_blank" href="https://itmoscow.mskobr.ru/">
-              <strong style="color: #FFFFFF;"><i style="color: #5388FF !important;">IT.</i>МОСКВА</strong>
-            </a>
-          </div>
+
+  <div class="p-3" style="background-color: rgba(40, 40, 40, 1);">
+    <div class="container">
+      <div class="row">
+        <div class="col-6 text-left">
+          <strong style="color: #FFFFFF;">2026</strong>
+        </div>
+        <div class="col-6">
+          <a style="float: right;" target="_blank" href="https://itmoscow.mskobr.ru/">
+          <strong style="color: #FFFFFF;"><i style="color: #5388FF !important;">IT.</i>МОСКВА</strong>
+          </a>
         </div>
       </div>
-    {# </div> #}
+    </div>
+  </div>
     <!-- Copyright -->
   </footer>
   <!--Footer-->
@@ -95,6 +141,10 @@
   <script src="{{ url_for('static', path='js/jquery-3.4.1.slim.min.js') }}"></script>
 <!-- <script src="js/popper.min.js"></script> -->
   <script src="{{ url_for('static', path='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
+  <script type="text/javascript">
+    new DataTable('#data');
+  </script>
 
 <script>
   function currentTime() {
