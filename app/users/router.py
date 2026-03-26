@@ -92,7 +92,7 @@ async def logout_user(response: Response):
 
 
 @router.get("/me")
-async def user_get_itself(current_user = Depends(get_current_user)) -> UserScheme:
+async def user_get_itself(current_user = Depends(get_current_user)):
     return current_user
     
 

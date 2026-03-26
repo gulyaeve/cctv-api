@@ -9,6 +9,44 @@ from app.users.models import Permission, Role, UserModel, role_permissions, user
 class UsersDAO(BaseDAO):
     model = UserModel
 
+    @classmethod
+    async def get_user(cls, user_id: int):
+        try:
+            roles_query = (
+                select(
+                    Role.__table__,
+                )
+                .join(user_roles, user_roles.c.user_id == user_id)
+                # .filter(user_roles.c.user_id == user_id)
+            )
+            # query = (
+            #     select(
+            #         UserModel.__table__,
+            #         Role.name.label("role_name"),
+            #         Role.display_name.label("role_display_name"),
+            #     )
+            #     .outerjoin(user_roles, user_roles.c.user_id == UserModel.id)
+            #     .outerjoin(Role, user_roles.c.role_id == Role.id)
+            #     .filter(UserModel.id == user_id)
+            # )
+            query = (
+                select(UserModel.__table__).filter(UserModel.id == user_id)
+            )
+            async with async_session_maker() as session:
+                result = dict((await session.execute(query)).mappings().one_or_none())
+                result_roles = list((await session.execute(roles_query)).mappings().all())
+                await session.commit()
+                result["roles"] = result_roles
+                return result
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Cannot get data"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Cannot get data"
+
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
+
 
 class RolesDAO(BaseDAO):
     model = Role
