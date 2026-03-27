@@ -4,6 +4,7 @@
 # был вынесен в отдельную библиотеку pydantic-settings
 # from pydantic import BaseSettings
 from faststream.rabbit import RabbitBroker
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from urllib.parse import quote
 
@@ -43,6 +44,9 @@ class Settings(BaseSettings):
     # SMTP_PORT: int
     # SMTP_USER: str
     # SMTP_PASS: str
+
+    MEDIA_USERNAME: str = Field(default="admin")
+    MEDIA_PASSWORD: str = Field(default="admin123")
 
     REDIS_HOST: str
     REDIS_PORT: int
