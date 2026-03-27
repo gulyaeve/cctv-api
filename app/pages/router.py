@@ -12,7 +12,10 @@ from app.classrooms.dao import ClassroomsDAO
 from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
 from app.incidents.dao import IncidentsDAO
-from app.schedule.router import get_active_monitoring
+from app.incidents.models import IncidentModel
+from app.incidents.router import get_all_incidents
+from app.schedule.models import ScheduleModel
+from app.schedule.router import get_active_monitoring, get_all_schedules
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 from app.config import settings
@@ -62,6 +65,46 @@ async def page_get_buildings_page(
         name="monitoring/buildings.html",
         context={
             "buildings": buildings,
+            "current_user": current_user,
+        }
+    )
+
+
+@router.get(
+    "/incidents",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
+async def page_get_incidents_page(
+    request: Request,
+    incidents: IncidentModel=Depends(get_all_incidents),
+    current_user: UserModel = Depends(get_current_user)
+    ):
+    return templates.TemplateResponse(
+        request=request,
+        name="monitoring/incidents.html",
+        context={
+            "incidents": incidents,
+            "current_user": current_user,
+        }
+    )
+
+
+@router.get(
+    "/schedules",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
+async def page_get_schedules_page(
+    request: Request,
+    schedules: ScheduleModel=Depends(get_all_schedules),
+    current_user: UserModel = Depends(get_current_user)
+    ):
+    return templates.TemplateResponse(
+        request=request,
+        name="monitoring/schedules.html",
+        context={
+            "schedules": schedules,
             "current_user": current_user,
         }
     )
