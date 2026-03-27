@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 import logging
 from typing import Optional, Sequence, Annotated
-from fastapi import APIRouter, Depends, Form, Query, Response, status
+from fastapi import APIRouter, Depends, Form, Query, Request, Response, status
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 # from fastapi_login import LoginManager
@@ -102,6 +102,7 @@ async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Op
 
 
 @router.post("/check_token")
-async def check_token(payload):
+async def check_token(request: Request):
+    payload = await request.json()
     logging.info(payload)
     return await validate_token(payload["token"])
