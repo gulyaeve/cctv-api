@@ -9,7 +9,7 @@ from pydantic import EmailStr
 
 
 from app.users.auth import auth_user, get_password_hash, create_token
-from app.users.dependencies import get_current_user, permission_required
+from app.users.dependencies import get_current_user, permission_required, validate_token
 # from app.users.models import UserModel
 from app.users.schemas import UserScheme, UserSearch
 from app.users.dao import UsersDAO
@@ -78,7 +78,7 @@ async def login_user(
     response.set_cookie(
         key="access_token",
         value=access_token,
-        httponly=True,
+        httponly=False,
         expires=datetime.now(timezone.utc) + timedelta(hours=settings.TOKEN_TTL_MINUTES)
         )
     return response
@@ -99,3 +99,9 @@ async def user_get_itself(current_user = Depends(get_current_user)):
 @router.get("/{id}", dependencies=[Depends(permission_required("superadmin"))])
 async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Optional[UserScheme]:
     return await UsersDAO.find_one_or_none(id=id)
+
+
+@router.post("/check_token")
+async def check_token(payload):
+    logging.info(payload)
+    return await validate_token(payload["token"])

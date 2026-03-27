@@ -3,6 +3,18 @@
 
 {% block content %}
 <script defer src="{{ url_for('static', path='js/reader.js') }}"></script>
+<script>
+    function getCookie(name) {
+    const cookieValue = document.cookie
+            .split('; ')
+            .find((row) => row.startsWith(`${name}=`))
+            ?.split('=')[1]; // The optional chaining operator (?) is used here
+    
+        return cookieValue || null;
+    }
+    const access_token = getCookie('access_token');
+    // console.log(token);
+</script>
 
 <div class="flex justify-center mb-5 text-3xl">
     Камеры {{ classroom.name }}
@@ -19,9 +31,9 @@
                     reader_{{ camera.id }} = new MediaMTXWebRTCReader({
                     url: "http://cctv.itmoscow:8889/{{ camera.id }}/whep",
                     // url: "https://{{ domain }}:8889/{{ camera.id }}/whep", TODO: Replace to variable
-                    user: "{{ media_auth.login }}", // fill if needed
-                    pass: "{{ media_auth.password }}", // fill if needed
-                    // token: "", // fill if needed
+                    // user: "{{ media_auth.login }}", // fill if needed
+                    // pass: "{{ media_auth.password }}", // fill if needed
+                    token: access_token, // fill if needed
                     onError: (err) => {
                         console.error(err);
                     },
