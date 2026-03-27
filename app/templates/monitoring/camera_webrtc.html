@@ -13,10 +13,10 @@
             <div class="col">
                 <video id="camera_{{ camera.id }}" controls muted autoplay width="640" height="480"></video>
                 <script>
-                let reader = null;
+                let reader_{{ camera.id }} = null;
 
                 window.addEventListener("load", () => {
-                    reader = new MediaMTXWebRTCReader({
+                    reader_{{ camera.id }} = new MediaMTXWebRTCReader({
                     url: "http://cctv.itmoscow:8889/{{ camera.id }}/whep",
                     // url: "https://{{ domain }}:8889/{{ camera.id }}/whep", TODO: Replace to variable
                     user: "{{ media_auth.login }}", // fill if needed
