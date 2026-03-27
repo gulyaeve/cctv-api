@@ -137,7 +137,7 @@ async def page_get_building_classrooms_map_page(
 
 
 @router.get(
-    "/classroom_cameras_view/{id}",
+    "/classrooms/{id}/streams",
     response_class=HTMLResponse,
     dependencies=[Depends(permission_required("frontend"))]
 )
