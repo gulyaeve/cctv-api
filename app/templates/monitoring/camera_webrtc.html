@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<script defer src="{{ url_for('static', path='js/reader.js') }}"></script>
+
+<div class="flex justify-center mb-5 text-3xl">
+    Камеры {{ classroom.name }}
+</div>
+<div class="container">
+    <div class="row">
+        {% for camera in cameras %}
+            <div class="col">
+                <video id="camera_{{ camera.id }}" controls muted autoplay width="640" height="480"></video>
+                <script>
+                let reader = null;
+
+                window.addEventListener("load", () => {
+                    reader = new MediaMTXWebRTCReader({
+                    url: "https://cctv.itmoscow:8889/{{ camera.id }}/whep",
+                    // url: "https://{{ domain }}:8889/{{ camera.id }}/whep", TODO: Replace to variable
+                    user: "", // fill if needed
+                    pass: "", // fill if needed
+                    // token: "", // fill if needed
+                    onError: (err) => {
+                        console.error(err);
+                    },
+                    onTrack: (evt) => {
+                        document.getElementById("camera_{{ camera.id }}").srcObject = evt.streams[0];
+                    },
+                    onDataChannel: (evt) => {
+                        evt.channel.binaryType = "arraybuffer";
+                        evt.channel.onmessage = (evt) => {
+                        console.log("data channel message", evt.data);
+                        };
+                    },
+                    });
+                });
+
+                window.addEventListener("beforeunload", () => {
+                    if (reader !== null) {
+                    reader.close();
+                    }
+                });
+                </script>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<!--
+<div class="flex justify-center mb-5 text-3xl">
+    Камеры {{ classroom.name }}
+</div>
+<div class="container">
+    <div class="row">
+        {% for camera in cameras %}
+            <div class="col">
+                <img src="/camera_view/{{ camera.id }}" width="1024" class="img-fluid">
+            </div>
+        {% endfor %}
+    </div>
+</div> -->
+{% endblock %}
+

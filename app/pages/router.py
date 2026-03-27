@@ -149,7 +149,8 @@ async def page_get_cameras_view_page(
     cameras = await CamerasDAO.find_all(classroom_id=id)
     return templates.TemplateResponse(
         request=request,
-        name="monitoring/camera_stream.html",
+        # name="monitoring/camera_stream.html",
+        name="monitoring/camera_webrtc.html",
         context={
             "cameras": cameras,
             "classroom": classroom,
