@@ -38,6 +38,7 @@ class RolesAdmin(ModelView, model=Role):
     column_list = [
         Role.id,
         Role.name,
+        Role.display_name,
     ]
 
 
