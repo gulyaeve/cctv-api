@@ -105,4 +105,6 @@ async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Op
 async def check_token(request: Request):
     payload = await request.json()
     logging.info(payload)
-    return await validate_token(payload["token"])
+    user = await validate_token(payload["token"])
+    if user:
+        return user
