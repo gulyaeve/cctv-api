@@ -106,6 +106,6 @@ async def check_token(request: Request):
     payload = await request.json()
     
     user = await validate_token(payload["token"])
-    logging.info(f"{payload} {user}")
+    # logging.info(f"{payload} {user}")
     if user:
         return user

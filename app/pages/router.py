@@ -18,7 +18,6 @@ from app.schedule.models import ScheduleModel
 from app.schedule.router import get_active_monitoring, get_all_schedules
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
-from app.config import settings
 
 
 router = APIRouter(
@@ -198,8 +197,7 @@ async def page_get_cameras_view_page(
         context={
             "cameras": cameras,
             "classroom": classroom,
-            "current_user": current_user,
-            "media_auth": {"login": settings.MEDIA_USERNAME, "password": settings.MEDIA_PASSWORD}
+            "current_user": current_user
         }
     )
 
