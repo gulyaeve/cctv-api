@@ -104,7 +104,8 @@ async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Op
 @router.post("/check_token")
 async def check_token(request: Request):
     payload = await request.json()
-    logging.info(payload)
+    
     user = await validate_token(payload["token"])
+    logging.info(f"{payload} {user}")
     if user:
         return user
