@@ -2,4 +2,4 @@
 
 alembic upgrade head
 
-uvicorn app.main:app
+uvicorn app.main:app --reload
