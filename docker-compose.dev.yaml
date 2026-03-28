@@ -50,7 +50,7 @@ services:
     build:
       context: .
     volumes:
-      - .:/src
+      - ./screenshots:/src/app/static/screenshots
     container_name: cctv_backend
     env_file:
       - .env
