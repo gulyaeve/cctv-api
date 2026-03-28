@@ -50,7 +50,7 @@ services:
     build:
       context: .
     volumes:
-      - .:/src/
+      - $(pwd):/src
     container_name: cctv_backend
     env_file:
       - .env
