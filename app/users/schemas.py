@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Literal, Optional
 from datetime import datetime
 
 
@@ -33,3 +33,15 @@ class UserReg(BaseModel):
 class UserLogin(BaseModel):
     username: EmailStr
     password: str
+
+
+class MediaMTXPayload(BaseModel):
+    user: Optional[str] = None
+    password: Optional[str] = None
+    token: Optional[str]
+    ip: Optional[str] = None
+    action: Optional[Literal["publish", "read", "playback", "api", "metrics", "pprof"]] = None
+    path: Optional[str] = None
+    protocol: Optional[Literal["rtsp", "rtmp", "hls" "webrtc" , "srt"]] = None
+    id: Optional[str] = None
+    query: Optional[str] = None

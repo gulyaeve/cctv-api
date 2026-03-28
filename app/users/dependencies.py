@@ -1,6 +1,6 @@
 
 from typing import Callable
-from fastapi import Depends, Request
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from app.exceptions import OperationNotPermited, TokenMissing, TokenIncorrect, UserNotPresent
@@ -46,14 +46,14 @@ async def validate_token(token: str):
             settings.ALGORITHM,
         )
     except JWTError:
-        raise TokenIncorrect
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     user_id: int = int(payload.get("sub"))
     if not user_id:
-        raise UserNotPresent
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     user = await UsersDAO.find_one_or_none(id=user_id)
     # user = await UsersDAO.get_user(user_id)
     if not user:
-        raise UserNotPresent
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
     return user
 
 

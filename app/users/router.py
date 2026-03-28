@@ -11,7 +11,7 @@ from pydantic import EmailStr
 from app.users.auth import auth_user, get_password_hash, create_token
 from app.users.dependencies import get_current_user, permission_required, validate_token
 # from app.users.models import UserModel
-from app.users.schemas import UserScheme, UserSearch
+from app.users.schemas import MediaMTXPayload, UserScheme, UserSearch
 from app.users.dao import UsersDAO
 from app.exceptions import UserExistException, UserNotPresent
 from app.config import settings
@@ -102,10 +102,7 @@ async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Op
 
 
 @router.post("/check_token")
-async def check_token(request: Request):
-    payload = dict(await request.json())
-    
-    user = await validate_token(payload["token"])
-    # logging.info(f"{payload} {user}")
-    if user:
+async def check_token(payload: MediaMTXPayload):
+    if payload.token:   
+        user = await validate_token(payload.token)
         return user
