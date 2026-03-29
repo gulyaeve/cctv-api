@@ -77,6 +77,7 @@ class ClassroomsAdmin(ModelView, model=ClassroomModel):
         ClassroomModel.name,
         ClassroomModel.floor,
         ClassroomModel.building,
+        ClassroomModel.polygon_map,
         # ClassroomModel.cameras,
     ]
 
@@ -93,6 +94,9 @@ class CamerasAdmin(ModelView, model=CameraModel):
         CameraModel.reg_ip,
         CameraModel.rtsp_url,
         CameraModel.classroom,
+        CameraModel.pos_x,
+        CameraModel.pos_y,
+        CameraModel.polygon_map,
     ]
 
 

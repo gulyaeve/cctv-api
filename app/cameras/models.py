@@ -13,6 +13,9 @@ class CameraModel(Base):
     reg_ip: Mapped[str] = mapped_column(nullable=True)
     view: Mapped[str] = mapped_column(nullable=True)
     rtsp_url: Mapped[str] = mapped_column(nullable=False)
+    pos_x: Mapped[int] = mapped_column(nullable=True)
+    pos_y: Mapped[int] = mapped_column(nullable=True)
+    polygon_map: Mapped[str] = mapped_column(nullable=True)
 
     classroom = relationship("ClassroomModel", back_populates="cameras")
 

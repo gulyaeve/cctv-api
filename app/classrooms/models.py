@@ -13,6 +13,7 @@ class ClassroomModel(Base):
     name: Mapped[str]
     building_id: Mapped[int] = mapped_column(ForeignKey("buildings.id"))
     floor: Mapped[int]
+    polygon_map: Mapped[str] = mapped_column(nullable=True)
 
     building = relationship("BuildingModel", back_populates="classrooms")
     cameras: Mapped[List["CameraModel"]] = relationship(back_populates="classroom")

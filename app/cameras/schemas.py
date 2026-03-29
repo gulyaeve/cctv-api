@@ -9,6 +9,9 @@ class CameraScheme(BaseModel):
     reg_ip: Optional[str] = None
     view: str
     rtsp_url: str
+    pos_x: Optional[int] = None
+    pos_y: Optional[int] = None
+    polygon_map: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -21,6 +24,9 @@ class CameraAddScheme(BaseModel):
     reg_ip: Optional[str] = None
     view: str
     rtsp_url: str
+    pos_x: Optional[int] = None
+    pos_y: Optional[int] = None
+    polygon_map: Optional[str] = None
 
 
 class CameraSearch(BaseModel):

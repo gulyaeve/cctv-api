@@ -7,6 +7,7 @@ class ClassroomScheme(BaseModel):
     name: str
     building_id: int
     floor: int
+    polygon_map: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -17,6 +18,7 @@ class ClassroomAddScheme(BaseModel):
     name: str
     building_id: int
     floor: int
+    polygon_map: Optional[str] = None
 
 
 class ClassroomSearch(BaseModel):
