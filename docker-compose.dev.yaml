@@ -49,8 +49,8 @@ services:
     image: cctv_backend
     build:
       context: .
-    volumes:
-      - .:/src
+    # volumes:
+    #   - .:/src
     container_name: cctv_backend
     env_file:
       - .env
