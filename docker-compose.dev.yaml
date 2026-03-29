@@ -24,8 +24,8 @@ services:
       - .env
     networks:
       - default
-    # ports:
-    #   - 5432:5432
+    ports:
+      - 5432:5432
 
   rabbitmq:
     # image: rabbitmq:4-management-alpine

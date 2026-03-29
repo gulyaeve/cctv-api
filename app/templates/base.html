@@ -54,9 +54,11 @@
             </a>
           </div>
           <div class="avatar-placeholder">
-            <a class="navbar-brand nav-link" target="_blank" href="{{ url_for('logout_user') }}">
-              <img src="{{ url_for('static', path='img/login.png') }}">
-            </a>
+            <form class="" action="{{ url_for('logout_user') }}" method="post">
+              <a class="navbar-brand nav-link" target="_blank" type="submit">
+                <img src="{{ url_for('static', path='img/login.png') }}">
+              </a>
+            </form>
           </div>
         </div>
       </div>
