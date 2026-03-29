@@ -1,27 +1,29 @@
-{% extends "base.html" %}
+{% extends "mainmenu.html" %}
 
-
+{% block title %}Учебные корпуса{% endblock %}
 
 {% block content %}
-<table id="data" class="cell-border compact stripe">
-        <thead>
-            <tr>
-                <th>Наименование</th>
-                <th>Адрес</th>
-                <th>Образовательная организация</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for building in buildings %}
-            <tr>
-                <td><a href="/buildings/{{ building.id }}/classrooms">{{ building.name }}</a></td>
-                <td>{{ building.location }}</td>
-                <td>ГБПОУ ИТ.МОСКВА</td>
-                <th><a href="/buildings/{{ building.id }}/classrooms"><i class="fa fa-eye" aria-hidden="true"></i></a></th>
-            </tr>
-            {% endfor %}
-        </tbody>
-
-</table>
+      <table id="data" class="cell-border compact stripe">
+              <thead>
+                  <tr>
+                      <th>Наименование</th>
+                      <th>Адрес</th>
+                      <th>Образовательная организация</th>
+                      <th></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for building in buildings %}
+                  <tr>
+                      <td><a href="/buildings/{{ building.id }}/classrooms">{{ building.name }}</a></td>
+                      <td>{{ building.location }}</td>
+                      <td>ГБПОУ ИТ.МОСКВА</td>
+                      <th>
+                        <a href="{{ url_for('page_get_building_classrooms_list_page', id=building.id)}}"><i class="fa fa-table" aria-hidden="true"></i></a>
+                        <a href="{{ url_for('page_get_building_classrooms_map_page', id=building.id)}}"><i class="fa fa-map" aria-hidden="true"></i></a>
+                      </th>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+      </table>
 {% endblock %}

@@ -1,7 +1,9 @@
-{% extends "base.html" %}
+{% extends "base-without-mainmenu.html" %}
+
+{% block container %}-xxl{% endblock %}
 
 {% block content %}
-    <div class="container-xxl">
+
       <!--Section: Content-->
       <div class="row m-0">
         <div class="col-9 p-0">
@@ -186,7 +188,6 @@
       </div>
     </div>
   </div>
-</div>
 {% for camera in cameras %}
   <div class="modal fade" id="cam{{ cameras.index(camera) + 1 }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">

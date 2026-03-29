@@ -1,7 +1,53 @@
-{% extends "base.html" %}
+{% extends "base-without-mainmenu.html" %}
 
-
+{% block title %}{{ building.name }}. Карта {% endblock %}
 
 {% block content %}
+<h2>{{ building.name }}. Карта </h2>
+<hr>
+<div class="row">
+  <div class="col">
+    <div class="btn-group-vertical" role="group" aria-label="Button group with nested dropdown">
+      <button type="button" class="btn btn-secondary">1</button>
+      <button type="button" class="btn btn-secondary">2</button>
+    </div>
+  </div>
+  <div class="col">
+    <div class="scheme">
+      <img src="{{url_for('static', path='buildings/1/1_1.svg')}}" alt="">
+      <svg>
+        <polygon data-id="1" points="0,0 100,0 100,100 0,100 "></polygon>
+        <polygon data-id="2" points="92,224 123,252 123,302 93,302 53,268"></polygon>
+        <polygon data-id="3" points="137,169 168,197 124,249 93,223"></polygon>
+      </svg>
+
+      <div class="scheme-item" data-id="1" style="top: 319px; left: 71px;">
+        <div class="scheme-name">Детский Мир</div>
+        <div class="scheme-popup">
+          Сеть магазинов «Детский мир» - крупнейший розничный оператор торговли
+          детскими товарами и лидер рынка.
+        </div>
+      </div>
+
+      <div class="scheme-item" data-id="2" style="top: 255px; left: 84px;">
+        <div class="scheme-name">Триал<br>Спорт</div>
+        <div class="scheme-popup">
+          Сеть специализированных спортивных магазинов
+          «Триал-Спорт». Снаряжение, одежда и аксессуары для активного отдыха и спорта!
+        </div>
+      </div>
+
+      <div class="scheme-item" data-id="3" style="top: 203px; left: 116px;">
+        <div class="scheme-name">Arena</div>
+        <div class="scheme-popup">
+          Спортивный бренд Arena (Арена) известен во всем мире как
+          производитель товаров для плавания.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 {% endblock %}

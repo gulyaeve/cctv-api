@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block mainmenu %}
+<div class="accordion" id="accordionExample">
+  <div class="card menu">
+    <div class="card-header" id="m-dashboard">
+      <h2 class="mb-0">
+        <a href="{{ url_for('page_get_dashboard_page') }}" class="btn btn-link btn-block text-left" type="button">
+          <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+        </a>
+      </h2>
+    </div>
+  </div>
+  <div class="card menu">
+    <div class="card-header" id="m-buildings">
+      <h2 class="mb-0">
+        <a href="{{ url_for('page_get_buildings_page') }}" class="btn btn-link btn-block text-left collapsed" type="button">
+          <i class="fa fa-building-o" aria-hidden="true"></i> Учебные корпуса
+        </a>
+      </h2>
+    </div>
+  </div>
+  <div class="card menu">
+    <div class="card-header" id="m-activemonitoring">
+      <h2 class="mb-0">
+        <a href="{{ url_for('page_get_active_monitoring') }}" class="btn btn-link btn-block text-left collapsed" type="button">
+          <i class="fa fa-video-camera" aria-hidden="true"></i> Активный мониторинг
+        </a>
+      </h2>
+    </div>
+  </div>
+  <div class="card menu">
+    <div class="card-header" id="m-schedules">
+      <h2 class="mb-0">
+        <a href="{{ url_for('page_get_schedules_page') }}" class="btn btn-link btn-block text-left collapsed" type="button">
+          <i class="fa fa-calendar" aria-hidden="true"></i> Расписание
+        </a>
+      </h2>
+    </div>
+  </div>
+  <div class="card menu">
+    <div class="card-header" id="m-incidents">
+      <h2 class="mb-0">
+        <a href="{{ url_for('page_get_incidents_page') }}" class="btn btn-link btn-block text-left collapsed" type="button">
+          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Инциденты
+        </a>
+      </h2>
+    </div>
+  </div>
+</div>
+{% endblock %}

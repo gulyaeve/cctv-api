@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "mainmenu.html" %}
 
 
 {% block content %}
@@ -9,7 +9,7 @@
             .split('; ')
             .find((row) => row.startsWith(`${name}=`))
             ?.split('=')[1]; // The optional chaining operator (?) is used here
-    
+
         return cookieValue || null;
     }
     const access_token = getCookie('access_token');
@@ -71,4 +71,3 @@
     </div>
 </div> -->
 {% endblock %}
-

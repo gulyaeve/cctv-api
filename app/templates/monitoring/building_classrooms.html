@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "mainmenu.html" %}
 
 {% block content %}
 <div class="flex justify-center mb-10 text-3xl">
@@ -10,9 +10,8 @@
             <div class="text-2xl font-bold mb-5">
                 <span><a href="/classroom_cameras_view/{{ classroom.id }}">{{ classroom.name }}</a></span>
             </div>
-            
+
         </div>
     {% endfor %}
 </div>
 {% endblock %}
-

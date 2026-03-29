@@ -54,9 +54,7 @@
             </a>
           </div>
           <div class="avatar-placeholder">
-            <a class="navbar-brand nav-link" target="_blank" href="{{ url_for('logout_user') }}">
               <img src="{{ url_for('static', path='img/login.png') }}">
-            </a>
           </div>
         </div>
       </div>
@@ -68,17 +66,7 @@
     {# <img style="min-width: 100%; min-height: 100%;" src={{ url_for('static', path='img/background.jpg') }} alt=""> #}
       <!--Section: Content-->
       <div class="container{% block container %}{% endblock %}">
-        <div class="row">
-
-          <div class="col-3">
-            {% block mainmenu %}{% endblock %}
-          </div>
-          <div class="col-9">
-            <h2>{% block title %}{% endblock %}</h2>
-            <hr>
-            {% block content %}{% endblock %}
-          </div>
-        </div>
+          {% block content %}{% endblock %}
       </div>
       <!--Section: Content-->
   </main>
