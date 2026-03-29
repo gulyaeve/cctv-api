@@ -63,6 +63,7 @@ class BuildingsAdmin(ModelView, model=BuildingModel):
         BuildingModel.name,
         # BuildingModel.classrooms,
         BuildingModel.location,
+        BuildingModel.number_of_floors,
     ]
 
 

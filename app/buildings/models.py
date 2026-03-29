@@ -9,6 +9,7 @@ class BuildingModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     location: Mapped[str]
+    number_of_floors: Mapped[int] = mapped_column(nullable=True)
 
     classrooms = relationship("ClassroomModel", back_populates="building")
 
