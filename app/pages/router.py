@@ -7,7 +7,7 @@ from app.buildings.router import get_all_buildings, get_building
 from app.camera_utils.streaming import Camera, gen_frames
 from app.cameras.dao import CamerasDAO
 from app.cameras.models import CameraModel
-from app.cameras.router import get_camera
+from app.cameras.router import get_all_cameras, get_camera
 from app.classrooms.dao import ClassroomsDAO
 from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
@@ -201,6 +201,26 @@ async def page_get_cameras_view_page(
         }
     )
 
+
+@router.get(
+    "/videowall",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
+async def page_get_videowall_page(
+    request: Request,
+    cameras = Depends(get_all_cameras),
+    current_user: UserModel = Depends(get_current_user)
+    ):
+    return templates.TemplateResponse(
+        request=request,
+        # name="monitoring/camera_stream.html",
+        name="monitoring/videowall.html",
+        context={
+            "cameras": cameras,
+            "current_user": current_user
+        }
+    )
 
 @router.get(
     "/active_monitoring",
