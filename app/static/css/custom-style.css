@@ -260,8 +260,7 @@ button:focus {
 /* Maps */
 
 .scheme {
-	height: 393px;
-	width: 738px;
+	width: 1100px;
 	margin: 0 auto;
 	position: relative;
 }
@@ -273,7 +272,7 @@ button:focus {
 	width: 738px;
 }
 .scheme polygon {
-	fill: #FFDBA4;
+	fill: #5583FF;
 	cursor: pointer;
 }
 
