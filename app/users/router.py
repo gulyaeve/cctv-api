@@ -107,6 +107,6 @@ async def check_token(payload: MediaMTXPayload):
     if payload.query == f"jwt={settings.TOKEN_BEARER}":
         raise HTTPException(status.HTTP_200_OK)
     if payload.token:
-        return await validate_token(payload)
+        return await validate_token(payload.token)
     else:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
