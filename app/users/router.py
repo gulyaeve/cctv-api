@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 import logging
 from typing import Optional, Sequence, Annotated
-from fastapi import APIRouter, Depends, Form, Query, Request, Response, status
+from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request, Response, status
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 # from fastapi_login import LoginManager
@@ -106,3 +106,5 @@ async def check_token(payload: MediaMTXPayload):
     logging.info(f"{payload=}")
     if payload.token:
         return await validate_token(payload.token)
+    else:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
