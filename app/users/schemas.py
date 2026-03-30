@@ -42,6 +42,6 @@ class MediaMTXPayload(BaseModel):
     ip: Optional[str] = None
     action: Optional[Literal["publish", "read", "playback", "api", "metrics", "pprof"]] = None
     path: Optional[str] = None
-    protocol: Optional[Literal["rtsp", "rtmp", "hls" "webrtc" , "srt"]] = None
+    protocol: Optional[Literal["rtsp", "rtmp", "hls", "webrtc" , "srt"]] = None
     id: Optional[str] = None
     query: Optional[str] = None
