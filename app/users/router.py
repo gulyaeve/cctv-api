@@ -103,6 +103,6 @@ async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Op
 
 @router.post("/check_token")
 async def check_token(payload: MediaMTXPayload):
-    if payload.token:   
-        user = await validate_token(payload.token)
-        return user
+    logging.info(f"{payload=}")
+    if payload.token:
+        return await validate_token(payload.token)
