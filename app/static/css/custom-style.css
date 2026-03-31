@@ -312,3 +312,9 @@ button:focus {
 	margin: 10px 10px 0 10px;
 	padding: 20px;
 }
+
+.attantion {
+  height: 90vh;
+  display: table-cell;
+  vertical-align: middle;
+}

@@ -237,7 +237,7 @@ async def page_get_active_monitoring(
         incidents_data = await IncidentsDAO.get_incidents_info(
             visor_id=current_user.id,
             event_id=monitoring_data.current_subject_id,
-        ) 
+        )
         return templates.TemplateResponse(
             request=request,
             name="monitoring/active_monitoring.html",
@@ -248,6 +248,14 @@ async def page_get_active_monitoring(
                 "incidents_data": incidents_data,
                 "len_cameras": len(cameras),
                 "cameras_ids": ",".join(str(camera.id) for camera in cameras)
+            }
+        )
+    else:
+        return templates.TemplateResponse(
+            request=request,
+            name="monitoring/active_monitoring_wait.html",
+            context={
+                "current_user": current_user,
             }
         )
 
