@@ -91,13 +91,12 @@ async def page_get_incidents_page(
 
 
 @router.get(
-    "/buildings/{id}/schedules",
+    "/schedules",
     response_class=HTMLResponse,
     dependencies=[Depends(permission_required("frontend"))]
 )
 async def page_get_schedules_page(
     request: Request,
-    building: BuildingModel=Depends(get_building),
     schedules: ScheduleModel=Depends(get_all_schedules),
     current_user: UserModel = Depends(get_current_user)
     ):
@@ -105,7 +104,6 @@ async def page_get_schedules_page(
         request=request,
         name="monitoring/schedules.html",
         context={
-            "building": building,
             "schedules": schedules,
             "current_user": current_user,
         }
