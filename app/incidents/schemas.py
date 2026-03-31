@@ -36,9 +36,11 @@ class IncidentScheme(IncidentAppendScheme):
 class IncidentSearch(BaseModel):
     comment: Optional[str] = None
     event: Optional[int] = None
-    time_created: Optional[datetime] = None
+    # time_created: Optional[datetime] = None
     visor_id: Optional[int] = None
     status: Optional[int] = None
+    # date_from: Optional[date] = None
+    # date_to: Optional[date] = None
    
 
 class IncidentFullInfo(BaseModel):

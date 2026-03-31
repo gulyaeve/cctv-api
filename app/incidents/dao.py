@@ -1,5 +1,7 @@
+from datetime import date
 import logging
-from sqlalchemy import desc, select
+from typing import Optional
+from sqlalchemy import and_, desc, select
 from app.database import async_session_maker
 from app.classrooms.models import ClassroomModel
 from app.dao.base import BaseDAO
@@ -13,6 +15,37 @@ from sqlalchemy.exc import SQLAlchemyError
 
 class IncidentsDAO(BaseDAO):
     model = IncidentModel
+
+    @classmethod
+    async def find_incident(cls, date_from: Optional[date]=None, date_to: Optional[date]=None ,**filter_by):
+        try:
+            if date_from and date_to:
+                query = (
+                    select(
+                        IncidentModel.__table__,
+                    )
+                    .filter(and_(IncidentModel.time_created.between(date_from, date_to), **filter_by))
+                    .order_by(desc(IncidentModel.time_created))
+                )
+            else:
+                query = (
+                    select(
+                        IncidentModel.__table__,
+                    )
+                    .filter(**filter_by)
+                    .order_by(desc(IncidentModel.time_created))
+                )
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                return result.mappings().all()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Data not found"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Data not found"
+
+            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
 
     @classmethod
     async def get_incidents_info(cls, visor_id: int, event_id: int):
