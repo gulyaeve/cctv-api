@@ -17,7 +17,9 @@ class IncidentsDAO(BaseDAO):
     model = IncidentModel
 
     @classmethod
-    async def find_incident(cls, date_from: Optional[date]=None, date_to: Optional[date]=None ,**filter_by):
+    async def find_incident(cls, **filter_by):
+        date_from = filter_by.pop("date_from")
+        date_to = filter_by.pop("date_to")
         try:
             if date_from and date_to:
                 query = (
