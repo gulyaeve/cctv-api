@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from app.version import version
 import logging
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -107,6 +107,7 @@ admin.add_view(IncidentsAdmin)
 
 
 @app.get("/", response_class=RedirectResponse)
-def redirect_to_login_page():
-    return RedirectResponse("/active_monitoring")
+def redirect_to_login_page(request: Request):
+    start_page = request.url_for("page_get_dashboard_page")
+    return RedirectResponse(start_page)
 

@@ -68,13 +68,15 @@ async def register_user(
 @router.post("/login")
 async def login_user(
     response: Response,
+    request: Request,
     data: OAuth2PasswordRequestForm = Depends()
 ):
     user = await auth_user(data.username, data.password)
     if not user:
         raise UserNotPresent
     access_token = create_token({"sub": str(user.id)})
-    response = RedirectResponse("/active_monitoring", status_code=status.HTTP_302_FOUND)
+    start_page = request.url_for("page_get_dashboard_page")
+    response = RedirectResponse(start_page, status_code=status.HTTP_302_FOUND)
     response.set_cookie(
         key="access_token",
         value=access_token,
