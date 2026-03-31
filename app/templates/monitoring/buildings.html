@@ -5,7 +5,9 @@
 {% block scripts %}
        <script type="text/javascript">
          new DataTable('#data');
-       </script> {% endblock %}
+       </script>
+{% endblock %}
+
 {% block content %}
       <table id="data" class="cell-border compact stripe">
               <thead>
@@ -19,7 +21,7 @@
               <tbody>
                   {% for building in buildings %}
                   <tr>
-                      <td><a href="/buildings/{{ building.id }}/classrooms">{{ building.name }}</a></td>
+                      <td><a href="{{ url_for('page_get_building_classrooms_list_page', id=building.id)}}">{{ building.name }}</a></td>
                       <td>{{ building.location }}</td>
                       <td>ГБПОУ ИТ.МОСКВА</td>
                       <th>

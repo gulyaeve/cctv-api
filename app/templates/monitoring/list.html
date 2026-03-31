@@ -1,7 +1,43 @@
 {% extends "mainmenu.html" %}
 
-
+{% block title %}{{ building.name }}. Список {% endblock %}
+{% block breadcrubs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{url_for('page_get_buildings_page')}}">Учебные корпуса</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ building.name }}. Список</li>
+  </ol>
+</nav>
+{% endblock %}
+{% block scripts %}
+       <script type="text/javascript">
+         new DataTable('#data');
+       </script>
+{% endblock %}
 
 {% block content %}
-
+<table id="data" class="cell-border compact stripe">
+    <thead>
+        <tr>
+            <th>Условное обозначение</th>
+            <th>Этаж</th>
+            <th>Корпус</th>
+            <th>Количество камер</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for classroom in classrooms %}
+        <tr>
+            <td><a href="{{ url_for('page_get_cameras_view_page', id=classroom.id)}}">{{ classroom.name }}</a></td>
+            <td>{{ classroom.floor }}</td>
+            <td>{{ building.name }}</td>
+            <td></td>
+            <th>
+              <a href="{{ url_for('page_get_cameras_view_page', id=classroom.id)}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+            </th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

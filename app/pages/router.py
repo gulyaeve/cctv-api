@@ -6,6 +6,7 @@ from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings, get_building
 from app.camera_utils.streaming import Camera, gen_frames
 from app.cameras.dao import CamerasDAO
+from app.buildings.dao import BuildingsDAO
 from app.cameras.models import CameraModel
 from app.cameras.router import get_all_cameras, get_camera
 from app.classrooms.dao import ClassroomsDAO
@@ -186,10 +187,12 @@ async def page_get_building_classrooms_map_page(
 async def page_get_cameras_view_page(
     id: int,
     request: Request,
+    # building: BuildingModel=Depends(get_building),
     classroom: ClassroomModel=Depends(get_classroom),
     current_user: UserModel = Depends(get_current_user)
     ):
     cameras = await CamerasDAO.find_all(classroom_id=id)
+    building = await BuildingsDAO.find_one_or_none(id=classroom.building_id)
     return templates.TemplateResponse(
         request=request,
         # name="monitoring/camera_stream.html",
@@ -197,6 +200,7 @@ async def page_get_cameras_view_page(
         context={
             "cameras": cameras,
             "classroom": classroom,
+            "building": building,
             "current_user": current_user
         }
     )

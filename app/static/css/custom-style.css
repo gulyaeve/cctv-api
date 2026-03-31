@@ -318,3 +318,10 @@ button:focus {
   display: table-cell;
   vertical-align: middle;
 }
+
+.breadcrumb {
+  background-color: #414141 !important;
+}
+.breadcrumb-item.active {
+	color: #fff !important;
+}
