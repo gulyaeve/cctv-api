@@ -3,13 +3,14 @@
 {% block title %}Учебные корпуса{% endblock %}
 
 {% block scripts %}
-       <script type="text/javascript">
-         new DataTable('#data');
-       </script>
+  <script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
+  <script type="text/javascript">
+   new DataTable('#data');
+  </script>
 {% endblock %}
 
 {% block content %}
-      <table id="data" class="cell-border compact stripe">
+          <table id="data" class="display">
               <thead>
                   <tr>
                       <th>Наименование</th>

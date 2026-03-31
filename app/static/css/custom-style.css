@@ -1,8 +1,16 @@
 body {
   font-family: "Montserrat";
   background-color: #333333;
+  color: #FFFFFF !important;
 }
 p, h1, h2, h3, h4, h5 {
+  color: #FFFFFF;
+}
+
+a {
+  color: #5582FF;
+}
+a:hover {
   color: #FFFFFF;
 }
 
