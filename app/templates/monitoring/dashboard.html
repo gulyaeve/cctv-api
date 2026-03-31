@@ -8,32 +8,169 @@
     <div class="card widget-dashboard">
       <h5>Количество инцидетов</h5>
       <hr>
+      <div class="" id="incall">
+        <div id="incall-day" class="collapse show" data-parent="#incall">
+          <div class="display-4" style="margin: 0 0 20px 0;">
+            67
+          </div>
+        </div>
+        <div id="incall-week" class="collapse" data-parent="#incall">
+          <div class="display-4" style="margin: 0 0 20px 0;">
+            83
+          </div>
+        </div>
+        <div id="incall-month" class="collapse" data-parent="#incall">
+          <div class="display-4" style="margin: 0 0 20px 0;">
+            120
+          </div>
+        </div>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#incall-day" aria-expanded="true" aria-controls="collapseExample">Сегодня</button>
+        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#incall-week" aria-expanded="false" aria-controls="collapseExample">За неделю</button>
+        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#incall-month" aria-expanded="false" aria-controls="collapseExample">За месяц</button>
+      </div>
     </div>
   </div>
   <div class="col-6">
     <div class="card widget-dashboard">
       <h5>Занятий по расписанию</h5>
       <hr>
+      <div class="" id="schedule">
+        <div id="schedule-day" class="collapse show" data-parent="#schedule">
+          <div class="display-4" style="margin: 0 0 20px 0;">
+            55
+          </div>
+        </div>
+        <div id="schedule-week" class="collapse" data-parent="#schedule">
+          <div class="display-4" style="margin: 0 0 20px 0;">
+            289
+          </div>
+        </div>
+        <div id="schedule-month" class="collapse" data-parent="#schedule">
+          <div class="display-4" style="margin: 0 0 20px 0;">
+            1032
+          </div>
+        </div>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#schedule-day" aria-expanded="true" aria-controls="collapseExample">Сегодня</button>
+        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#schedule-week" aria-expanded="false" aria-controls="collapseExample">За неделю</button>
+        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#schedule-month" aria-expanded="false" aria-controls="collapseExample">За месяц</button>
+      </div>
     </div>
   </div>
   <div class="col-12">
     <div class="card widget-dashboard">
       <h5>Количество инцидетов по корпусам</h5>
       <hr>
+      <canvas id="incbuildings"></canvas>
     </div>
   </div>
   <div class="col-12">
     <div class="card widget-dashboard">
       <h5>Категории инцидентов</h5>
       <hr>
+      <canvas id="inccategorys"></canvas>
     </div>
   </div>
   <div class="col-12">
-    <div class="card widget-dashboard">
+    <div class="card widget-dashboard" style="margin-bottom: 70px;">
       <h5>Динамика инцидетов</h5>
       <hr>
+      <canvas id="incdynamics"></canvas>
     </div>
   </div>
 </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script src="{{ url_for('static', path='js/chart.js') }}"></script>
+
+<script type="text/javascript">
+  const chart3 = document.getElementById('incbuildings');
+
+  new Chart(chart3, {
+    type: 'bar',
+    data: {
+      labels: ['Сенябрь', 'Октябрь', 'Ноябрь', 'Декабрь', 'Январь', 'Февраль', 'Март'],
+      datasets: [{
+        label: 'Центр программирования и кибербезопасности',
+        data: [12, 19, 3, 5, 2, 3, 12],
+        borderWidth: 1
+      },
+      {
+        label: 'Центр городских технологий',
+        data: [10, 5, 7, 20, 32, 1, 11],
+        borderWidth: 1
+      },
+      {
+        label: 'IT.Бирюлево',
+        data: [5, 31, 4, 6, 2, 3, 8],
+        borderWidth: 1
+      },
+      {
+        label: 'Дизайн колледж',
+        data: [8, 10, 5, 27, 12, 1, 5],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+
+<script type="text/javascript">
+  const chart2 = document.getElementById('inccategorys');
+
+  new Chart(chart2, {
+    type: 'doughnut',
+    data: {
+      labels: ['Студент(ы) спит(ят)', 'Преподаватель отсутствует', 'Преподаватель спит', 'Студенты бездельничают', 'Камера не работает', 'Другое'],
+      datasets: [{
+        label: 'Инциденты',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+
+<script type="text/javascript">
+  const chart1 = document.getElementById('incdynamics');
+
+  new Chart(chart1, {
+    type: 'line',
+    data: {
+      labels: ['Сенябрь', 'Октябрь', 'Ноябрь', 'Декабрь', 'Январь', 'Февраль', 'Март'],
+      datasets: [{
+        label: 'Инциденты',
+        data: [10, 5, 7, 20, 32, 1],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
 
 {% endblock %}

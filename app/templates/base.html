@@ -115,9 +115,8 @@
 <!-- <script src="js/popper.min.js"></script> -->
   <script src="{{ url_for('static', path='js/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
-  <script type="text/javascript">
-    new DataTable('#data');
-  </script>
+
+{% block scripts %}{% endblock %}
 
 <script>
   function currentTime() {
