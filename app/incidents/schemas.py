@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 
@@ -39,8 +39,8 @@ class IncidentSearch(BaseModel):
     # time_created: Optional[datetime] = None
     visor_id: Optional[int] = None
     status: Optional[int] = None
-    # date_from: Optional[date] = None
-    # date_to: Optional[date] = None
+    date_from: Optional[date] = None
+    date_to: Optional[date] = None
    
 
 class IncidentFullInfo(BaseModel):

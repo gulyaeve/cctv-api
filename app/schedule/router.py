@@ -29,7 +29,7 @@ async def get_active_monitoring(current_user: UserModel = Depends(get_current_us
 # @cache(expire=60)
 async def get_all_schedules(filter_query: Annotated[ScheduleSearch, Query()]):
     """
-    Get all classrooms
+    Get all schedules
     """
     filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
     return await ScheduleDAO.find_all(**filter_model)

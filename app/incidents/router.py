@@ -34,7 +34,7 @@ async def get_all_incidents(filter_query: Annotated[IncidentSearch, Query()]):
     Get all incidents
     """
     filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
-    return await IncidentsDAO.find_all(**filter_model)
+    return await IncidentsDAO.find_incident(**filter_model)
 
 
 @router.get("/{id}", response_model=IncidentScheme)
