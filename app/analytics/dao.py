@@ -1,5 +1,4 @@
 import logging
-from typing import Literal, Optional
 
 from sqlalchemy.exc import SQLAlchemyError
 
