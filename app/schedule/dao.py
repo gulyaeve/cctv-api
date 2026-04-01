@@ -66,7 +66,7 @@ class ScheduleDAO(BaseDAO):
                 .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
-                .filter(filter_query if not status else and_(status_case == status, filter_query))
+                .filter(filter_query if status is None else and_(status_case == status, filter_query))
                 .order_by(ScheduleModel.id)
             )
             async with async_session_maker() as session:
