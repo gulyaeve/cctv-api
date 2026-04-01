@@ -39,7 +39,7 @@ class IncidentSearch(BaseModel):
     comment: Optional[str] = None
     event: Optional[int] = None
     visor_id: Optional[int] = None
-    status: Optional[int] = None
+    status: Optional[int] = Field(0, description="0 - всё хорошо, 1 - ещё не смотрел, 2 - инцидент, 3 - контроль")
     classroom_id: Optional[int] = None
     building_id: Optional[int] = None
     date_from: Optional[date] = None

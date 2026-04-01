@@ -47,9 +47,9 @@ class ScheduleDAO(BaseDAO):
 
         try:
             status_case = case(
-                (ScheduleModel.timestamp_start > func.current_timestamp(), "Не началось"),
-                (ScheduleModel.timestamp_end < func.current_timestamp(), "Завершено"),
-                else_="В процессе"
+                (ScheduleModel.timestamp_start > func.current_timestamp(), 0),
+                (ScheduleModel.timestamp_end < func.current_timestamp(), 2),
+                else_=1
             ).label('status')
             query = (
                 select(
