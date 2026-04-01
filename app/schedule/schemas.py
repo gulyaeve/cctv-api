@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Optional
+from typing import Literal, Optional
 from pydantic import BaseModel
 
 
@@ -39,7 +39,7 @@ class ScheduleAddScheme(BaseModel):
 
 class ScheduleSearch(BaseModel):
     subject: Optional[str] = None
-    status: Optional[str] = None
+    status: Optional[Literal["Не началось", "Завершено", "В процессе"]] = None
     classroom_id: Optional[int] = None
     building_id: Optional[int] = None
     teacher_id: Optional[int] = None
