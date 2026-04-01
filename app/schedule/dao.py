@@ -19,10 +19,10 @@ class ScheduleDAO(BaseDAO):
 
     @classmethod
     async def find_all(cls, **filter_by):
-        date_from = filter_by.pop("date_from") if filter_by.get("date_from") else None
-        date_to = filter_by.pop("date_to") if filter_by.get("date_to") else None
+        date_from = filter_by.pop("date_from") if filter_by.get("date_from") is not None else None
+        date_to = filter_by.pop("date_to") if filter_by.get("date_to") is not None else None
 
-        status = filter_by.pop("status") if filter_by.get("status") else None
+        status = filter_by.pop("status") if filter_by.get("status") is not None else None
 
         filter_mapping = {
             "subject": ScheduleModel.subject,
