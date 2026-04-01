@@ -22,6 +22,8 @@ class ScheduleDAO(BaseDAO):
         date_from = filter_by.pop("date_from") if filter_by.get("date_from") else None
         date_to = filter_by.pop("date_to") if filter_by.get("date_to") else None
 
+        status = filter_by.pop("status") if filter_by.get("status") else None
+
         filter_mapping = {
             "subject": ScheduleModel.subject,
             "classroom_id": ScheduleModel.classroom_id,
@@ -64,7 +66,7 @@ class ScheduleDAO(BaseDAO):
                 .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
-                .filter(filter_query)
+                .filter(filter_query if not status else and_(status_case == status, filter_query))
                 .order_by(ScheduleModel.id)
             )
             async with async_session_maker() as session:

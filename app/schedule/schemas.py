@@ -39,6 +39,7 @@ class ScheduleAddScheme(BaseModel):
 
 class ScheduleSearch(BaseModel):
     subject: Optional[str] = None
+    status: Optional[str] = None
     classroom_id: Optional[int] = None
     building_id: Optional[int] = None
     teacher_id: Optional[int] = None
