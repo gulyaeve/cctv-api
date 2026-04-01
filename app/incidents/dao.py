@@ -1,6 +1,4 @@
-from datetime import date
 import logging
-from typing import Optional
 from sqlalchemy import Date, and_, cast, desc, select
 from app.database import async_session_maker
 from app.classrooms.models import ClassroomModel
