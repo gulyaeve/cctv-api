@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 from pydantic import BaseModel
 
@@ -43,6 +43,8 @@ class ScheduleSearch(BaseModel):
     building_id: Optional[int] = None
     teacher_id: Optional[int] = None
     group_id: Optional[int] = None
+    date_from: Optional[date] = None
+    date_to: Optional[date] = None
 
 class ScheduleDaily(ScheduleScheme):
     camera_id: int

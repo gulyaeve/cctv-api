@@ -19,6 +19,9 @@ class ScheduleDAO(BaseDAO):
 
     @classmethod
     async def find_all(cls, **filter_by):
+        date_from = filter_by.pop("date_from") if filter_by.get("date_from") else None
+        date_to = filter_by.pop("date_to") if filter_by.get("date_to") else None
+
         filter_mapping = {
             "subject": ScheduleModel.subject,
             "classroom_id": ScheduleModel.classroom_id,
@@ -27,6 +30,18 @@ class ScheduleDAO(BaseDAO):
             "group_id": ScheduleModel.group_id,
         }
         conditions = filter_factory(filter_mapping, filter_by)
+
+        if date_from is not None and date_to is not None:
+            if date_from == date_to:
+                filter_query = and_(cast(ScheduleModel.timestamp_start, Date) == date_from, *conditions)
+            else:
+                filter_query = and_(ScheduleModel.timestamp_start.between(date_from, date_to), *conditions)
+        elif date_from is not None and date_to is None:
+            filter_query = and_(cast(ScheduleModel.timestamp_start, Date) >= date_from, *conditions)
+        elif date_from is None and date_to is not None:
+            filter_query = and_(cast(ScheduleModel.timestamp_start, Date) <= date_to, *conditions)
+        else:
+            filter_query = and_(*conditions)
 
         try:
             status_case = case(
@@ -49,12 +64,12 @@ class ScheduleDAO(BaseDAO):
                 .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
-                .filter(*conditions)
+                .filter(filter_query)
                 .order_by(ScheduleModel.id)
             )
             async with async_session_maker() as session:
                 result = await session.execute(query)
-                return result.all()
+                return result.mappings().all()
         except (SQLAlchemyError, Exception) as e:
             if isinstance(e, SQLAlchemyError):
                 msg = "Database Exc: Data not found"

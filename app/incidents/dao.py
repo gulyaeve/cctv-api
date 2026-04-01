@@ -1,7 +1,7 @@
 from datetime import date
 import logging
 from typing import Optional
-from sqlalchemy import and_, desc, select
+from sqlalchemy import Date, and_, cast, desc, select
 from app.database import async_session_maker
 from app.classrooms.models import ClassroomModel
 from app.dao.base import BaseDAO
@@ -17,26 +17,30 @@ class IncidentsDAO(BaseDAO):
     model = IncidentModel
 
     @classmethod
-    async def find_incident(cls, **filter_by):
-        date_from = filter_by.pop("date_from")
-        date_to = filter_by.pop("date_to")
-        try:
-            if date_from and date_to:
-                query = (
-                    select(
-                        IncidentModel.__table__,
-                    )
-                    .filter(and_(IncidentModel.time_created.between(date_from, date_to), **filter_by))
-                    .order_by(desc(IncidentModel.time_created))
-                )
+    async def find_all(cls, **filter_by):
+        date_from = filter_by.pop("date_from") if filter_by.get("date_from") else None
+        date_to = filter_by.pop("date_to") if filter_by.get("date_to") else None
+
+        if date_from is not None and date_to is not None:
+            if date_from == date_to:
+                filter_query = and_(cast(IncidentModel.time_created, Date) == date_from, **filter_by)
             else:
-                query = (
-                    select(
-                        IncidentModel.__table__,
-                    )
-                    .filter(**filter_by)
-                    .order_by(desc(IncidentModel.time_created))
+                filter_query = and_(IncidentModel.time_created.between(date_from, date_to), **filter_by)
+        elif date_from is not None and date_to is None:
+            filter_query = and_(cast(IncidentModel.time_created, Date) >= date_from, **filter_by)
+        elif date_from is None and date_to is not None:
+            filter_query = and_(cast(IncidentModel.time_created, Date) <= date_to, **filter_by)
+        else:
+            filter_query = and_(**filter_by)
+
+        try:
+            query = (
+                select(
+                    IncidentModel.__table__,
                 )
+                .filter(filter_query)
+                .order_by(desc(IncidentModel.time_created))
+            )
             async with async_session_maker() as session:
                 result = await session.execute(query)
                 return result.mappings().all()
