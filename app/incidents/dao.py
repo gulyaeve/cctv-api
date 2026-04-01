@@ -1,5 +1,6 @@
 import logging
 from sqlalchemy import Date, and_, cast, desc, select
+from app.buildings.models import BuildingModel
 from app.database import async_session_maker
 from app.classrooms.models import ClassroomModel
 from app.dao.base import BaseDAO
@@ -10,6 +11,8 @@ from app.teachers.models import TeacherModel
 from app.users.models import UserModel
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.utils.filter_factory import filter_factory
+
 
 class IncidentsDAO(BaseDAO):
     model = IncidentModel
@@ -19,23 +22,41 @@ class IncidentsDAO(BaseDAO):
         date_from = filter_by.pop("date_from") if filter_by.get("date_from") else None
         date_to = filter_by.pop("date_to") if filter_by.get("date_to") else None
 
+        filter_mapping = {
+            "comment": IncidentModel.comment,
+            "event": IncidentModel.event,
+            "visor_id": IncidentModel.visor_id,
+            "status": IncidentModel.status,
+            "classroom_id": ClassroomModel.id,
+            "building_id": BuildingModel.id,
+        }
+        conditions = filter_factory(filter_mapping, filter_by)
+
         if date_from is not None and date_to is not None:
             if date_from == date_to:
-                filter_query = and_(cast(IncidentModel.time_created, Date) == date_from, **filter_by)
+                filter_query = and_(cast(IncidentModel.time_created, Date) == date_from, *conditions)
             else:
-                filter_query = and_(IncidentModel.time_created.between(date_from, date_to), **filter_by)
+                filter_query = and_(IncidentModel.time_created.between(date_from, date_to), *conditions)
         elif date_from is not None and date_to is None:
-            filter_query = and_(cast(IncidentModel.time_created, Date) >= date_from, **filter_by)
+            filter_query = and_(cast(IncidentModel.time_created, Date) >= date_from, *conditions)
         elif date_from is None and date_to is not None:
-            filter_query = and_(cast(IncidentModel.time_created, Date) <= date_to, **filter_by)
+            filter_query = and_(cast(IncidentModel.time_created, Date) <= date_to, *conditions)
         else:
-            filter_query = and_(**filter_by)
+            filter_query = and_(*conditions)
 
         try:
             query = (
                 select(
                     IncidentModel.__table__,
+                    ClassroomModel.id.label("classroom_id"),
+                    ClassroomModel.name.label("classroom_name"),
+                    BuildingModel.id.label("building_id"),
+                    BuildingModel.name.label("building_name"),
                 )
+                .select_from(IncidentModel)
+                .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
+                .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
+                .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .filter(filter_query)
                 .order_by(desc(IncidentModel.time_created))
             )

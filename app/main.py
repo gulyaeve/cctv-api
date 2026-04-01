@@ -36,6 +36,7 @@ from app.teachers.router import router as teachers_router
 from app.users.auth import noauth_handler, noperm_handler
 from app.users.router import router as users_router
 from app.active_monitoring.router import router as active_monitoring_router
+from app.analytics.router import router as analytics_router
 from app.config import settings
 
 api = APIRouter(
@@ -50,6 +51,7 @@ api.include_router(schedule_router)
 api.include_router(schedule_router_daily)
 api.include_router(groups_router)
 api.include_router(incidents_router)
+api.include_router(analytics_router)
 
 
 app = FastAPI(title="Система видеонаблюдения", version=version)

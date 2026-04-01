@@ -28,6 +28,8 @@ class IncidentScheme(IncidentAppendScheme):
     id: int
     time_created: datetime
     cameras_screenshots: Optional[list[str]] = None
+    classroom_id: Optional[int] = None
+    building_id: Optional[int] = None
 
     class Config:
         from_attributes = True
@@ -36,9 +38,10 @@ class IncidentScheme(IncidentAppendScheme):
 class IncidentSearch(BaseModel):
     comment: Optional[str] = None
     event: Optional[int] = None
-    # time_created: Optional[datetime] = None
     visor_id: Optional[int] = None
     status: Optional[int] = None
+    classroom_id: Optional[int] = None
+    building_id: Optional[int] = None
     date_from: Optional[date] = None
     date_to: Optional[date] = None
    
