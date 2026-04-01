@@ -11,10 +11,58 @@ from app.schedule.models import ScheduleModel
 from app.dao.base import BaseDAO
 from app.teachers.models import TeacherModel
 from app.database import async_session_maker
+from app.utils.filter_factory import filter_factory
 
 
 class ScheduleDAO(BaseDAO):
     model = ScheduleModel
+
+    @classmethod
+    async def find_all(cls, **filter_by):
+        filter_mapping = {
+            "subject": ScheduleModel.subject,
+            "classroom_id": ScheduleModel.classroom_id,
+            "building_id": BuildingModel.id,
+            "teacher_id": ScheduleModel.teacher_id,
+            "group_id": ScheduleModel.group_id,
+        }
+        conditions = filter_factory(filter_mapping, filter_by)
+
+        try:
+            status_case = case(
+                (ScheduleModel.timestamp_start > func.current_timestamp(), 'Не началось'),
+                (ScheduleModel.timestamp_end < func.current_timestamp(), 'Завершено'),
+                else_='В процессе'
+            ).label('status')
+            query = (
+                select(
+                    ScheduleModel.__table__,
+                    TeacherModel.name.label("teacher_name"),
+                    GroupModel.name.label("group_name"),
+                    ClassroomModel.name.label("classroom_name"),
+                    BuildingModel.id.label("building_id"),
+                    BuildingModel.name.label("building_name"),
+                    status_case
+                )
+                .select_from(ScheduleModel)
+                .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
+                .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
+                .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
+                .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
+                .filter(*conditions)
+                .order_by(ScheduleModel.id)
+            )
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                return result.all()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Data not found"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Data not found"
+
+            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
 
     @classmethod
     async def find_by_date(cls, search_date: date):

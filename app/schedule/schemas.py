@@ -17,6 +17,12 @@ class ScheduleBaseScheme(BaseModel):
 
 class ScheduleScheme(ScheduleBaseScheme):
     id: int
+    teacher_name: Optional[str] = None
+    group_name: Optional[str] = None
+    classroom_name: Optional[str] = None
+    building_id: Optional[int] = None
+    building_name: Optional[str] = None
+    status: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -34,14 +40,9 @@ class ScheduleAddScheme(BaseModel):
 class ScheduleSearch(BaseModel):
     subject: Optional[str] = None
     classroom_id: Optional[int] = None
+    building_id: Optional[int] = None
     teacher_id: Optional[int] = None
     group_id: Optional[int] = None
-    timestamp_start: Optional[datetime] = None
-    timestamp_end: Optional[datetime] = None
-
-    # name: str = ""
-    # building_id: Optional[int] = None
-    # floor: Optional[int] = None
 
 class ScheduleDaily(ScheduleScheme):
     camera_id: int
