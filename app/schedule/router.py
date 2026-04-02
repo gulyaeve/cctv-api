@@ -35,6 +35,16 @@ async def get_all_schedules(filter_query: Annotated[ScheduleSearch, Query()]):
     return await ScheduleDAO.find_all(**filter_model)
 
 
+@router.get("/count")
+# @cache(expire=60)
+async def count_schedules(filter_query: Annotated[ScheduleSearch, Query()]):
+    """
+    Count all schedules
+    """
+    filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
+    return await ScheduleDAO.find_all_count(**filter_model)
+
+
 @router.get("/{id}", response_model=ScheduleScheme)
 async def get_schedule(id: int):
     schedule = await ScheduleDAO.find_one_or_none(id=id)

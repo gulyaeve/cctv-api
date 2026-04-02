@@ -1,5 +1,5 @@
 import logging
-from sqlalchemy import Date, and_, cast, desc, select
+from sqlalchemy import Date, and_, cast, desc, func, select
 from app.buildings.models import BuildingModel
 from app.database import async_session_maker
 from app.classrooms.models import ClassroomModel
@@ -63,6 +63,56 @@ class IncidentsDAO(BaseDAO):
             async with async_session_maker() as session:
                 result = await session.execute(query)
                 return result.mappings().all()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Data not found"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Data not found"
+
+            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
+        
+    @classmethod
+    async def find_all_count(cls, **filter_by):
+        date_from = filter_by.pop("date_from") if filter_by.get("date_from") else None
+        date_to = filter_by.pop("date_to") if filter_by.get("date_to") else None
+
+        filter_mapping = {
+            "comment": IncidentModel.comment,
+            "event": IncidentModel.event,
+            "visor_id": IncidentModel.visor_id,
+            "status": IncidentModel.status,
+            "classroom_id": ClassroomModel.id,
+            "building_id": BuildingModel.id,
+        }
+        conditions = filter_factory(filter_mapping, filter_by)
+
+        if date_from is not None and date_to is not None:
+            if date_from == date_to:
+                filter_query = and_(cast(IncidentModel.time_created, Date) == date_from, *conditions)
+            else:
+                filter_query = and_(IncidentModel.time_created.between(date_from, date_to), *conditions)
+        elif date_from is not None and date_to is None:
+            filter_query = and_(cast(IncidentModel.time_created, Date) >= date_from, *conditions)
+        elif date_from is None and date_to is not None:
+            filter_query = and_(cast(IncidentModel.time_created, Date) <= date_to, *conditions)
+        else:
+            filter_query = and_(*conditions)
+
+        try:
+            query = (
+                select(
+                    func.count(IncidentModel.id),
+                )
+                .select_from(IncidentModel)
+                .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
+                .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
+                .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
+                .filter(filter_query)
+            )
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                return result.scalar()
         except (SQLAlchemyError, Exception) as e:
             if isinstance(e, SQLAlchemyError):
                 msg = "Database Exc: Data not found"

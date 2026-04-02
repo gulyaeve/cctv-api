@@ -82,6 +82,63 @@ class ScheduleDAO(BaseDAO):
             return None
 
     @classmethod
+    async def find_all_count(cls, **filter_by):
+        date_from = filter_by.pop("date_from") if filter_by.get("date_from") is not None else None
+        date_to = filter_by.pop("date_to") if filter_by.get("date_to") is not None else None
+
+        status = filter_by.pop("status") if filter_by.get("status") is not None else None
+
+        filter_mapping = {
+            "subject": ScheduleModel.subject,
+            "classroom_id": ScheduleModel.classroom_id,
+            "building_id": BuildingModel.id,
+            "teacher_id": ScheduleModel.teacher_id,
+            "group_id": ScheduleModel.group_id,
+        }
+        conditions = filter_factory(filter_mapping, filter_by)
+
+        if date_from is not None and date_to is not None:
+            if date_from == date_to:
+                filter_query = and_(cast(ScheduleModel.timestamp_start, Date) == date_from, *conditions)
+            else:
+                filter_query = and_(ScheduleModel.timestamp_start.between(date_from, date_to), *conditions)
+        elif date_from is not None and date_to is None:
+            filter_query = and_(cast(ScheduleModel.timestamp_start, Date) >= date_from, *conditions)
+        elif date_from is None and date_to is not None:
+            filter_query = and_(cast(ScheduleModel.timestamp_start, Date) <= date_to, *conditions)
+        else:
+            filter_query = and_(*conditions)
+
+        try:
+            status_case = case(
+                (ScheduleModel.timestamp_start > func.current_timestamp(), 0),
+                (ScheduleModel.timestamp_end < func.current_timestamp(), 2),
+                else_=1
+            ).label('status')
+            query = (
+                select(
+                    func.count(ScheduleModel.id),
+                )
+                .select_from(ScheduleModel)
+                .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
+                .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
+                .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
+                .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
+                .filter(filter_query if status is None else and_(status_case == status, filter_query))
+            )
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                return result.scalar()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Data not found"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Data not found"
+
+            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
+
+    @classmethod
     async def find_by_date(cls, search_date: date):
         try:
             query = (
