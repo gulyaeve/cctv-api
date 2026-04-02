@@ -3,27 +3,31 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, StreamingResponse
 
 from app.buildings.models import BuildingModel
-from app.buildings.router import get_all_buildings, get_building
+from app.buildings.router import get_all_buildings
 from app.camera_utils.streaming import Camera, gen_frames
 from app.cameras.dao import CamerasDAO
 from app.buildings.dao import BuildingsDAO
 from app.cameras.models import CameraModel
 from app.cameras.router import get_all_cameras, get_camera
-from app.classrooms.dao import ClassroomsDAO
 from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
 from app.incidents.dao import IncidentsDAO
 from app.incidents.models import IncidentModel
 from app.incidents.router import get_all_incidents
-from app.schedule.models import ScheduleModel
-from app.schedule.router import get_active_monitoring, get_all_schedules
+from app.schedule.router import get_active_monitoring
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
+from app.pages.schedule import router as schedule_frontend_router
+from app.pages.buildings import router as buildings_frontend_router
 
 
 router = APIRouter(
     tags=["Фронтенд"],
 )
+
+
+router.include_router(schedule_frontend_router)
+router.include_router(buildings_frontend_router)
 
 templates = Jinja2Templates(
     directory="app/templates"
@@ -51,26 +55,6 @@ async def page_get_dashboard_page(
 
 
 @router.get(
-    "/buildings",
-    response_class=HTMLResponse,
-    dependencies=[Depends(permission_required("frontend"))]
-)
-async def page_get_buildings_page(
-    request: Request,
-    buildings: BuildingModel=Depends(get_all_buildings),
-    current_user: UserModel = Depends(get_current_user)
-    ):
-    return templates.TemplateResponse(
-        request=request,
-        name="monitoring/buildings.html",
-        context={
-            "buildings": buildings,
-            "current_user": current_user,
-        }
-    )
-
-
-@router.get(
     "/incidents",
     response_class=HTMLResponse,
     dependencies=[Depends(permission_required("frontend"))]
@@ -85,95 +69,6 @@ async def page_get_incidents_page(
         name="monitoring/incidents.html",
         context={
             "incidents": incidents,
-            "current_user": current_user,
-        }
-    )
-
-
-@router.get(
-    "/schedules",
-    response_class=HTMLResponse,
-    dependencies=[Depends(permission_required("frontend"))]
-)
-async def page_get_schedules_page(
-    request: Request,
-    schedules: ScheduleModel=Depends(get_all_schedules),
-    current_user: UserModel = Depends(get_current_user)
-    ):
-    return templates.TemplateResponse(
-        request=request,
-        name="monitoring/schedules.html",
-        context={
-            "schedules": schedules,
-            "current_user": current_user,
-        }
-    )
-
-
-@router.get(
-    "/buildings/{id}/classrooms",
-    response_class=HTMLResponse,
-    dependencies=[Depends(permission_required("frontend"))]
-)
-async def page_get_building_classrooms_page(
-    id: int,
-    request: Request,
-    building: BuildingModel=Depends(get_building),
-    current_user: UserModel = Depends(get_current_user),
-    ):
-    classrooms = await ClassroomsDAO.find_all(building_id=id)
-    return templates.TemplateResponse(
-        request=request,
-        name="monitoring/building_classrooms.html",
-        context={
-            "classrooms": classrooms,
-            "building": building,
-            "current_user": current_user,
-        }
-    )
-
-
-@router.get(
-    "/buildings/{id}/classrooms/list",
-    response_class=HTMLResponse,
-    dependencies=[Depends(permission_required("frontend"))]
-)
-async def page_get_building_classrooms_list_page(
-    id: int,
-    request: Request,
-    building: BuildingModel=Depends(get_building),
-    current_user: UserModel = Depends(get_current_user),
-    ):
-    classrooms = await ClassroomsDAO.find_all(building_id=id)
-    return templates.TemplateResponse(
-        request=request,
-        name="monitoring/list.html",
-        context={
-            "classrooms": classrooms,
-            "building": building,
-            "current_user": current_user,
-        }
-    )
-
-
-@router.get(
-    "/buildings/{id}/classrooms/map",
-    response_class=HTMLResponse,
-    dependencies=[Depends(permission_required("frontend"))]
-)
-async def page_get_building_classrooms_map_page(
-    id: int,
-    request: Request,
-    building: BuildingModel=Depends(get_building),
-    current_user: UserModel = Depends(get_current_user),
-    ):
-    classrooms = await ClassroomsDAO.find_all(building_id=id)
-    return templates.TemplateResponse(
-        request=request,
-        name="monitoring/map.html",
-        context={
-            "classrooms": classrooms,
-            "building": building,
             "current_user": current_user,
         }
     )

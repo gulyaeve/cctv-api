@@ -1,9 +1,8 @@
-from typing import Literal, Optional
+from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class RequestData(BaseModel):
-    type: Optional[Literal["schedules", "incidents"]] = None
-    month: Optional[Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]] = None
-    building_i: Optional[int] = None
+    incident_status: Optional[int] = Field(None, description="0 - всё хорошо, 1 - ещё не смотрел, 2 - инцидент, 3 - контроль")
+    schedule_status: Optional[int] = Field(None, description="0 - не началось, 1 - в процессе, 2 - завершено")
