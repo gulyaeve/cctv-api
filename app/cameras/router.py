@@ -45,6 +45,17 @@ async def get_all_cameras(filter_query: Annotated[CameraSearch, Query()]):
     return await CamerasDAO.find_all(**filter_model)
 
 
+@router.get("/videowall", response_model=Sequence[Sequence[CameraScheme]])
+async def get_data_for_videowall(chunk_size: int = 9):
+    """
+    Получения матрицы камер для видеостены
+    :chunk_size: размер чанка, по умолчанию 9
+    """
+    cameras = await CamerasDAO.find_all()
+    chunks = [cameras[i:i+chunk_size] for i in range(0, len(cameras), chunk_size)]
+    return chunks
+
+
 @router.get("/{id}", response_model=CameraScheme)
 async def get_camera(id: int):
     camera = await CamerasDAO.find_one_or_none(id=id)
