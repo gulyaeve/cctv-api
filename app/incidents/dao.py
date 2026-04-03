@@ -164,13 +164,15 @@ class IncidentsDAO(BaseDAO):
                     GroupModel.name.label('current_group'),
                     ScheduleModel.subject.label('current_schedule'),
                     ClassroomModel.name.label('current_classroom'),
-                    UserModel.full_name.label('current_visor')
+                    UserModel.full_name.label('current_visor'),
+                    BuildingModel.name.label('current_building'),
                 )
                 .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .join(UserModel, IncidentModel.visor_id == UserModel.id)
+                .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .filter(IncidentModel.id == id)
             )
             async with async_session_maker() as session:

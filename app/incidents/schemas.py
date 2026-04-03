@@ -60,3 +60,4 @@ class IncidentFullInfo(BaseModel):
     current_schedule: str
     current_classroom: str
     current_visor: str
+    current_building: str
