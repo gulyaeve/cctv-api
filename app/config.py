@@ -63,7 +63,12 @@ class Settings(BaseSettings):
             f"amqp://{self.RABBITMQ_DEFAULT_USER}:{quote(self.RABBITMQ_DEFAULT_PASS)}@" f"{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}"
         )
     
-    QUEUE_NAME: str
+    QUEUE_NAME: str = "cctv_scr_save"
+    QUEUE_NAME_TG: str = "cctv_tg"
+    QUEUE_NAME_MAX: str = "cctv_max"
+    EXCHANGE_NAME_INPUT: str = "cctv_inc_send"
+    EXCHANGE_NAME_OUTPUT: str = "cctv_msg_send"
+
     EXCHANGE_NAME: str
     CAMERA_EXCHANGE_NAME: str = "cameras"
 
