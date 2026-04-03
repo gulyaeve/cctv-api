@@ -5,25 +5,39 @@
 {% block content %}
   <h2>{{ building.name }}. Карта </h2>
   <hr>
-  <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-    <button type="button" class="btn btn-secondary">1</button>
-    <button type="button" class="btn btn-secondary">2</button>
+  <div class="floor-btn text-center">
+    <h5 style="text-center">Этаж</h5>
+    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+      {% for floor in range(1,building.number_of_floors+1) %}
+        <button type="button" class="btn btn-secondary">{{ floor }}</button>
+      {% endfor %}
+    </div>
   </div>
   <hr>
+  {% for floor in range(1,building.number_of_floors+1) %}
   <div class="scheme">
-    <img src="{{url_for('static', path='buildings/1/1_1.svg')}}" alt="">
+    {% set pathSVG = "buildings/" ~ building.id ~ "/" ~ floor ~ ".svg" %}
+    <img src="{{url_for('static', path=pathSVG)}}" alt="">
+
+
     <svg>
       {% for classroom in classrooms %}
-        <polygon data-id="{{classroom.id}}" points="{{classroom.polygon_map}} "></polygon>
+        {% if classroom.floor == floor %}
+          <polygon data-id="{{classroom.id}}" points="{{classroom.polygon_map}}"></polygon>
+        {% endif %}
       {% endfor %}
     </svg>
+
     {% for classroom in classrooms %}
-    <div class="scheme-item" data-id="{{classroom.id}}" style="top: 319px; left: 71px;">
-      <div class="scheme-name">{{classroom.name}}</div>
-      <div class="scheme-popup">
-        Текст
-      </div>
-    </div>
+      {% if classroom.floor == floor %}
+        <div class="scheme-item" data-id="{{classroom.id}}" style="top: 319px; left: 71px;">
+          <div class="scheme-name">{{classroom.name}}</div>
+          <!-- <div class="scheme-popup">
+            Текст
+          </div> -->
+        </div>
+      {% endif %}
     {% endfor %}
   </div>
+  {% endfor %}
 {% endblock %}

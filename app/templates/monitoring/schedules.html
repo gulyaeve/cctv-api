@@ -4,8 +4,52 @@
 
 {% block scripts %}
   <script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
+  <script src="{{ url_for('static', path='js/moment.min.js') }}"></script>
   <script type="text/javascript">
-    new DataTable('#data');
+    new DataTable('#data', {
+    columnDefs: [
+        {
+            targets: 1,
+            render: DataTable.render.date()
+        }
+    ]
+}););
+  </script>
+  <script type="text/javascript">
+    function formatTimestampRange(start, end) {
+  const toDate = v => {
+    if (v instanceof Date) return v;
+    if (typeof v === 'number') return new Date(v);
+    if (typeof v === 'string') {
+      // Попытка стандартного парсинга (замена пробела на T)
+      const s = v.includes('T') ? v : v.replace(' ', 'T');
+      const d = new Date(s);
+      if (!isNaN(d)) return d;
+      // Фоллбэк для формата YYYY-MM-DD HH:MM:SS
+      const m = v.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?$/);
+      if (m) return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5], +(m[6]||0));
+    }
+    throw new Error('Unsupported timestamp: ' + v);
+  };
+
+  const pad = n => String(n).padStart(2, '0');
+
+  const sD = toDate(start);
+  const eD = toDate(end);
+
+  const dd = pad(sD.getDate()), mm = pad(sD.getMonth() + 1), yyyy = sD.getFullYear();
+  const sh = pad(sD.getHours()), sm = pad(sD.getMinutes());
+  const eh = pad(eD.getHours()), em = pad(eD.getMinutes());
+
+  // Если нужно отображать дату окончания, когда даты разные, можно раскомментировать:
+  // if (sD.toDateString() !== eD.toDateString()) {
+  //   const dd2 = pad(eD.getDate()), mm2 = pad(eD.getMonth()+1), yyyy2 = eD.getFullYear();
+  //   return `${dd}.${mm}.${yyyy} ${sh}:${sm} - ${dd2}.${mm2}.${yyyy2} ${eh}:${em}`;
+  // }
+
+  return `${dd}.${mm}.${yyyy} ${sh}:${sm} - ${eh}:${em}`;
+}
+
   </script>
 {% endblock %}
 
@@ -27,12 +71,14 @@
                   {% for schedule in schedules %}
                   <tr>
                       <td>{{ schedule.subject }}</td>
+                      <td>{{ schedule.timestamp_start }}</td>
+                      <td>{{ schedule.group }}</td>
                       <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td>{{ schedule.classroom }}</td>
+                      <td>{{ schedule.teacher }}</td>
+                      <td>
+                        {% if schedule.status == 0 %} Не началось {% elif schedule.status == 1 %} В процессе {% else %} Завершено {% endif %}
+                      </td>
                       <td>
                       </td>
                   </tr>
