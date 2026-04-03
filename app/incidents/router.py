@@ -77,8 +77,8 @@ async def add_incident(data: IncidentAppendScheme):
     if data.cameras_ids:
         # Update in db with screenshots
         filenames = []
-        for camera in data.cameras_ids:
-            filename = f"{new_object.id}_{data.event}_{camera}_{datetime.now().strftime('%d.%m.%Y_%T')}.jpg"
+        for camera_id in data.cameras_ids:
+            filename = f"{new_object.id}_{data.event}_{camera_id}_{datetime.now().strftime('%d.%m.%Y_%T')}.jpg"
             filenames.append(f"{filename}")
         data_to_save["cameras_screenshots"] = filenames
         await IncidentsDAO.update(new_object.id, **data_to_save)
@@ -92,9 +92,13 @@ async def add_incident(data: IncidentAppendScheme):
                 frame.save_screenshot(f"{screenshot_dir}/{filename}")
 
     incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
-    # Send to tg
+    # Send to messenger
     if new_object.status == 2:
         incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
+        await message_to_tg(incident_full_info)
+    elif new_object.status == 0:
+        incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
+        incident_full_info.comment == "Замечаний нет"
         await message_to_tg(incident_full_info)
 
     return incident_full_info
