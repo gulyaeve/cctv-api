@@ -93,7 +93,7 @@ async def add_incident(data: IncidentAppendScheme):
 
     incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
     # Send to messenger
-    if new_object.status in (0, 2):
+    if new_object.status in [0, 2]:
         incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
         await message_to_tg(incident_full_info)
 
