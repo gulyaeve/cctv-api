@@ -69,7 +69,7 @@ class Settings(BaseSettings):
     EXCHANGE_NAME_INPUT: str = "cctv_inc_send"
     EXCHANGE_NAME_OUTPUT: str = "cctv_msg_send"
 
-    EXCHANGE_NAME: str
+    # EXCHANGE_NAME: str
     CAMERA_EXCHANGE_NAME: str = "cameras"
 
     # SENTRY_DSN: str
