@@ -3,41 +3,34 @@
 {% block title %}Расписание занятий{% endblock %}
 
 {% block scripts %}
-  <script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
-  <script type="text/javascript">
-    new DataTable('#data');
-  </script>
+<script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
+<script type="text/javascript">
+ new DataTable('#data');
+</script>
 {% endblock %}
 
 {% block content %}
-      <table id="data" class="cell-border compact stripe">
-              <thead>
-                  <tr>
-                      <th>Наименование дисциплины</th>
-                      <th>Дата, время</th>
-                      <td>Группа</td>
-                      <td>Учебный корпус</td>
-                      <th>Кабинет</th>
-                      <th>Преподаватель</th>
-                      <th>Статус</th>
-                      <td></td>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for schedule in schedules %}
-                  <tr>
-                      <td>{{ schedule.subject }}</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                      </td>
-                  </tr>
-                  {% endfor %}
-              </tbody>
-      </table>
+<table id="data" class="display">
+    <thead>
+        <tr>
+            <th>Наименование</th>
+            <th>Адрес</th>
+            <th>Образовательная организация</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for building in buildings %}
+        <tr>
+            <td><a href="{{ url_for('page_get_building_classrooms_list_page', id=building.id)}}">{{ building.name }}</a></td>
+            <td>{{ building.location }}</td>
+            <td>ГБПОУ ИТ.МОСКВА</td>
+            <th>
+              <a href="{{ url_for('page_get_building_classrooms_list_page', id=building.id)}}"><i class="fa fa-table" aria-hidden="true"></i></a>
+            </th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}

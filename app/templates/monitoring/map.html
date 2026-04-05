@@ -2,42 +2,176 @@
 
 {% block title %}{{ building.name }}. Карта {% endblock %}
 
+{% block breadcrubs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{url_for('page_get_buildings_page')}}">Учебные корпуса</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ building.name }}. Карта</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
-  <h2>{{ building.name }}. Карта </h2>
-  <hr>
   <div class="floor-btn text-center">
     <h5 style="text-center">Этаж</h5>
-    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
       {% for floor in range(1,building.number_of_floors+1) %}
-        <button type="button" class="btn btn-secondary">{{ floor }}</button>
+      <label class="btn btn-secondary {% if floor == 1 %}active{% endif %}">
+        <input name="floors" type="radio" data-toggle="collapse" data-target="#floor{{floor}}" aria-expanded="false" aria-controls="collapseExample" {% if floor == 1 %}checked{% endif %}>
+          {{ floor }}
+        </input>
+      </label>
       {% endfor %}
     </div>
   </div>
   <hr>
-  {% for floor in range(1,building.number_of_floors+1) %}
-  <div class="scheme">
-    {% set pathSVG = "buildings/" ~ building.id ~ "/" ~ floor ~ ".svg" %}
-    <img src="{{url_for('static', path=pathSVG)}}" alt="">
+  <div id="floors">
+    {% for floor in range(1,building.number_of_floors+1) %}
+    <div id="floor{{floor}}" class="collapse {% if floor == 1 %}show{% endif %}" data-parent="#floors">
+      <div class="scheme">
+        {% set pathSVG = "buildings/" ~ building.id ~ "/" ~ floor ~ ".svg" %}
+        <img src="{{url_for('static', path=pathSVG)}}" alt="">
 
 
-    <svg>
-      {% for classroom in classrooms %}
-        {% if classroom.floor == floor %}
-          <polygon data-id="{{classroom.id}}" points="{{classroom.polygon_map}}"></polygon>
-        {% endif %}
-      {% endfor %}
-    </svg>
+        <svg>
+          {% for classroom in classrooms %}
+            {% if classroom.floor == floor %}
+              <a href="{{url_for('page_get_cameras_view_page', id=classroom.id)}}"><polygon data-id="{{classroom.id}}" points="{{classroom.polygon_map}}"></polygon></a>
+            {% endif %}
+          {% endfor %}
+          {% for camera in cameras %}
+            <g id="cam{{camera.id}}" transform="translate(0,0)" data-angle="{{camera.polygon_map}}">
+                <!-- объектив (центр вращения) -->
+                <circle id="lens" cx="{{camera.pos_x}}" cy="{{camera.pos_y}}" r="6" fill="#5582FF" stroke="#5582FF" stroke-width="1"/>
+                <!-- поле зрения: треугольник, вершина в центре объектива -->
+                <polygon class="fov"
+                         points="{{camera.pos_x}},{{camera.pos_y}} {{camera.pos_x + 104}},{{camera.pos_y - 18}} {{camera.pos_x + 104}},{{camera.pos_y + 18}}"
+                         fill="#ffa500" fill-opacity="0.12" stroke="#5582FF" stroke-opacity="0.6" stroke-width="1"/>
+            </g>
+          {% endfor %}
+        </svg>
 
-    {% for classroom in classrooms %}
-      {% if classroom.floor == floor %}
-        <div class="scheme-item" data-id="{{classroom.id}}" style="top: 319px; left: 71px;">
-          <div class="scheme-name">{{classroom.name}}</div>
-          <!-- <div class="scheme-popup">
-            Текст
-          </div> -->
-        </div>
-      {% endif %}
+        {% for classroom in classrooms %}
+          {% if classroom.floor == floor %}
+              <div class="scheme-item" data-id="{{classroom.id}}" style="">
+                <a href="{{url_for('page_get_cameras_view_page', id=classroom.id)}}">
+                  <div class="scheme-name">{{classroom.name}}</div>
+                </a>
+              </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
     {% endfor %}
   </div>
-  {% endfor %}
+{% endblock %}
+
+{% block script %}
+  <script type="text/javascript">
+    function positionSchemeItems({
+      containerSelector = '.scheme',
+      itemSelector = '.scheme-item',
+      idAttr = 'data-id'
+    } = {}) {
+      document.querySelectorAll(containerSelector).forEach(container => {
+        const svg = container.querySelector('svg');
+        if (!svg) return;
+        const contRect = container.getBoundingClientRect();
+
+        container.querySelectorAll(itemSelector).forEach(item => {
+          const id = item.getAttribute(idAttr);
+          if (!id) return;
+          const poly = svg.querySelector(`polygon[${idAttr}="${id}"]`);
+          if (!poly) return;
+
+          // получить точки полигона
+          const pts = [];
+          if (poly.points && poly.points.numberOfItems) {
+            for (let i = 0; i < poly.points.numberOfItems; i++) {
+              const p = poly.points.getItem(i);
+              pts.push({ x: p.x, y: p.y });
+            }
+          } else {
+            const s = (poly.getAttribute('points') || '').trim();
+            if (!s) return;
+            const nums = s.split(/[\s,]+/).map(Number);
+            for (let i = 0; i + 1 < nums.length; i += 2) pts.push({ x: nums[i], y: nums[i+1] });
+          }
+          if (!pts.length) return;
+
+          // центроид (точный через площадь), fallback — среднее
+          let cx = 0, cy = 0, area = 0;
+          for (let i = 0, n = pts.length; i < n; i++) {
+            const j = (i + 1) % n;
+            const a = pts[i].x * pts[j].y - pts[j].x * pts[i].y;
+            area += a;
+            cx += (pts[i].x + pts[j].x) * a;
+            cy += (pts[i].y + pts[j].y) * a;
+          }
+          if (Math.abs(area) > 1e-8) {
+            area *= 0.5;
+            cx = cx / (6 * area);
+            cy = cy / (6 * area);
+          } else {
+            cx = pts.reduce((s,p)=>s+p.x,0)/pts.length;
+            cy = pts.reduce((s,p)=>s+p.y,0)/pts.length;
+          }
+
+          // SVG -> экранные координаты, затем в координаты контейнера
+          let screenX, screenY;
+          try {
+            const pt = svg.createSVGPoint();
+            pt.x = cx; pt.y = cy;
+            const screenP = pt.matrixTransform(poly.getScreenCTM());
+            screenX = screenP.x; screenY = screenP.y;
+          } catch (e) {
+            // fallback: центр bounding box полигона
+            const r = poly.getBoundingClientRect();
+            screenX = r.left + r.width / 2;
+            screenY = r.top  + r.height / 2;
+          }
+
+          const left = Math.round(screenX - contRect.left - item.offsetWidth / 2);
+          const top  = Math.round(screenY - contRect.top  - item.offsetHeight / 2);
+
+          item.style.position = item.style.position || 'absolute';
+          item.style.left = left + 'px';
+          item.style.top  = top  + 'px';
+        });
+      });
+    }
+    // Первичный вызов и обновления при ресайзе/скролле
+    positionSchemeItems();
+    window.addEventListener('resize', () => positionSchemeItems());
+    window.addEventListener('scroll', () => positionSchemeItems());
+    // Если SVG/DOM обновляются динамически, вызовите positionSchemeItems() после изменений.
+
+  </script>
+  <script>
+    (function(){
+      function setCamDir(id, deg, cx = 14, cy = 24) {
+        const g = document.getElementById(id);
+        if (!g) return;
+        const fov = g.querySelector('.fov');
+        if (!fov) return;
+        fov.setAttribute('transform', `rotate(${deg} ${cx} ${cy})`);
+      }
+
+      // сделать функцию доступной глобально (по желанию)
+      window.setCamDir = setCamDir;
+
+      // при загрузке страницы применяем angles из data-angle ко всем .camera
+      function initCameras() {
+        document.querySelectorAll('g.camera').forEach(g => {
+          const id = g.id;
+          if (!id) return;
+          const deg = parseFloat(g.dataset.angle);
+          if (!isNaN(deg)) setCamDir(id, deg);
+        });
+      }
+
+      // грузим как можно раньше после построения DOM
+      window.addEventListener('DOMContentLoaded', initCameras);
+    })();
+  </script>
 {% endblock %}

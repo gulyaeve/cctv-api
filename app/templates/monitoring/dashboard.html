@@ -10,25 +10,31 @@
       <hr>
       <div class="" id="incall">
         <div id="incall-day" class="collapse show" data-parent="#incall">
-          <div class="display-4" style="margin: 0 0 20px 0;">
-            67
+          <div id="incall-day-count" class="display-4" style="margin: 0 0 20px 0;">
+            Загрузка...
           </div>
         </div>
         <div id="incall-week" class="collapse" data-parent="#incall">
-          <div class="display-4" style="margin: 0 0 20px 0;">
-            83
+          <div id="incall-week-count" class="display-4" style="margin: 0 0 20px 0;">
+            Загрузка...
           </div>
         </div>
         <div id="incall-month" class="collapse" data-parent="#incall">
-          <div class="display-4" style="margin: 0 0 20px 0;">
-            120
+          <div id="incall-month-count" class="display-4" style="margin: 0 0 20px 0;">
+            Загрузка...
           </div>
         </div>
       </div>
-      <div class="btn-group" role="group">
-        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#incall-day" aria-expanded="true" aria-controls="collapseExample">Сегодня</button>
-        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#incall-week" aria-expanded="false" aria-controls="collapseExample">За неделю</button>
-        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#incall-month" aria-expanded="false" aria-controls="collapseExample">За месяц</button>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="incall" data-toggle="collapse" data-target="#incall-day" aria-expanded="false" aria-controls="collapseExample" checked>Сегодня</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incall" data-toggle="collapse" data-target="#incall-week" aria-expanded="false" aria-controls="collapseExample">За неделю</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incall" data-toggle="collapse" data-target="#incall-month" aria-expanded="false" aria-controls="collapseExample">За месяц</input>
+        </label>
       </div>
     </div>
   </div>
@@ -38,25 +44,31 @@
       <hr>
       <div class="" id="schedule">
         <div id="schedule-day" class="collapse show" data-parent="#schedule">
-          <div class="display-4" style="margin: 0 0 20px 0;">
-            55
+          <div id="schedule-day-count" class="display-4" style="margin: 0 0 20px 0;">
+            Загрузка...
           </div>
         </div>
         <div id="schedule-week" class="collapse" data-parent="#schedule">
-          <div class="display-4" style="margin: 0 0 20px 0;">
-            289
+          <div id="schedule-week-count" class="display-4" style="margin: 0 0 20px 0;">
+            Загрузка...
           </div>
         </div>
         <div id="schedule-month" class="collapse" data-parent="#schedule">
-          <div class="display-4" style="margin: 0 0 20px 0;">
-            1032
+          <div id="schedule-month-count" class="display-4" style="margin: 0 0 20px 0;">
+            Загрузка...
           </div>
         </div>
       </div>
-      <div class="btn-group" role="group">
-        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#schedule-day" aria-expanded="true" aria-controls="collapseExample">Сегодня</button>
-        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#schedule-week" aria-expanded="false" aria-controls="collapseExample">За неделю</button>
-        <button type="button" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#schedule-month" aria-expanded="false" aria-controls="collapseExample">За месяц</button>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="schedule" data-toggle="collapse" data-target="#schedule-day" aria-expanded="false" aria-controls="collapseExample" checked>Сегодня</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="schedule" data-toggle="collapse" data-target="#schedule-week" aria-expanded="false" aria-controls="collapseExample">За неделю</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="schedule" data-toggle="collapse" data-target="#schedule-month" aria-expanded="false" aria-controls="collapseExample">За месяц</input>
+        </label>
       </div>
     </div>
   </div>
@@ -88,6 +100,108 @@
 {% block scripts %}
 
 <script src="{{ url_for('static', path='js/chart.js') }}"></script>
+
+<script type="text/javascript">
+
+  function setTextById(id, text, useHTML = false) {
+    const el = document.getElementById(id);
+    if (!el) {
+      console.warn(`Element with id="${id}" not found`);
+      return false;
+    }
+    if (useHTML)
+      el.innerHTML = text;
+    else
+      el.textContent = text;
+    return true;
+  }
+
+  const pad = n => String(n).padStart(2, '0');
+  const formatDate = d => {
+    const D = new Date(d);
+    return `${D.getFullYear()}-${pad(D.getMonth()+1)}-${pad(D.getDate())}`;
+  };
+
+  // 1) Текущий день
+  function getCurrentDay(now = new Date()) {
+    const cur = new Date(now);
+    const date = formatDate(cur);
+    return { start: date, end: date };
+  }
+
+  // 2) Текущая неделя (weekStartsOn: 0=Sun,1=Mon,...)
+  function getCurrentWeek(now = new Date(), weekStartsOn = 1) {
+    const cur = new Date(now);
+    const wDay = cur.getDay();
+    const diff = (wDay - weekStartsOn + 7) % 7;
+    const weekStart = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() - diff);
+    const weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6);
+    return { start: formatDate(weekStart), end: formatDate(weekEnd) };
+  }
+
+  // 3) Текущий месяц
+  function getCurrentMonth(now = new Date()) {
+    const cur = new Date(now);
+    const monthStart = new Date(cur.getFullYear(), cur.getMonth(), 1);
+    const monthEnd = new Date(cur.getFullYear(), cur.getMonth() + 1, 0);
+    return { start: formatDate(monthStart), end: formatDate(monthEnd) };
+  }
+
+  window.addEventListener('load', () => {
+
+    // Примеры
+    // console.log(getCurrentDay());
+    // console.log(getCurrentWeek());
+    // console.log(getCurrentMonth());
+
+    let url = "{{ url_for('count_incidents') }}?date_from=" + getCurrentDay().start + "&date_to=" + getCurrentDay().end + "&status=2";
+    let response = fetch(url)
+      .then(response => response.text())
+      .then(result => {
+        setTextById('incall-day-count', result);
+      } );
+
+    url = "{{ url_for('count_incidents') }}?date_from=" + getCurrentWeek().start + "&date_to=" + getCurrentWeek().end + "&status=2";
+    response = fetch(url)
+      .then(response => response.text())
+      .then(result => {
+        setTextById('incall-week-count', result);
+      } );
+
+    url = "{{ url_for('count_incidents') }}?date_from=" + getCurrentMonth().start + "&date_to=" + getCurrentMonth().end + "&status=2";
+    response = fetch(url)
+      .then(response => response.text())
+      .then(result => {
+        setTextById('incall-month-count', result);
+      } );
+
+    url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentDay().start + "&date_to=" + getCurrentDay().end + "&status=2";
+    response = fetch(url)
+      .then(response => response.text())
+      .then(result => {
+        setTextById('schedule-day-count', result);
+      } );
+
+    url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentWeek().start + "&date_to=" + getCurrentWeek().end + "&status=2";
+    response = fetch(url)
+      .then(response => response.text())
+      .then(result => {
+        setTextById('schedule-week-count', result);
+      } );
+
+    url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentMonth().start + "&date_to=" + getCurrentMonth().end + "&status=2";
+    response = fetch(url)
+      .then(response => response.text())
+      .then(result => {
+        setTextById('schedule-month-count', result);
+      } );
+
+
+
+
+
+  });
+</script>
 
 <script type="text/javascript">
   const chart3 = document.getElementById('incbuildings');

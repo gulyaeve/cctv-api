@@ -12,6 +12,15 @@
     </div>
   </div>
   <div class="card menu">
+    <div class="card-header" id="m-dashboard">
+      <h2 class="mb-0">
+        <a href="{{ url_for('page_get_videowall_page') }}" class="btn btn-link btn-block text-left" type="button">
+          <i class="fa fa-television" aria-hidden="true"></i> VideoWall
+        </a>
+      </h2>
+    </div>
+  </div>
+  <div class="card menu">
     <div class="card-header" id="m-buildings">
       <h2 class="mb-0">
         <a href="{{ url_for('page_get_buildings_page') }}" class="btn btn-link btn-block text-left collapsed" type="button">
@@ -32,7 +41,7 @@
   <div class="card menu">
     <div class="card-header" id="m-schedules">
       <h2 class="mb-0">
-        <a href="{{ url_for('page_get_schedules_page') }}" class="btn btn-link btn-block text-left collapsed" type="button">
+        <a href="{{ url_for('page_get_schedules_buildings_page') }}" class="btn btn-link btn-block text-left collapsed" type="button">
           <i class="fa fa-calendar" aria-hidden="true"></i> Расписание
         </a>
       </h2>

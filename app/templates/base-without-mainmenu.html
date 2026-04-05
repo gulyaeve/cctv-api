@@ -15,9 +15,6 @@
     <link rel="stylesheet" href="{{ url_for('static', path='css/custom-style.css') }}" />
     <link href="{{ url_for('static', path='css/datatables.css') }}" rel="stylesheet">
 
-
-    <script src="{{ url_for('static', path='scripts/script.js') }}"></script>
-
     {% block head %}{% endblock %}
 </head>
 
@@ -66,7 +63,10 @@
     {# <img style="min-width: 100%; min-height: 100%;" src={{ url_for('static', path='img/background.jpg') }} alt=""> #}
       <!--Section: Content-->
       <div class="container{% block container %}{% endblock %}">
-          {% block content %}{% endblock %}
+        {% if self.title() %}<h2>{% block title %}{% endblock %}</h2>{% endif%}
+        {% block breadcrubs %}{% endblock %}
+        {% if self.title() %}<hr>{% endif%}
+        {% block content %}{% endblock %}
       </div>
       <!--Section: Content-->
   </main>
@@ -95,45 +95,42 @@
 
 </body>
 
-<!-- Yandex.Metrika counter -->
-
   <script src="{{ url_for('static', path='js/jquery-3.4.1.slim.min.js') }}"></script>
-<!-- <script src="js/popper.min.js"></script> -->
+  <!-- <script src="js/popper.min.js"></script> -->
   <script src="{{ url_for('static', path='js/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
-  <script type="text/javascript">
-    new DataTable('#data');
+
+  {% block script %}{% endblock %}
+
+  <script>
+    function currentTime() {
+      var date = new Date(); /* creating object of Date class */
+      var day = date.getDate();
+      var month = date.getMonth() + 1;
+      var year = date.getFullYear();
+      var hour = date.getHours();
+      var min = date.getMinutes();
+      var sec = date.getSeconds();
+      day = updateTime(day);
+      month = updateTime(month);
+      year = updateTime(year);
+      hour = updateTime(hour);
+      min = updateTime(min);
+      sec = updateTime(sec);
+      // document.getElementById("clock").innerText = date;
+      document.getElementById("clock").innerText = day + "." + month + "." + year + " | " + hour + " : " + min + " : " + sec; /* adding time to the div */
+      var t = setTimeout(function () { currentTime() }, 1000); /* setting timer */
+    }
+
+    function updateTime(k) {
+      if (k < 10) {
+        return "0" + k;
+      }
+      else {
+        return k;
+      }
+    }
+
+    currentTime(); /* calling currentTime() function to initiate the process */
   </script>
-
-<script>
-  function currentTime() {
-    var date = new Date(); /* creating object of Date class */
-    var day = date.getDate();
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-    var hour = date.getHours();
-    var min = date.getMinutes();
-    var sec = date.getSeconds();
-    day = updateTime(day);
-    month = updateTime(month);
-    year = updateTime(year);
-    hour = updateTime(hour);
-    min = updateTime(min);
-    sec = updateTime(sec);
-    // document.getElementById("clock").innerText = date;
-    document.getElementById("clock").innerText = day + "." + month + "." + year + " | " + hour + " : " + min + " : " + sec; /* adding time to the div */
-    var t = setTimeout(function () { currentTime() }, 1000); /* setting timer */
-  }
-
-  function updateTime(k) {
-    if (k < 10) {
-      return "0" + k;
-    }
-    else {
-      return k;
-    }
-  }
-
-  currentTime(); /* calling currentTime() function to initiate the process */
-</script>
 </html>

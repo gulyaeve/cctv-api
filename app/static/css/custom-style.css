@@ -282,11 +282,11 @@ button:focus {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	height: 393px;
-	width: 738px;
+	height: inherit;
+	width: inherit;
 }
 .scheme polygon {
-	fill: #5583FF;
+	fill: rgba(100,100,100,0.1);
 	cursor: pointer;
 }
 
@@ -327,9 +327,21 @@ button:focus {
   vertical-align: middle;
 }
 
+/* breadcrumb */
+
 .breadcrumb {
   background-color: #414141 !important;
 }
 .breadcrumb-item.active {
 	color: #fff !important;
+}
+
+/* VideoWall */
+
+.videowall-monitoring{
+  height: calc(100vh - 80px - 56px);
+}
+.video-monitoring{
+  background: #000;
+  border: 1px #333 solid;
 }
