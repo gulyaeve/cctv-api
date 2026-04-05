@@ -2,6 +2,15 @@
 
 {% block title %}Расписание занятий{% endblock %}
 
+{% block breadcrubs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{url_for('page_get_buildings_page')}}">Учебные корпуса</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ building.name }}. Расписание</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block scripts %}
   <script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
   <script src="{{ url_for('static', path='js/moment.min.js') }}"></script>

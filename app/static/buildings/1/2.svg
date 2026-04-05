@@ -32,16 +32,20 @@
      id="defs1">
     <style
        id="style1">
-      .cls-1 {
-        fill: #1d1d1b;
-      }
+       .cls-1 {
+         fill: none;
+       }
 
-      .cls-2, .cls-3 {
-        fill: none;
-      }
+       .cls-2 {
+         fill: none;
+         stroke: #FFFFFF;
+         stroke-miterlimit: 10;
+         stroke-width: 2px;
+       }
 
       .cls-3 {
-        stroke: #1d1d1b;
+        fill: none;
+        stroke: #FFFFFF;
         stroke-miterlimit: 10;
         stroke-width: 2px;
       }
