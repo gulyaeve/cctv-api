@@ -30,6 +30,8 @@ class IncidentScheme(IncidentAppendScheme):
     cameras_screenshots: Optional[list[str]] = None
     classroom_id: Optional[int] = None
     building_id: Optional[int] = None
+    cameras_ids: Optional[list[int]] = None
+    cameras_screenshots: Optional[list[str]] = None
 
     class Config:
         from_attributes = True
