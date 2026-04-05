@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings, get_building
+from app.cameras.dao import CamerasDAO
 from app.classrooms.dao import ClassroomsDAO
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
@@ -98,11 +99,13 @@ async def page_get_building_classrooms_map_page(
     current_user: UserModel = Depends(get_current_user),
     ):
     classrooms = await ClassroomsDAO.find_all(building_id=id)
+    cameras = await CamerasDAO.find_all(building_id=id)
     return templates.TemplateResponse(
         request=request,
         name="monitoring/map.html",
         context={
             "classrooms": classrooms,
+            "cameras": cameras,
             "building": building,
             "current_user": current_user,
         }

@@ -21,7 +21,7 @@ class IncidentFormScheme(IncidentBaseScheme):
     
 
 class IncidentAppendScheme(IncidentBaseScheme):
-    cameras_ids: list[int]
+    cameras_ids: Optional[list[int]] = None
    
 
 class IncidentScheme(IncidentAppendScheme):

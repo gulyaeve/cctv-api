@@ -31,6 +31,7 @@ class CameraAddScheme(BaseModel):
 
 class CameraSearch(BaseModel):
     classroom_id: Optional[int] = None
+    building_id: Optional[int] = None
     camera_ip: Optional[str] = None
     reg_ip: Optional[str] = None
     view: Optional[str] = None
