@@ -50,7 +50,7 @@ async def count_incidents(filter_query: Annotated[IncidentSearch, Query()]):
 
 @router.get("/{id}", response_model=IncidentScheme)
 async def get_incident(id: int):
-    item = await IncidentsDAO.find_one_or_none(id=id)
+    item = await IncidentsDAO.get_incident_full_info(id=id)
     if item is None:
         raise ObjectMissingException
     else:

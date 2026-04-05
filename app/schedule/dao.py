@@ -18,6 +18,44 @@ class ScheduleDAO(BaseDAO):
     model = ScheduleModel
 
     @classmethod
+    async def find_by_id(cls, id: int):
+        try:
+            status_case = case(
+                (ScheduleModel.timestamp_start > func.current_timestamp(), 0),
+                (ScheduleModel.timestamp_end < func.current_timestamp(), 2),
+                else_=1
+            ).label('status')
+            query = (
+                select(
+                    ScheduleModel.__table__,
+                    TeacherModel.name.label("teacher_name"),
+                    GroupModel.name.label("group_name"),
+                    ClassroomModel.name.label("classroom_name"),
+                    BuildingModel.id.label("building_id"),
+                    BuildingModel.name.label("building_name"),
+                    status_case
+                )
+                .select_from(ScheduleModel)
+                .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
+                .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
+                .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
+                .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
+                .filter(ScheduleModel.id == id)
+                .order_by(ScheduleModel.id)
+            )
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                return result.mappings().one_or_none()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Data not found"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Data not found"
+
+            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
+
+    @classmethod
     async def find_all(cls, **filter_by):
         date_from = filter_by.pop("date_from") if filter_by.get("date_from") is not None else None
         date_to = filter_by.pop("date_to") if filter_by.get("date_to") is not None else None

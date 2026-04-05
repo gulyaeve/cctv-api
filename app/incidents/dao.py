@@ -163,8 +163,10 @@ class IncidentsDAO(BaseDAO):
                     TeacherModel.name.label('current_teacher'),
                     GroupModel.name.label('current_group'),
                     ScheduleModel.subject.label('current_schedule'),
+                    ClassroomModel.name.label('classroom_id'),
                     ClassroomModel.name.label('current_classroom'),
                     UserModel.full_name.label('current_visor'),
+                    BuildingModel.id.label('building_id'),
                     BuildingModel.name.label('current_building'),
                 )
                 .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)

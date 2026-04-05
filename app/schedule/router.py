@@ -47,7 +47,7 @@ async def count_schedules(filter_query: Annotated[ScheduleSearch, Query()]):
 
 @router.get("/{id}", response_model=ScheduleScheme)
 async def get_schedule(id: int):
-    schedule = await ScheduleDAO.find_one_or_none(id=id)
+    schedule = await ScheduleDAO.find_by_id(id=id)
     if schedule is None:
         raise ObjectMissingException
     else:
