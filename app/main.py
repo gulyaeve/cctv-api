@@ -54,7 +54,21 @@ api.include_router(incidents_router)
 api.include_router(analytics_router)
 
 
-app = FastAPI(title="Система видеонаблюдения", version=version)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Before startup
+
+    # Create exchange and queue in RabbitMQ
+    await declare_exchange_and_queue()
+    logging.info("RabbitMQ data ready")
+
+    yield
+    # After shutdown
+    logging.info("Application shutdown")
+    logging.shutdown()
+
+
+app = FastAPI(title="Система видеонаблюдения", version=version, lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="app/static"), "static")
 app.include_router(api)
 app.include_router(pages_router)
@@ -65,20 +79,6 @@ app.add_exception_handler(IncorrectEmailOrPassword, noauth_handler)
 app.add_exception_handler(TokenIncorrect, noauth_handler)
 app.add_exception_handler(TokenMissing, noauth_handler)
 app.add_exception_handler(UserNotPresent, noauth_handler)
-
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Before startup
-
-    # Create exchange and queue in RabbitMQ
-    await declare_exchange_and_queue()
-
-    yield
-    # After shutdown
-    logging.info("Application shutdown")
-    logging.shutdown()
 
 
 # CORS
