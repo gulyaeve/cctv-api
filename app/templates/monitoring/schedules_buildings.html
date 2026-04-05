@@ -22,11 +22,11 @@
     <tbody>
         {% for building in buildings %}
         <tr>
-            <td><a href="{{ url_for('page_get_building_classrooms_list_page', id=building.id)}}">{{ building.name }}</a></td>
+            <td><a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}">{{ building.name }}</a></td>
             <td>{{ building.location }}</td>
             <td>ГБПОУ ИТ.МОСКВА</td>
             <th>
-              <a href="{{ url_for('page_get_building_classrooms_list_page', id=building.id)}}"><i class="fa fa-table" aria-hidden="true"></i></a>
+              <a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}"><i class="fa fa-table" aria-hidden="true"></i></a>
             </th>
         </tr>
         {% endfor %}

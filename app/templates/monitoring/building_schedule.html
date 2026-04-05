@@ -1,17 +1,48 @@
 {% extends "mainmenu.html" %}
 
-{% block content %}
-<div class="flex justify-center mb-10 text-3xl">
-    Расписание корпуса {{ building.name }}
-</div>
-<div class="flex flex-col items-center">
-    {% for schedule in schedules %}
-        <div>
-            <div class="text-2xl font-bold mb-5">
-                <span><a href="/schedule/{{ schedule.id }}">{{ schedule.name }}</a></span>
-            </div>
+{% block title %}{{ building.name }}. Расписание занятий{% endblock %}
 
-        </div>
-    {% endfor %}
-</div>
+{% block breadcrubs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{url_for('page_get_schedules_buildings_page') }}">Учебные корпуса</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ building.name }}. Расписание занятий</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
+<script type="text/javascript">
+ new DataTable('#data');
+</script>
+{% endblock %}
+
+{% block content %}
+<table id="data" class="display">
+    <thead>
+        <tr>
+            <th>Дисциплина</th>
+            <th>Дата и время</th>
+            <th>Преподаватель</th>
+            <th>Кабинет</th>
+            <th>Корпус</th>
+            <th>Статус</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for schedule in schedules %}
+        <tr>
+            <td><a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}">{{ schedule.subject }}</a></td>
+            <td>{{ schedule.subject }}</td>
+            <td></td>
+            <th>
+              <a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}"><i class="fa fa-table" aria-hidden="true"></i></a>
+            </th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}

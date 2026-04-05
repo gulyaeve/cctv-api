@@ -40,13 +40,15 @@
             {% endif %}
           {% endfor %}
           {% for camera in cameras %}
-            <g id="cam{{camera.id}}" transform="translate(0,0)" data-angle="{{camera.polygon_map}}">
+            <g id="cam{{camera.id}}" class="camera" transform="translate(0,0)" data-angle="{{camera.polygon_map}}">
+              <g class="fov-group">
                 <!-- объектив (центр вращения) -->
-                <circle id="lens" cx="{{camera.pos_x}}" cy="{{camera.pos_y}}" r="6" fill="#5582FF" stroke="#5582FF" stroke-width="1"/>
                 <!-- поле зрения: треугольник, вершина в центре объектива -->
                 <polygon class="fov"
-                         points="{{camera.pos_x}},{{camera.pos_y}} {{camera.pos_x + 104}},{{camera.pos_y - 18}} {{camera.pos_x + 104}},{{camera.pos_y + 18}}"
+                         points="{{camera.pos_x}},{{camera.pos_y}} {{camera.pos_x + 84}},{{camera.pos_y - 80}} {{camera.pos_x + 84}},{{camera.pos_y + 80}}"
                          fill="#ffa500" fill-opacity="0.12" stroke="#5582FF" stroke-opacity="0.6" stroke-width="1"/>
+              </g>
+              <circle id="lens" cx="{{camera.pos_x}}" cy="{{camera.pos_y}}" r="6" fill="#5582FF" stroke="#5582FF" stroke-width="1"/>
             </g>
           {% endfor %}
         </svg>
@@ -148,30 +150,29 @@
 
   </script>
   <script>
-    (function(){
-      function setCamDir(id, deg, cx = 14, cy = 24) {
-        const g = document.getElementById(id);
-        if (!g) return;
-        const fov = g.querySelector('.fov');
-        if (!fov) return;
-        fov.setAttribute('transform', `rotate(${deg} ${cx} ${cy})`);
-      }
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('g.camera').forEach(g => {
+      const angle = parseFloat(g.dataset.angle);
+      if (isNaN(angle)) return;
+      const circle = g.querySelector('circle');
+      const cx = circle ? parseFloat(circle.getAttribute('cx')) : (parseFloat(g.dataset.cx) || 14);
+      const cy = circle ? parseFloat(circle.getAttribute('cy')) : (parseFloat(g.dataset.cy) || 24);
+      const fov = g.querySelector('.fov-group') || g.querySelector('polygon');
+      if (!fov) return;
+      fov.setAttribute('transform', `rotate(${angle} ${cx} ${cy})`);
+    });
+  });
 
-      // сделать функцию доступной глобально (по желанию)
-      window.setCamDir = setCamDir;
-
-      // при загрузке страницы применяем angles из data-angle ко всем .camera
-      function initCameras() {
-        document.querySelectorAll('g.camera').forEach(g => {
-          const id = g.id;
-          if (!id) return;
-          const deg = parseFloat(g.dataset.angle);
-          if (!isNaN(deg)) setCamDir(id, deg);
-        });
-      }
-
-      // грузим как можно раньше после построения DOM
-      window.addEventListener('DOMContentLoaded', initCameras);
-    })();
+  window.setCamAngle = (id, angle) => {
+    const g = document.getElementById(id);
+    if (!g) return;
+    const circle = g.querySelector('circle');
+    const cx = circle ? parseFloat(circle.getAttribute('cx')) : (parseFloat(g.dataset.cx) || 14);
+    const cy = circle ? parseFloat(circle.getAttribute('cy')) : (parseFloat(g.dataset.cy) || 24);
+    const fov = g.querySelector('.fov-group') || g.querySelector('polygon');
+    if (!fov) return;
+    fov.setAttribute('transform', `rotate(${angle} ${cx} ${cy})`);
+    g.dataset.angle = angle;
+  };
   </script>
 {% endblock %}

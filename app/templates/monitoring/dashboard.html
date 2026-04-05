@@ -130,7 +130,7 @@
   }
 
   // 2) Текущая неделя (weekStartsOn: 0=Sun,1=Mon,...)
-  function getCurrentWeek(now = new Date(), weekStartsOn = 1) {
+  function getCurrentWeek(now = new Date(), weekStartsOn = 0) {
     const cur = new Date(now);
     const wDay = cur.getDay();
     const diff = (wDay - weekStartsOn + 7) % 7;
@@ -175,21 +175,21 @@
         setTextById('incall-month-count', result);
       } );
 
-    url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentDay().start + "&date_to=" + getCurrentDay().end + "&status=2";
+    url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentDay().start + "&date_to=" + getCurrentDay().end;
     response = fetch(url)
       .then(response => response.text())
       .then(result => {
         setTextById('schedule-day-count', result);
       } );
 
-    url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentWeek().start + "&date_to=" + getCurrentWeek().end + "&status=2";
+    url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentWeek().start + "&date_to=" + getCurrentWeek().end;
     response = fetch(url)
       .then(response => response.text())
       .then(result => {
         setTextById('schedule-week-count', result);
       } );
 
-    url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentMonth().start + "&date_to=" + getCurrentMonth().end + "&status=2";
+    url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentMonth().start + "&date_to=" + getCurrentMonth().end;
     response = fetch(url)
       .then(response => response.text())
       .then(result => {
