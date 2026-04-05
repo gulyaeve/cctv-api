@@ -6,6 +6,7 @@ from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings, get_building
 from app.cameras.dao import CamerasDAO
 from app.classrooms.dao import ClassroomsDAO
+from app.schedule.dao import ScheduleDAO
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 
@@ -106,6 +107,29 @@ async def page_get_building_classrooms_map_page(
         context={
             "classrooms": classrooms,
             "cameras": cameras,
+            "building": building,
+            "current_user": current_user,
+        }
+    )
+
+
+@router.get(
+    "/{id}/schedule",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
+async def page_get_building_schedule_page(
+    id: int,
+    request: Request,
+    building: BuildingModel=Depends(get_building),
+    current_user: UserModel = Depends(get_current_user),
+    ):
+    schedules = await ScheduleDAO.find_all(building_id=id)
+    return templates.TemplateResponse(
+        request=request,
+        name="monitoring/building_schedule.html",
+        context={
+            "schedules": schedules,
             "building": building,
             "current_user": current_user,
         }
