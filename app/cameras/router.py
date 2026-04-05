@@ -52,8 +52,11 @@ async def get_data_for_videowall(chunk_size: int = 9):
     :chunk_size: размер чанка, по умолчанию 9
     """
     cameras = await CamerasDAO.find_all()
-    chunks = [cameras[i:i+chunk_size] for i in range(0, len(cameras), chunk_size)]
-    return chunks
+    if cameras:
+        chunks = [cameras[i:i+chunk_size] for i in range(0, len(cameras), chunk_size)]
+        return chunks
+    else:
+        raise ObjectMissingException
 
 
 @router.get("/{id}", response_model=CameraScheme)
