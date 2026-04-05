@@ -1,51 +1,109 @@
-{% extends "base-without-mainmenu.html" %}
+{% extends "base-videowall.html" %}
 
 {% block container %}-fluid{% endblock %}
 
 {% block content %}
 <div class="row videowall-monitoring">
-  <div class="col-4 video-monitoring" style="">
-
+  <div class="col-4 p-0 video-monitoring" style="">
+    <video id="camera1" controls muted autoplay ></video>
   </div>
-  <div class="col-4 video-monitoring">
-
+  <div class="col-4 p-0 video-monitoring">
+    <video id="camera2" controls muted autoplay ></video>
   </div>
-  <div class="col-4 video-monitoring">
-
+  <div class="col-4 p-0 video-monitoring">
+    <video id="camera3" controls muted autoplay ></video>
   </div>
-  <div class="col-4 video-monitoring">
-
+  <div class="col-4 p-0 video-monitoring">
+    <video id="camera4" controls muted autoplay ></video>
   </div>
-  <div class="col-4 video-monitoring">
-
+  <div class="col-4 p-0 video-monitoring">
+    <video id="camera5" controls muted autoplay ></video>
   </div>
-  <div class="col-4 video-monitoring">
-
+  <div class="col-4 p-0 video-monitoring">
+    <video id="camera6" controls muted autoplay ></video>
   </div>
-  <div class="col-4 video-monitoring">
-
+  <div class="col-4 p-0 video-monitoring">
+    <video id="camera7" controls muted autoplay ></video>
   </div>
-  <div class="col-4 video-monitoring">
-
+  <div class="col-4 p-0 video-monitoring">
+    <video id="camera8" controls muted autoplay ></video>
   </div>
-  <div class="col-4 video-monitoring">
-
+  <div class="col-4 p-0 video-monitoring">
+    <video id="camera9" controls muted autoplay ></video>
   </div>
 </div>
 
 {% endblock %}
 
 {% block script %}
+  <script defer src="{{ url_for('static', path='js/reader.js') }}"></script>
+  <script>
+      function getCookie(name) {
+      const cookieValue = document.cookie
+              .split('; ')
+              .find((row) => row.startsWith(`${name}=`))
+              ?.split('=')[1]; // The optional chaining operator (?) is used here
+
+          return cookieValue || null;
+      }
+      const access_token = getCookie('access_token');
+      // console.log(token);
+  </script>
   <script type="text/javascript">
+
+    let dataCameras = [];
+    let dataCamerasLength = [];
+    let reader = null;
+    let cunckCount = 0;
+
     window.addEventListener('load', () => {
 
       let url = "{{ url_for('get_data_for_videowall') }}";
       let response = fetch(url)
-        .then(response => response.text())
+        .then(response => response.json())
         .then(result => {
-
+          dataCameras = result;
+          dataCamerasLength = dataCameras.length;
+          cameraConnect(dataCameras[cunckCount], cunckCount);
         } );
 
+      let timer = setInterval(() => cameraConnect(dataCameras[cunckCount]), 30000);
+
+    });
+
+    function cameraConnect(dataCameras) {
+        console.log("currentChunk = " + cunckCount);
+        for (let i = 0; i < dataCameras.length; i++) {
+          reader = new MediaMTXWebRTCReader({
+          url: "https://media.cctv.itmoscow/" + dataCameras[i]["id"] + "/whep",
+          token: access_token,
+          onError: (err) => {
+              console.error(err);
+          },
+          onTrack: (evt) => {
+              document.getElementById("camera" + i).srcObject = evt.streams[0];
+          },
+          onDataChannel: (evt) => {
+              evt.channel.binaryType = "arraybuffer";
+              evt.channel.onmessage = (evt) => {
+              console.log("data channel message", evt.data);
+              };
+          },
+          });
+        }
+
+        cunckCount++;
+        if (cunckCount >= dataCamerasLength) {
+          // console.log('dataCamerasLength = ' + dataCamerasLength)
+          cunckCount = 0;
+        }
+
+    };
+
+    window.addEventListener("beforeunload", () => {
+        if (reader !== null) {
+        reader.close();
+        }
     });
   </script>
 {% endblock %}

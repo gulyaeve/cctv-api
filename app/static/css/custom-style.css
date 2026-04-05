@@ -345,3 +345,8 @@ button:focus {
   background: #000;
   border: 1px #333 solid;
 }
+
+.video-monitoring video{
+  width: inherit;
+  height: inherit;
+}

@@ -26,46 +26,48 @@
         <div class="col-9 p-0">
           <div class="video-wall {% if len_cameras == 2 %} d-flex {% endif %}">
               {% for camera in cameras %}
-                {% if cameras.index(camera) in (0, 2) %}
-                  <div class="video-wall-string d-flex {% if len_cameras == 1 %} h-100 {% endif %}">
-                {% endif %}
-                  <div class="video {% if len_cameras == 1 %} w-100 {% endif %} d-inline">
-                  <!-- <a href="#" data-toggle="modal" data-target="#cam{{ cameras.index(camera) + 1 }}"><img src="/camera_view/{{ camera.id }}" alt=""></a> -->
-                  <!-- <video id="camera_{{ camera.id }}" controls muted autoplay width="640" height="480"></video> -->
-                    <video id="camera_{{ camera.id }}" controls muted autoplay ></video>
-                    <script>
-                      let reader_{{ camera.id }} = null;
+                {% if cameras.index(camera) < 5 %}
+                  {% if cameras.index(camera) in (0, 2) %}
+                    <div class="video-wall-string d-flex {% if len_cameras == 1 %} h-100 {% endif %}">
+                  {% endif %}
+                    <div class="video {% if len_cameras == 1 %} w-100 {% endif %} d-inline">
+                    <!-- <a href="#" data-toggle="modal" data-target="#cam{{ cameras.index(camera) + 1 }}"><img src="/camera_view/{{ camera.id }}" alt=""></a> -->
+                    <!-- <video id="camera_{{ camera.id }}" controls muted autoplay width="640" height="480"></video> -->
+                      <video id="camera_{{ camera.id }}" controls muted autoplay ></video>
+                      <script>
+                        let reader_{{ camera.id }} = null;
 
-                      window.addEventListener("load", () => {
-                          reader_{{ camera.id }} = new MediaMTXWebRTCReader({
-                          url: "https://media.cctv.itmoscow/{{ camera.id }}/whep",
-                          // url: "http://cctv.itmoscow:8889/{{ camera.id }}/whep",
-                          // url: "https://{{ domain }}:8889/{{ camera.id }}/whep", TODO: Replace to variable
-                          token: access_token, // fill if needed
-                          onError: (err) => {
-                              console.error(err);
-                          },
-                          onTrack: (evt) => {
-                              document.getElementById("camera_{{ camera.id }}").srcObject = evt.streams[0];
-                          },
-                          onDataChannel: (evt) => {
-                              evt.channel.binaryType = "arraybuffer";
-                              evt.channel.onmessage = (evt) => {
-                              console.log("data channel message", evt.data);
-                              };
-                          },
-                          });
-                      });
+                        window.addEventListener("load", () => {
+                            reader_{{ camera.id }} = new MediaMTXWebRTCReader({
+                            url: "https://media.cctv.itmoscow/{{ camera.id }}/whep",
+                            // url: "http://cctv.itmoscow:8889/{{ camera.id }}/whep",
+                            // url: "https://{{ domain }}:8889/{{ camera.id }}/whep", TODO: Replace to variable
+                            token: access_token, // fill if needed
+                            onError: (err) => {
+                                console.error(err);
+                            },
+                            onTrack: (evt) => {
+                                document.getElementById("camera_{{ camera.id }}").srcObject = evt.streams[0];
+                            },
+                            onDataChannel: (evt) => {
+                                evt.channel.binaryType = "arraybuffer";
+                                evt.channel.onmessage = (evt) => {
+                                console.log("data channel message", evt.data);
+                                };
+                            },
+                            });
+                        });
 
-                      window.addEventListener("beforeunload", () => {
-                          if (reader !== null) {
-                          reader.close();
-                          }
-                      });
-                    </script>
-                </div>
-                {% if (cameras.index(camera) in (1, 3)) or (cameras.index(camera) + 1 == len_cameras) %}
+                        window.addEventListener("beforeunload", () => {
+                            if (reader !== null) {
+                            reader.close();
+                            }
+                        });
+                      </script>
                   </div>
+                  {% if (cameras.index(camera) in (1, 3)) or (cameras.index(camera) + 1 == len_cameras) %}
+                    </div>
+                  {% endif %}
                 {% endif %}
               {% endfor %}
           </div>

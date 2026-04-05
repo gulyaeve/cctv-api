@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CCTV.ITMOSCOW | Система видеонаблюдения</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='css/font-awesome.min.css') }}" />
+    <!-- Fonts Montserrat -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/monserrat.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', path='css/stylesheet.css') }}" />
+    <!-- Main style -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/custom-style.css') }}" />
+    <link href="{{ url_for('static', path='css/datatables.css') }}" rel="stylesheet">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+  <!--Main Navigation-->
+  <header>
+    <style>
+      /* Height for devices larger than 576px */
+      @media (min-width: 992px) {
+        #intro {
+          margin-top: -58.59px;
+        }
+      }
+      .navbar .nav-link {
+        color: #fff !important;
+        background-color: #333333;
+      }
+    </style>
+
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark d-none d-lg-block" style="z-index: 2000;">
+      <div class="container">
+        <a class="navbar-brand nav-link" href="{{ url_for('page_get_dashboard_page') }}">
+          <strong><i style="color: #5388FF;">CCTV.</i>ITMOSCOW</strong>
+        </a>
+        <b>
+          <div id="clock">Ошибка вывода текущего времени</div>
+        </b>
+        <div class="d-flex">
+          <div class="lk-link">
+            <a class="nav-link" href="/lk" rel="nofollow" target="_blank">
+              {{ current_user.full_name }}<br><i style="color: #5388FF;">{{ current_user.full_name }}</i>
+            </a>
+          </div>
+          <div class="avatar-placeholder">
+              <img src="{{ url_for('static', path='img/login.png') }}">
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- Navbar -->
+  </header>
+  <!--Main layout-->
+  <main class="mt-0">
+    {# <img style="min-width: 100%; min-height: 100%;" src={{ url_for('static', path='img/background.jpg') }} alt=""> #}
+      <!--Section: Content-->
+      <div class="container{% block container %}{% endblock %}">
+        {% if self.title() %}<h2>{% block title %}{% endblock %}</h2>{% endif%}
+        {% block breadcrubs %}{% endblock %}
+        {% if self.title() %}<hr>{% endif%}
+        {% block content %}{% endblock %}
+      </div>
+      <!--Section: Content-->
+  </main>
+  <!--Main layout-->
+
+
+</body>
+
+  <script src="{{ url_for('static', path='js/jquery-3.4.1.slim.min.js') }}"></script>
+  <!-- <script src="js/popper.min.js"></script> -->
+  <script src="{{ url_for('static', path='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
+
+  {% block script %}{% endblock %}
+
+  <script>
+    function currentTime() {
+      var date = new Date(); /* creating object of Date class */
+      var day = date.getDate();
+      var month = date.getMonth() + 1;
+      var year = date.getFullYear();
+      var hour = date.getHours();
+      var min = date.getMinutes();
+      var sec = date.getSeconds();
+      day = updateTime(day);
+      month = updateTime(month);
+      year = updateTime(year);
+      hour = updateTime(hour);
+      min = updateTime(min);
+      sec = updateTime(sec);
+      // document.getElementById("clock").innerText = date;
+      document.getElementById("clock").innerText = day + "." + month + "." + year + " | " + hour + " : " + min + " : " + sec; /* adding time to the div */
+      var t = setTimeout(function () { currentTime() }, 1000); /* setting timer */
+    }
+
+    function updateTime(k) {
+      if (k < 10) {
+        return "0" + k;
+      }
+      else {
+        return k;
+      }
+    }
+
+    currentTime(); /* calling currentTime() function to initiate the process */
+  </script>
+</html>
