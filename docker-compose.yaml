@@ -52,7 +52,7 @@ services:
     image: cctv_backend
     build:
       context: .
-      dockerfile: Dockerfile-prod
+      # dockerfile: Dockerfile-prod
     volumes:
       - /home/user/screenshots:/src/app/static/screenshots
     container_name: cctv_backend
