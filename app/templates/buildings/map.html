@@ -40,16 +40,18 @@
 
               {% for camera in cameras %}
                 {% if classroom.id == camera.classroom_id %}
-                  <g id="cam{{camera.id}}" class="camera" transform="translate(0,0)" data-angle="{{camera.polygon_map}}">
-                    <g class="fov-group">
-                      <!-- объектив (центр вращения) -->
-                      <!-- поле зрения: треугольник, вершина в центре объектива -->
-                      <polygon class="fov"
-                               points="{{camera.pos_x}},{{camera.pos_y}} {{camera.pos_x + 84}},{{camera.pos_y - 80}} {{camera.pos_x + 84}},{{camera.pos_y + 80}}"
-                               fill="#ffa500" fill-opacity="0.12" stroke="#5582FF" stroke-opacity="0.6" stroke-width="1"/>
+                  {% if camera.pos_x is not none or camera.pos_y is not none or camera.polygon_map is not none %}
+                    <g id="cam{{camera.id}}" class="camera" transform="translate(0,0)" data-angle="{{camera.polygon_map}}">
+                      <g class="fov-group">
+                        <!-- объектив (центр вращения) -->
+                        <!-- поле зрения: треугольник, вершина в центре объектива -->
+                        <polygon class="fov"
+                                 points="{{camera.pos_x}},{{camera.pos_y}} {{camera.pos_x + 84}},{{camera.pos_y - 80}} {{camera.pos_x + 84}},{{camera.pos_y + 80}}"
+                                 fill="#ffa500" fill-opacity="0.12" stroke="#5582FF" stroke-opacity="0.6" stroke-width="1"/>
+                      </g>
+                      <circle id="lens" cx="{{camera.pos_x}}" cy="{{camera.pos_y}}" r="6" fill="#5582FF" stroke="#5582FF" stroke-width="1"/>
                     </g>
-                    <circle id="lens" cx="{{camera.pos_x}}" cy="{{camera.pos_y}}" r="6" fill="#5582FF" stroke="#5582FF" stroke-width="1"/>
-                  </g>
+                  {% endif %}
                 {% endif %}
               {% endfor %}
             {% endif %}
