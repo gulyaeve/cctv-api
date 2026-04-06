@@ -29,7 +29,10 @@ class IncidentScheme(IncidentAppendScheme):
     time_created: datetime
     cameras_screenshots: Optional[list[str]] = None
     classroom_id: Optional[int] = None
+    classroom_name: Optional[str] = None
     building_id: Optional[int] = None
+    building_name: Optional[str] = None
+    visor_name: Optional[str] = None
     cameras_ids: Optional[list[int]] = None
     cameras_screenshots: Optional[list[str]] = None
 

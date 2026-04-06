@@ -52,11 +52,13 @@ class IncidentsDAO(BaseDAO):
                     ClassroomModel.name.label("classroom_name"),
                     BuildingModel.id.label("building_id"),
                     BuildingModel.name.label("building_name"),
+                    UserModel.full_name.label("visor_name"),
                 )
                 .select_from(IncidentModel)
                 .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
+                .join(UserModel, IncidentModel.visor_id == UserModel.id)
                 .filter(filter_query)
                 .order_by(desc(IncidentModel.time_created))
             )
