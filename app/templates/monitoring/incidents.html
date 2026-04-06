@@ -2,6 +2,91 @@
 
 {% block title %}Инциденты{% endblock %}
 
-{% block content %}
+{% block scripts %}
+  <script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
+  <script type="text/javascript">
+    var table = new DataTable('#data', {
+    layout: {
+        topStart: {
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: 'Экспорт Excel',
+                    exportOptions: {
+                        modifier: {
+                            page: 'current'
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    columnControl: [
+        'order',
+        [
+            'search',
+            'spacer',
+            {
+                extend: 'dropdown',
+                icon: 'columns',
+                text: 'Change columns',
+                content: ['colVis']
+            }
+        ]
+    ],
+    ordering: {
+        indicators: false,
+        handler: false
+    }
+  });
 
+  var filteredData = table
+    .column(5)
+    .data()
+    .filter(function (value, index) {
+        return value > 20 ? true : false;
+    });
+
+  </script>
+{% endblock %}
+
+{% block content %}
+  <table id="data" class="display">
+      <thead>
+          <tr>
+              <th>Дисциплина</th>
+              <th>Дата и время</th>
+              <th>Корпус, Кабинет</th>
+              <th>Визор</th>
+              <th>Комментарий</th>
+              <th>Статус</th>
+              <th></th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for incident in incidents %}
+          <tr>
+              <td><a href="">{{ incident.event }}</a></td>
+              <td>{{ incident.time_created }}</td>
+              <td class="text-center">{{ incident.building_id }}, {{ incident.classroom_id }}</td>
+              <td class="text-center">{{ incident.visor_id }}</td>
+              <td class="text-center">{{ incident.comment }}</td>
+              <td class="text-center">
+                {% if incident.status == 0 %}
+                  <span class="badge badge-success">Всё хорошо</span>
+                {% elif incident.status == 3 %}
+                  <span class="badge badge-warning">Контроль</span>
+                {% else %}
+                  <span class="badge badge-danger">Инцидент</span>
+                {% endif %}
+              </td>
+              <th class="text-center">
+                {# for cameras_screenshot in incident.cameras_screenshots #}
+                  <a href="{{ cameras_screenshot }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                {# endfor #}
+              </th>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
 {% endblock %}

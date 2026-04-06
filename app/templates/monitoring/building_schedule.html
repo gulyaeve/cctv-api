@@ -13,8 +13,16 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
+<script src="{{ url_for('static', path='js/moment.min.js') }}"></script>
 <script type="text/javascript">
- new DataTable('#data');
+ new DataTable('#data', {
+    columnDefs: [
+        {
+            targets: 1,
+            render: DataTable.render.datetime('YYYY-MM-DD H:i:s', 'MMM D, YY', 'ru')
+        }
+    ]
+});
 </script>
 {% endblock %}
 
@@ -24,9 +32,9 @@
         <tr>
             <th>Дисциплина</th>
             <th>Дата и время</th>
+            <th>Группа</th>
             <th>Преподаватель</th>
             <th>Кабинет</th>
-            <th>Корпус</th>
             <th>Статус</th>
             <th></th>
         </tr>
@@ -35,10 +43,21 @@
         {% for schedule in schedules %}
         <tr>
             <td><a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}">{{ schedule.subject }}</a></td>
-            <td>{{ schedule.subject }}</td>
-            <td></td>
-            <th>
-              <a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}"><i class="fa fa-table" aria-hidden="true"></i></a>
+            <td>{{ schedule.timestamp_start }}</td>
+            <td class="text-center">{{ schedule.group_name }}</td>
+            <td class="text-center">{{ schedule.teacher_name }}</td>
+            <td class="text-center">{{ schedule.classroom_name }}</td>
+            <td class="text-center">
+              {% if schedule.status == 1 %}
+                <span class="badge badge-secondary">Не началось</span>
+              {% elif schedule.status == 2 %}
+                <span class="badge badge-warning">В процессе</span>
+              {% else %}
+                <span class="badge badge-success">Завершено</span>
+              {% endif %}
+            </td>
+            <th class="text-center">
+              <a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
             </th>
         </tr>
         {% endfor %}
