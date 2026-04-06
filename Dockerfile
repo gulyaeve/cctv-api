@@ -8,13 +8,6 @@ RUN --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen
 
-# RUN --mount=type=bind,source=requirements.txt,target=requirements.txt \
-#       pip install -r requirements.txt
-
-# COPY requirements.txt ./
-# RUN pip install --upgrade pip
-# RUN pip install -r requirements.txt
-
 COPY . .
 
 # Place executables in the environment at the front of the path
