@@ -37,6 +37,7 @@
           {% for classroom in classrooms %}
             {% if classroom.floor == floor %}
               <a href="{{url_for('page_get_cameras_view_page', id=classroom.id)}}"><polygon data-id="{{classroom.id}}" points="{{classroom.polygon_map}}"></polygon></a>
+
               {% for camera in cameras %}
                 {% if classroom.id == camera.classroom_id %}
                   <g id="cam{{camera.id}}" class="camera" transform="translate(0,0)" data-angle="{{camera.polygon_map}}">
@@ -53,6 +54,7 @@
               {% endfor %}
             {% endif %}
           {% endfor %}
+
 
         </svg>
 
@@ -177,5 +179,6 @@
     fov.setAttribute('transform', `rotate(${angle} ${cx} ${cy})`);
     g.dataset.angle = angle;
   };
+
   </script>
 {% endblock %}

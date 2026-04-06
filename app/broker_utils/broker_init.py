@@ -21,6 +21,7 @@ async def declare_exchange_and_queue():
     camera_exchange = RabbitExchange(settings.CAMERA_EXCHANGE_NAME, ExchangeType.TOPIC, auto_delete=False)
 
     async with broker:
+
         img_queue: aio_pika.RobustQueue = await broker.declare_queue(queue_img)
         img_exchange: aio_pika.RobustExchange = await broker.declare_exchange(exchange_in)
         await img_queue.bind(exchange=img_exchange)
@@ -32,11 +33,13 @@ async def declare_exchange_and_queue():
         await max_queue.bind(exchange=msg_exchange)
         await tg_queue.bind(exchange=msg_exchange)
 
+
         camera_add_queue: aio_pika.RobustQueue = await broker.declare_queue(queue_add_camera)
         camera_remove_queue: aio_pika.RobustQueue = await broker.declare_queue(queue_remove_camera)
         camera_update_queue: aio_pika.RobustQueue = await broker.declare_queue(queue_update_camera)
 
         camera_re_exchange: aio_pika.RobustExchange = await broker.declare_exchange(camera_exchange)
+
 
         await camera_add_queue.bind(exchange=camera_re_exchange)
         await camera_remove_queue.bind(exchange=camera_re_exchange)

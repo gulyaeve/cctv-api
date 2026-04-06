@@ -1,9 +1,12 @@
+
 {% extends "base-videowall.html" %}
+
 
 {% block container %}-fluid{% endblock %}
 
 {% block content %}
 <div class="row videowall-monitoring">
+
   <div class="col-4 p-0 video-monitoring" style="">
     <video id="camera1" controls muted autoplay ></video>
   </div>
@@ -30,12 +33,14 @@
   </div>
   <div class="col-4 p-0 video-monitoring">
     <video id="camera9" controls muted autoplay ></video>
+
   </div>
 </div>
 
 {% endblock %}
 
 {% block script %}
+
   <script defer src="{{ url_for('static', path='js/reader.js') }}"></script>
   <script>
       function getCookie(name) {
@@ -56,10 +61,12 @@
     let reader = null;
     let cunckCount = 0;
 
+
     window.addEventListener('load', () => {
 
       let url = "{{ url_for('get_data_for_videowall') }}";
       let response = fetch(url)
+
         .then(response => response.json())
         .then(result => {
           dataCameras = result;
@@ -104,6 +111,7 @@
         if (reader !== null) {
         reader.close();
         }
+
     });
   </script>
 {% endblock %}
