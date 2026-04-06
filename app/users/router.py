@@ -105,12 +105,12 @@ async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Op
 
 @router.post("/check_token")
 async def check_token(payload: MediaMTXPayload):
-    logging.info(f"{payload=}")
+    # logging.info(f"{payload=}")
     if payload.query == f"jwt={settings.TOKEN_BEARER}":
-        logging.info(f"{payload.query=} SUCCESS")
+        # logging.info(f"{payload.query=} SUCCESS")
         raise HTTPException(status.HTTP_200_OK)
     if payload.token:
-        logging.info(f"{payload.token=}")
+        # logging.info(f"{payload.token=}")
         return await validate_token(payload.token)
     else:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
