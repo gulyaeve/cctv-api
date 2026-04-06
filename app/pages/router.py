@@ -1,14 +1,12 @@
 from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.responses import HTMLResponse
 
 from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings
-from app.camera_utils.streaming import Camera, gen_frames
 from app.cameras.dao import CamerasDAO
 from app.buildings.dao import BuildingsDAO
-from app.cameras.models import CameraModel
-from app.cameras.router import get_all_cameras, get_camera
+from app.cameras.router import get_all_cameras
 from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
 from app.incidents.dao import IncidentsDAO
@@ -159,17 +157,18 @@ async def page_get_active_monitoring(
         )
 
 
-@router.get(
-    "/camera_view/{id}",
-    response_class=StreamingResponse,
-    dependencies=[Depends(permission_required("frontend"))]
-)
-async def camera_stream(
-    # id: int,
-    camera: CameraModel=Depends(get_camera),
-    ):
-    camera_stream = Camera(camera.rtsp_url)
-    return StreamingResponse(gen_frames(camera_stream), media_type='multipart/x-mixed-replace; boundary=frame')
+# Removed opencv
+# @router.get(
+#     "/camera_view/{id}",
+#     response_class=StreamingResponse,
+#     dependencies=[Depends(permission_required("frontend"))]
+# )
+# async def camera_stream(
+#     # id: int,
+#     camera: CameraModel=Depends(get_camera),
+#     ):
+#     camera_stream = Camera(camera.rtsp_url)
+#     return StreamingResponse(gen_frames(camera_stream), media_type='multipart/x-mixed-replace; boundary=frame')
 
 
 @router.get("/login", response_class=HTMLResponse)

@@ -33,7 +33,7 @@ async def page_get_schedules_page(
     ):
     return templates.TemplateResponse(
         request=request,
-        name="monitoring/schedules.html",
+        name="schedules/schedules.html",
         context={
             "schedules": schedules,
             "current_user": current_user,
@@ -54,7 +54,7 @@ async def page_get_schedules_buildings_page(
     ):
     return templates.TemplateResponse(
         request=request,
-        name="monitoring/schedules_buildings.html",
+        name="schedules/schedules_buildings.html",
         context={
             # "schedules": schedules,
             "current_user": current_user,

@@ -11,7 +11,6 @@ from app.incidents.dao import IncidentsDAO
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
-# from app.camera_utils.streaming import Camera
 # from fastapi_cache.decorator import cache
 
 
@@ -67,8 +66,6 @@ async def add_incident(data: IncidentAppendScheme):
     """
     Add incident with cameras
     """
-    # screenshot_dir = "app/static/screenshots"
-
     # Save to db, without screenshots
     data_to_save = data.model_dump()
     new_object: IncidentModel = await IncidentsDAO.add(**data_to_save)
@@ -84,21 +81,9 @@ async def add_incident(data: IncidentAppendScheme):
         data_to_save["cameras_screenshots"] = filenames
         await IncidentsDAO.update(new_object.id, **data_to_save)
 
-        # Save screenshots to disk
-        # for camera, filename in zip(data.cameras_ids, filenames):
-        #     camera_data = await CamerasDAO.find_one_or_none(id=camera)
-        #     if camera_data:
-        #         camera_rtsp = camera_data.rtsp_url
-        #         frame = Camera(camera_rtsp)
-        #         frame.save_screenshot(f"{screenshot_dir}/{filename}")
-
     incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
     # Send to messenger
-    if new_object.status == 2:
-        incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
-        logging.info(f"send {incident_full_info=}")
-        await message_to_tg(incident_full_info)
-    if new_object.status == 0:
+    if new_object.status in [0, 2]:
         incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
         logging.info(f"send {incident_full_info=}")
         await message_to_tg(incident_full_info)

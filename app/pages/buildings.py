@@ -33,7 +33,7 @@ async def page_get_buildings_page(
     ):
     return templates.TemplateResponse(
         request=request,
-        name="monitoring/buildings.html",
+        name="buildings/buildings.html",
         context={
             "buildings": buildings,
             "current_user": current_user,
@@ -56,7 +56,7 @@ async def page_get_building_classrooms_page(
     classrooms = await ClassroomsDAO.find_all(building_id=id)
     return templates.TemplateResponse(
         request=request,
-        name="monitoring/building_classrooms.html",
+        name="buildings/building_classrooms.html",
         context={
             "classrooms": classrooms,
             "building": building,
@@ -79,7 +79,7 @@ async def page_get_building_classrooms_list_page(
     classrooms = await ClassroomsDAO.find_all(building_id=id)
     return templates.TemplateResponse(
         request=request,
-        name="monitoring/list.html",
+        name="buildings/list.html",
         context={
             "classrooms": classrooms,
             "building": building,
@@ -103,7 +103,7 @@ async def page_get_building_classrooms_map_page(
     cameras = await CamerasDAO.find_all(building_id=id)
     return templates.TemplateResponse(
         request=request,
-        name="monitoring/map.html",
+        name="buildings/map.html",
         context={
             "classrooms": classrooms,
             "cameras": cameras,
@@ -127,7 +127,7 @@ async def page_get_building_schedule_page(
     schedules = await ScheduleDAO.find_all(building_id=id)
     return templates.TemplateResponse(
         request=request,
-        name="monitoring/building_schedule.html",
+        name="buildings/building_schedule.html",
         context={
             "schedules": schedules,
             "building": building,
