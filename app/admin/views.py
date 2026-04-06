@@ -93,6 +93,7 @@ class CamerasAdmin(ModelView, model=CameraModel):
         CameraModel.camera_ip,
         CameraModel.reg_ip,
         CameraModel.rtsp_url,
+        CameraModel.rtsp_url_preview,
         CameraModel.classroom,
         CameraModel.pos_x,
         CameraModel.pos_y,
