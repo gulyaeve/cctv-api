@@ -4,8 +4,9 @@ from fastapi.templating import Jinja2Templates
 
 from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings
+from app.incidents.dao import IncidentsDAO
 from app.schedule.models import ScheduleModel
-from app.schedule.router import get_all_schedules
+from app.schedule.router import get_all_schedules, get_schedule
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 
@@ -37,6 +38,28 @@ async def page_get_schedules_page(
         context={
             "schedules": schedules,
             "current_user": current_user,
+        }
+    )
+
+
+@router.get(
+    "/{id}",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
+async def page_get_schedule_info_page(
+    request: Request,
+    schedule: ScheduleModel=Depends(get_schedule),
+    current_user: UserModel = Depends(get_current_user)
+    ):
+    incidents = await IncidentsDAO.find_all(event=schedule.id)
+    return templates.TemplateResponse(
+        request=request,
+        name="schedules/schedule_info.html",
+        context={
+            "current_user": current_user,
+            "schedule": schedule,
+            "incidents": incidents,
         }
     )
 
