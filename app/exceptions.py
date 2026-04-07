@@ -47,3 +47,8 @@ class OperationNotPermited(BaseException):
 class NotAuthenticatedException(BaseException):
     status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Пользователь не авторизован"
+
+
+class ScheduleNotQuitException(BaseException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "Мероприятие не завершено"

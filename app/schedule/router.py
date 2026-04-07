@@ -9,7 +9,7 @@ from app.cameras.dao import CamerasDAO
 from app.schedule.dao import ScheduleDAO
 from app.schedule.models import ScheduleModel
 from app.schedule.schemas import ScheduleAddScheme, ScheduleAiSchema, ScheduleAiTask, ScheduleDaily, ScheduleScheme, ScheduleSearch
-from app.exceptions import ObjectMissingException
+from app.exceptions import ObjectMissingException, ScheduleNotQuitException
 from app.users.auth import auth_bearer_token
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
@@ -69,6 +69,8 @@ async def create_ai_task(
     query_params: Annotated[ScheduleAiSchema, Form()],
 ):
     schedule = await ScheduleDAO.find_by_id(id=id)
+    if schedule.status != 2:
+        raise ScheduleNotQuitException
     if query_params.camera_id is None:
         cameras_data = await CamerasDAO.find_all(classroom_id=schedule.classroom_id)
         cameras = [data.id for data in cameras_data]
