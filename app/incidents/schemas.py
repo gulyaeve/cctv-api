@@ -34,7 +34,9 @@ class IncidentScheme(IncidentAppendScheme):
     building_name: Optional[str] = None
     visor_name: Optional[str] = None
     cameras_ids: Optional[list[int]] = None
-    cameras_screenshots: Optional[list[str]] = None
+    teacher_id: Optional[int] = None
+    subject: Optional[str] = None
+    teacher_name: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -49,8 +51,12 @@ class IncidentSearch(BaseModel):
     building_id: Optional[int] = None
     date_from: Optional[date] = None
     date_to: Optional[date] = None
+    teacher_id: Optional[int] = None
+    subject: Optional[str] = None
+    teacher_name: Optional[str] = None
    
 
+# TODO: Check for remove
 class IncidentFullInfo(BaseModel):
     id: int
     comment: str

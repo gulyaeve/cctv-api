@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -59,7 +61,7 @@ async def page_get_dashboard_page(
 )
 async def page_get_incidents_page(
     request: Request,
-    incidents: IncidentModel=Depends(get_all_incidents),
+    incidents: List[IncidentModel]=Depends(get_all_incidents),
     current_user: UserModel = Depends(get_current_user)
     ):
     return templates.TemplateResponse(

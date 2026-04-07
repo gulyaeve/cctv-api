@@ -29,6 +29,9 @@ class IncidentsDAO(BaseDAO):
             "status": IncidentModel.status,
             "classroom_id": ClassroomModel.id,
             "building_id": BuildingModel.id,
+            "teacher_id": TeacherModel.id,
+            "subject": ScheduleModel.subject,
+            "teacher_name": TeacherModel.name,
         }
         conditions = filter_factory(filter_mapping, filter_by)
 
@@ -53,9 +56,13 @@ class IncidentsDAO(BaseDAO):
                     BuildingModel.id.label("building_id"),
                     BuildingModel.name.label("building_name"),
                     UserModel.full_name.label("visor_name"),
+                    ScheduleModel.teacher_id.label("teacher_id"),
+                    ScheduleModel.subject.label("subject"),
+                    TeacherModel.name.label("teacher_name")
                 )
                 .select_from(IncidentModel)
                 .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
+                .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .join(UserModel, IncidentModel.visor_id == UserModel.id)
@@ -86,6 +93,9 @@ class IncidentsDAO(BaseDAO):
             "status": IncidentModel.status,
             "classroom_id": ClassroomModel.id,
             "building_id": BuildingModel.id,
+            "teacher_id": TeacherModel.id,
+            "subject": ScheduleModel.subject,
+            "teacher_name": TeacherModel.name,
         }
         conditions = filter_factory(filter_mapping, filter_by)
 
@@ -108,6 +118,7 @@ class IncidentsDAO(BaseDAO):
                 )
                 .select_from(IncidentModel)
                 .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
+                .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .filter(filter_query)
