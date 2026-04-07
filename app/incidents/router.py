@@ -47,7 +47,7 @@ async def count_incidents(filter_query: Annotated[IncidentSearch, Query()]):
     return await IncidentsDAO.find_all_count(**filter_model)
 
 
-@router.get("/{id}", response_model=IncidentScheme)
+@router.get("/{id}", response_model=IncidentFullInfo)
 async def get_incident(id: int):
     item = await IncidentsDAO.get_incident_full_info(id=id)
     if item is None:
