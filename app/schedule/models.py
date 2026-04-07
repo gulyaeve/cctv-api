@@ -19,6 +19,7 @@ class ScheduleModel(Base):
     teacher = relationship("TeacherModel", back_populates="schedule")
     group = relationship("GroupModel", back_populates="schedule")
     incidents: Mapped[List["IncidentModel"]] = relationship(back_populates="schedule")
+    ai_analysis_schedule = relationship("AiAnalysisScheduleModel", back_populates="schedule")
 
     def __str__(self) -> str:
         return f"{self.subject} {self.timestamp_start}"

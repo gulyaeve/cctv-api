@@ -66,8 +66,11 @@ class Settings(BaseSettings):
     QUEUE_NAME: str = "cctv_scr_save"
     QUEUE_NAME_TG: str = "cctv_tg"
     QUEUE_NAME_MAX: str = "cctv_max"
+    QUEUE_NAME_AI_TASK: str = "cctv_ai_tasks"
+
     EXCHANGE_NAME_INPUT: str = "cctv_inc_send"
     EXCHANGE_NAME_OUTPUT: str = "cctv_msg_send"
+    EXCHANGE_NAME_AI: str = "cctv_ai"
 
     # EXCHANGE_NAME: str
     CAMERA_EXCHANGE_NAME: str = "cameras"

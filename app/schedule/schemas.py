@@ -47,6 +47,16 @@ class ScheduleSearch(BaseModel):
     date_from: Optional[date] = None
     date_to: Optional[date] = None
 
+
 class ScheduleDaily(ScheduleScheme):
     camera_id: int
     camera_rtsp: str
+
+
+class ScheduleAiSchema(BaseModel):
+    camera_id: Optional[int] = None
+
+
+class ScheduleAiTask(ScheduleAiSchema):
+    id: int
+    date: date

@@ -1,9 +1,14 @@
 from datetime import date
+import logging
+from random import choice
 from typing import Annotated, Sequence
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Form, Query, status
 
+from app.broker_utils.schedule_broker import send_ai_job
+from app.cameras.dao import CamerasDAO
 from app.schedule.dao import ScheduleDAO
-from app.schedule.schemas import ScheduleAddScheme, ScheduleDaily, ScheduleScheme, ScheduleSearch
+from app.schedule.models import ScheduleModel
+from app.schedule.schemas import ScheduleAddScheme, ScheduleAiSchema, ScheduleAiTask, ScheduleDaily, ScheduleScheme, ScheduleSearch
 from app.exceptions import ObjectMissingException
 from app.users.auth import auth_bearer_token
 from app.users.dependencies import get_current_user, permission_required
@@ -52,7 +57,34 @@ async def get_schedule(id: int):
         raise ObjectMissingException
     else:
         return schedule
-    
+
+
+@router.post(
+    "/{id}/ai_analysis",
+    dependencies=[Depends(permission_required("schedule"))],
+    status_code=201,
+)
+async def create_ai_task(
+    id: int,
+    query_params: Annotated[ScheduleAiSchema, Form()],
+):
+    schedule = await ScheduleDAO.find_by_id(id=id)
+    if query_params.camera_id is None:
+        cameras_data = await CamerasDAO.find_all(classroom_id=schedule.classroom_id)
+        cameras = [data.id for data in cameras_data]
+        if not cameras:
+            raise ObjectMissingException
+        camera = choice(cameras)
+    else:
+        camera = query_params.camera_id
+    data_to_analysis = ScheduleAiTask(
+        camera_id=camera,
+        id=schedule.id,
+        date=schedule.timestamp_start.date()
+    )
+    # return data_to_analysis
+    await send_ai_job(data_to_analysis)
+
 
 @router.post(
     "",

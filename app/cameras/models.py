@@ -19,6 +19,7 @@ class CameraModel(Base):
     polygon_map: Mapped[str] = mapped_column(nullable=True)
 
     classroom = relationship("ClassroomModel", back_populates="cameras")
+    ai_analysis_schedule = relationship("AiAnalysisScheduleModel", back_populates="cameras")
 
     def __str__(self) -> str:
         return f"{self.view}"
