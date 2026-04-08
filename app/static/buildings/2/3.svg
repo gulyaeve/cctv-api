@@ -37,13 +37,13 @@
       }
 
       .cls-2 {
-        stroke: none;
+        stroke: #ffffff;
         stroke-miterlimit: 10;
         stroke-width: 2px;
       }
 
       .cls-3 {
-        fill: #ffffff;
+        fill: none;
       }
     </style>
   </defs>
@@ -425,7 +425,7 @@
          width="5"
          height="18.799999"
          id="rect19-4"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="973.90002"
@@ -433,7 +433,7 @@
          width="5"
          height="18.799999"
          id="rect20-8"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="988.70001"
@@ -441,7 +441,7 @@
          width="5"
          height="18.799999"
          id="rect21-8"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="993.70001"
@@ -449,7 +449,7 @@
          width="4.8000002"
          height="18.799999"
          id="rect22-2"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="983.90002"
@@ -457,7 +457,7 @@
          width="4.8000002"
          height="18.799999"
          id="rect23-4"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="969.59998"
@@ -465,7 +465,7 @@
          width="4.3000002"
          height="18.799999"
          id="rect24"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="964.59998"
@@ -473,7 +473,7 @@
          width="5"
          height="18.799999"
          id="rect25"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="960"
@@ -481,7 +481,7 @@
          width="4.5999999"
          height="18.799999"
          id="rect26"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
     </g>
     <g
        id="g34"
@@ -494,7 +494,7 @@
          width="5"
          height="18.799999"
          id="rect27"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="973.90002"
@@ -502,7 +502,7 @@
          width="5"
          height="18.799999"
          id="rect28"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="988.59998"
@@ -510,7 +510,7 @@
          width="5"
          height="18.799999"
          id="rect29"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="993.59998"
@@ -518,7 +518,7 @@
          width="4.8000002"
          height="18.799999"
          id="rect30"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="983.79999"
@@ -526,7 +526,7 @@
          width="4.8000002"
          height="18.799999"
          id="rect31"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="969.5"
@@ -534,7 +534,7 @@
          width="4.3000002"
          height="18.799999"
          id="rect32"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="964.5"
@@ -542,7 +542,7 @@
          width="5"
          height="18.799999"
          id="rect33"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
       <rect
          class="st1"
          x="960"
@@ -550,7 +550,7 @@
          width="4.5999999"
          height="18.799999"
          id="rect34"
-         style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
     </g>
     <rect
        class="st1"
@@ -559,7 +559,7 @@
        width="90.699997"
        height="59.900002"
        id="rect48"
-       style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+       style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
     <line
        class="st1"
        x1="935.04205"
@@ -567,7 +567,7 @@
        x2="907.44208"
        y2="727.84717"
        id="line49-5"
-       style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+       style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
     <line
        class="st1"
        x1="935.04205"
@@ -575,7 +575,7 @@
        x2="907.44208"
        y2="767.44714"
        id="line50-5"
-       style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+       style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
     <rect
        class="st0"
        width="1328"
@@ -648,7 +648,7 @@
      x2="1271.5288"
      y2="525.34943"
      id="line61-4"
-     style="fill:none;stroke:#1d1d1b;stroke-width:1.33333;stroke-miterlimit:10;stroke-dasharray:4, 1.33333;stroke-dashoffset:0" />
+     style="fill:none;stroke:#ffffff;stroke-width:1.33333;stroke-miterlimit:10;stroke-dasharray:4, 1.33333;stroke-dashoffset:0" />
   <line
      class="cls-2"
      x1="1005.7546"
@@ -656,7 +656,7 @@
      x2="1271.5343"
      y2="937.57104"
      id="line61-2"
-     style="fill:none;stroke:#1d1d1b;stroke-width:1.33271;stroke-miterlimit:10;stroke-dasharray:3.99812, 1.33271;stroke-dashoffset:0" />
+     style="fill:none;stroke:#ffffff;stroke-width:1.33271;stroke-miterlimit:10;stroke-dasharray:3.99812, 1.33271;stroke-dashoffset:0" />
   <line
      class="cls-2"
      x1="1270.2534"
@@ -664,7 +664,7 @@
      x2="1270.2534"
      y2="938.15033"
      id="line61-2-5"
-     style="fill:none;stroke:#1d1d1b;stroke-width:1.33191;stroke-miterlimit:10;stroke-dasharray:3.99573, 1.33191;stroke-dashoffset:0" />
+     style="fill:none;stroke:#ffffff;stroke-width:1.33191;stroke-miterlimit:10;stroke-dasharray:3.99573, 1.33191;stroke-dashoffset:0" />
   <line
      class="cls-2"
      x1="1006.5787"
@@ -672,7 +672,7 @@
      x2="1006.5787"
      y2="938.90656"
      id="line61-2-5-1"
-     style="fill:none;stroke:#1d1d1b;stroke-width:1.33333333;stroke-miterlimit:10;stroke-dasharray:3.99999988,1.33333333;stroke-dashoffset:0" />
+     style="fill:none;stroke:#ffffff;stroke-width:1.33333333;stroke-miterlimit:10;stroke-dasharray:3.99999988,1.33333333;stroke-dashoffset:0" />
   <line
      class="cls-2"
      x1="1005.9962"
@@ -680,5 +680,5 @@
      x2="1005.9962"
      y2="574.23773"
      id="line61-2-5-1-2"
-     style="fill:none;stroke:#1d1d1b;stroke-width:1.33333333;stroke-miterlimit:10;stroke-dasharray:3.99999988,1.33333333;stroke-dashoffset:0" />
+     style="fill:none;stroke:#ffffff;stroke-width:1.33333333;stroke-miterlimit:10;stroke-dasharray:3.99999988,1.33333333;stroke-dashoffset:0" />
 </svg>

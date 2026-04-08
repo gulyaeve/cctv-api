@@ -2006,7 +2006,7 @@
          x2="877.39545"
          y2="462.40051"
          id="line40-4"
-         style="fill:none;stroke:#1d1d1b;stroke-width:1.91444px;stroke-miterlimit:10" />
+         style="fill:none;stroke:#ffffff;stroke-width:1.91444px;stroke-miterlimit:10" />
     </g>
     <rect
        class="cls-1"
@@ -2025,7 +2025,7 @@
      x2="1094.4966"
      y2="344.31934"
      id="line38-4"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.51249px;stroke-miterlimit:10" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.51249px;stroke-miterlimit:10" />
   <line
      class="cls-2"
      x1="320.65134"
@@ -2033,7 +2033,7 @@
      x2="320.65134"
      y2="388.1431"
      id="line38-4-5"
-     style="fill:none;stroke:#1d1d1b;stroke-width:1.5803px;stroke-miterlimit:10" />
+     style="fill:none;stroke:#ffffff;stroke-width:1.5803px;stroke-miterlimit:10" />
   <line
      class="cls-2"
      x1="503.52444"
@@ -2041,7 +2041,7 @@
      x2="503.52444"
      y2="387.54214"
      id="line38-4-7"
-     style="fill:none;stroke:#1d1d1b;stroke-width:1.59422px;stroke-miterlimit:10" />
+     style="fill:none;stroke:#ffffff;stroke-width:1.59422px;stroke-miterlimit:10" />
   <line
      class="cls-2"
      x1="459.82779"
@@ -2049,5 +2049,5 @@
      x2="498.8978"
      y2="314.95889"
      id="line41-5"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2px;stroke-miterlimit:10" />
+     style="fill:none;stroke:#ffffff;stroke-width:2px;stroke-miterlimit:10" />
 </svg>

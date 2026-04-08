@@ -1058,7 +1058,7 @@
        width="74.665184"
        height="178.33186"
        id="rect109-6"
-       style="fill:none;stroke:#1d1d1b;stroke-width:2.55321;stroke-miterlimit:10;stroke-dasharray:none" />
+       style="fill:none;stroke:#ffffff;stroke-width:2.55321;stroke-miterlimit:10;stroke-dasharray:none" />
     <line
        class="st2"
        x1="471.51505"
@@ -1066,7 +1066,7 @@
        x2="784.31891"
        y2="704.24316"
        id="line95-9"
-       style="fill:none;stroke:#1d1d1b;stroke-width:2.66666675;stroke-miterlimit:10;stroke-dasharray:none"
+       style="fill:none;stroke:#ffffff;stroke-width:2.66666675;stroke-miterlimit:10;stroke-dasharray:none"
        inkscape:transform-center-x="1.4336254"
        inkscape:transform-center-y="0.39488554" />
     <line
@@ -1076,7 +1076,7 @@
        x2="574.45404"
        y2="658.42047"
        id="line4-4"
-       style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+       style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
   </g>
   <line
      class="st2"
@@ -1119,7 +1119,7 @@
      x2="825.68182"
      y2="896.18463"
      id="line100-4"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
   <line
      class="st2"
      x1="825.12787"
@@ -1127,7 +1127,7 @@
      x2="911.15851"
      y2="933.09668"
      id="line113-2"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
   <line
      class="st2"
      x1="825.71307"
@@ -1135,7 +1135,7 @@
      x2="910.95398"
      y2="1013.8409"
      id="line113-5"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
   <line
      class="st2"
      x1="933.87213"
@@ -1143,7 +1143,7 @@
      x2="1006.4766"
      y2="729.01508"
      id="line113-2-2"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
   <line
      class="st2"
      x1="933.15906"
@@ -1151,7 +1151,7 @@
      x2="1007.343"
      y2="777.52917"
      id="line113-2-1"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
   <line
      class="st2"
      x1="934.21021"
@@ -1159,7 +1159,7 @@
      x2="1007.2095"
      y2="809.68829"
      id="line113-2-22"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
   <line
      class="st2"
      x1="971.18127"
@@ -1167,12 +1167,12 @@
      x2="971.18127"
      y2="808.9386"
      id="line100-4-8"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
   <polyline
      class="st2"
      points="338.1 731.8 338.1 782.9 383.7 782.9"
      id="polyline114-9"
-     style="fill:none;stroke:#1d1d1b;stroke-width:3.29289129;stroke-miterlimit:10;stroke-dasharray:none"
+     style="fill:none;stroke:#ffffff;stroke-width:3.29289129;stroke-miterlimit:10;stroke-dasharray:none"
      transform="matrix(0.93778809,0,0,0.69932325,102.47845,218.73447)" />
   <line
      class="st2"
@@ -1181,7 +1181,7 @@
      x2="548.69006"
      y2="659.51477"
      id="line113-2-3"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.51523;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.51523;stroke-miterlimit:10;stroke-dasharray:none" />
   <line
      class="st2"
      x1="573.69977"
@@ -1189,7 +1189,7 @@
      x2="784.82373"
      y2="659.23431"
      id="line113-2-34"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
   <line
      class="st2"
      x1="734.14972"
@@ -1197,7 +1197,7 @@
      x2="784.29974"
      y2="862.95404"
      id="line113-2-3-7"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
   <line
      class="st2"
      x1="734.245"
@@ -1205,7 +1205,7 @@
      x2="784.39502"
      y2="769.20447"
      id="line113-2-3-7-1"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66667;stroke-miterlimit:10;stroke-dasharray:none" />
   <line
      class="st2"
      x1="855.99286"
@@ -1213,5 +1213,5 @@
      x2="906.46735"
      y2="420.2576"
      id="line113-2-3-6"
-     style="fill:none;stroke:#1d1d1b;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+     style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
 </svg>
