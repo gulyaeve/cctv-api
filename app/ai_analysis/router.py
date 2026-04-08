@@ -23,13 +23,13 @@ async def get_all_ai_analysis(filter_query: Annotated[AiAnalysisSearchScheme, Qu
     return await AiAnalysisDAO.find_all(**filter_model)
 
 
-@router.get("/{id}", response_model=AiAnalysisScheme, dependencies=[Depends(permission_required("frontend"))])
-async def get_ai_analysis(id: int):
-    ai_analysis = await AiAnalysisScheme.find_one_or_none(id=id)
-    if ai_analysis is None:
-        raise ObjectMissingException
-    else:
-        return ai_analysis
+# @router.get("/{id}", response_model=AiAnalysisScheme, dependencies=[Depends(permission_required("frontend"))])
+# async def get_ai_analysis(id: int):
+#     ai_analysis = await AiAnalysisDAO.find_one_or_none(id=id)
+#     if ai_analysis is None:
+#         raise ObjectMissingException
+#     else:
+#         return ai_analysis
     
 
 @router.post("", response_model=AiAnalysisScheme, dependencies=[Depends(auth_bearer_token)], status_code=201)

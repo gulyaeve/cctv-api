@@ -4,6 +4,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from app.ai_analysis.dao import AiAnalysisDAO
 from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings
 from app.incidents.dao import IncidentsDAO
@@ -77,6 +78,7 @@ async def page_get_schedule_info_page(
     current_user: UserModel = Depends(get_current_user)
     ):
     incidents = await IncidentsDAO.find_all(event=schedule.id)
+    ai_analysis = await AiAnalysisDAO.find_all(event=schedule.id)
     return templates.TemplateResponse(
         request=request,
         name="schedules/schedule_info.html",
@@ -84,6 +86,7 @@ async def page_get_schedule_info_page(
             "current_user": current_user,
             "schedule": schedule,
             "incidents": incidents,
+            "ai_analysis": ai_analysis,
         }
     )
 
