@@ -1,5 +1,4 @@
 from datetime import date
-import logging
 from random import choice
 from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, Form, Query, status
@@ -7,8 +6,7 @@ from fastapi import APIRouter, Depends, Form, Query, status
 from app.broker_utils.schedule_broker import send_ai_job
 from app.cameras.dao import CamerasDAO
 from app.schedule.dao import ScheduleDAO
-from app.schedule.models import ScheduleModel
-from app.schedule.schemas import ScheduleAddScheme, ScheduleAiSchema, ScheduleAiTask, ScheduleDaily, ScheduleScheme, ScheduleSearch
+from app.schedule.schemas import ActiveMonitoringSearch, ScheduleAddScheme, ScheduleAiSchema, ScheduleAiTask, ScheduleDaily, ScheduleScheme, ScheduleSearch
 from app.exceptions import ObjectMissingException, ScheduleNotQuitException
 from app.users.auth import auth_bearer_token
 from app.users.dependencies import get_current_user, permission_required
@@ -25,8 +23,8 @@ router = APIRouter(
 
 
 @router.get("/active_monitoring")
-async def get_active_monitoring(current_user: UserModel = Depends(get_current_user)):
-    schedule_for_monitoring = await ScheduleDAO.get_schedule_for_active_monitoring(visor_id=(current_user.id))
+async def get_active_monitoring(filter_query: Annotated[ActiveMonitoringSearch, Query()], current_user: UserModel = Depends(get_current_user)):
+    schedule_for_monitoring = await ScheduleDAO.get_schedule_for_active_monitoring(visor_id=(current_user.id), building_id=filter_query.building_id)
     return schedule_for_monitoring
 
 

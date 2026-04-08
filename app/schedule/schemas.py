@@ -60,3 +60,7 @@ class ScheduleAiSchema(BaseModel):
 class ScheduleAiTask(ScheduleAiSchema):
     id: int
     date: date
+
+
+class ActiveMonitoringSearch(BaseModel):
+    building_id: Optional[int] = None

@@ -1,5 +1,6 @@
 from datetime import date
 import logging
+from typing import Optional
 from sqlalchemy import Date, and_, asc, case, desc, func, null, select, text, cast
 from sqlalchemy.exc import SQLAlchemyError
 from app.buildings.models import BuildingModel
@@ -205,7 +206,7 @@ class ScheduleDAO(BaseDAO):
             return None
 
     @classmethod
-    async def get_schedule_for_active_monitoring(cls, visor_id: int):
+    async def get_schedule_for_active_monitoring(cls, visor_id: int, building_id: Optional[int] = None):
         try:
             # Алиас для инцидентов (для подзапроса)
             incident_subquery = (
@@ -215,8 +216,21 @@ class ScheduleDAO(BaseDAO):
                 .order_by(IncidentModel.event, IncidentModel.time_created.desc())
             ).subquery('inc')
 
-            # Incaliased = aliased(IncidentModel, incident_subquery)
             current_time = func.current_timestamp()
+
+            if building_id is None:
+                filter_query = and_(
+                    ScheduleModel.timestamp_start <= current_time,
+                    ScheduleModel.timestamp_end >= current_time
+                )
+            else:
+                filter_query = and_(
+                    ScheduleModel.timestamp_start <= current_time,
+                    ScheduleModel.timestamp_end >= current_time,
+                    BuildingModel.id == building_id,
+                )
+
+            # Incaliased = aliased(IncidentModel, incident_subquery)
 
             query = (
                 select(
@@ -263,10 +277,7 @@ class ScheduleDAO(BaseDAO):
                 )
                 # Конструкция фильтрации по временам
                 .where(
-                    and_(
-                        ScheduleModel.timestamp_start <= current_time,
-                        ScheduleModel.timestamp_end >= current_time
-                    )
+                    filter_query
                 )
                 # Заказ сортировки
                 .order_by(
