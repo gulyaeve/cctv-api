@@ -93,6 +93,7 @@ async def page_get_cameras_view_page(
         # name="monitoring/camera_stream.html",
         name="monitoring/camera_webrtc.html",
         context={
+            "request": request,
             "cameras": cameras,
             "classroom": classroom,
             "building": building,
@@ -142,6 +143,7 @@ async def page_get_active_monitoring(
             request=request,
             name="monitoring/active_monitoring.html",
             context={
+                "request": request,
                 "monitoring_data": monitoring_data,
                 "current_user": current_user,
                 "cameras": cameras,

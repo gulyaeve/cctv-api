@@ -39,7 +39,7 @@
 
                         window.addEventListener("load", () => {
                             reader_{{ camera.id }} = new MediaMTXWebRTCReader({
-                            url: "https://media.cctv.itmoscow/{{ camera.id }}/whep",
+                            url: "https://{{ request.base_url.hostname }}/media/{{ camera.id }}/whep",
                             token: access_token, // fill if needed
                             onError: (err) => {
                                 console.error(err);
