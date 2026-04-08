@@ -47,12 +47,12 @@
         <div class="d-flex">
           <div class="lk-link">
             <a class="nav-link" href="/lk" rel="nofollow" target="_blank">
-              {{ current_user.full_name }}<br><i style="color: #5388FF;">{{ current_user.full_name }}</i>
+              {{ current_user.full_name }}<br><i style="color: #5388FF;">{{ current_user.email }}</i>
             </a>
           </div>
           <div class="avatar-placeholder">
-            <form action="{{ url_for('logout_user') }}" method="post">
-              <a class="navbar-brand nav-link" type="submit">
+            <form id="logout" action="{{ url_for('logout_user') }}" method="post">
+              <a class="navbar-brand nav-link" type="submit" href="javascript:void(0);" onclick="document.getElementById('logout').submit();">
                 <img src="{{ url_for('static', path='img/login.png') }}">
               </a>
             </form>
