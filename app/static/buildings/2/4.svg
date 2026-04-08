@@ -37,13 +37,13 @@
       }
 
       .st1 {
-        stroke: #1d1d1b;
+        stroke: #ffffff;
         stroke-miterlimit: 10;
         stroke-width: 2px;
       }
 
       .st2 {
-        fill: #1d1d1b;
+        fill: none;
       }
     </style>
   </defs>

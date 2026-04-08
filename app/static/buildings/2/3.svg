@@ -37,13 +37,13 @@
       }
 
       .cls-2 {
-        stroke: #1d1d1b;
+        stroke: none;
         stroke-miterlimit: 10;
         stroke-width: 2px;
       }
 
       .cls-3 {
-        fill: #1d1d1b;
+        fill: #ffffff;
       }
     </style>
   </defs>

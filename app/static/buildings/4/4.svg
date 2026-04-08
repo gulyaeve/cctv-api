@@ -37,7 +37,7 @@
       }
 
       .cls-2 {
-        stroke: #1d1d1b;
+        stroke: #ffffff;
         stroke-miterlimit: 10;
         stroke-width: 2px;
       }
