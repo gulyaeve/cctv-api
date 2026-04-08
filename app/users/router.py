@@ -51,6 +51,7 @@ async def get_all_users(
 @router.post("/register", status_code=201)
 async def register_user(
     email: Annotated[EmailStr, Form()],
+    request: Request,
     password: Annotated[str, Form()],
     username: Annotated[str, Form()],
     ):
@@ -63,6 +64,9 @@ async def register_user(
         username=username
     )
     logging.info(f"User saved to db: {email}")
+    start_page = request.url_for("page_get_dashboard_page")
+    response = RedirectResponse(start_page, status_code=status.HTTP_302_FOUND)
+    return response
 
 
 @router.post("/login")

@@ -47,7 +47,7 @@
         <div class="d-flex">
           <div class="lk-link">
             <a class="nav-link" href="/lk" rel="nofollow" target="_blank">
-              {{ current_user.full_name }}<br><i style="color: #5388FF;">{{ current_user.full_name }}</i>
+              {{ current_user.username if current_user.full_name is none else current_user.full_name }}<br><i style="color: #5388FF;">{{ current_user.username if current_user.full_name is none else current_user.full_name }}</i>
             </a>
           </div>
           <div class="avatar-placeholder">
