@@ -6,6 +6,7 @@ from app.ai_analysis.dao import AiAnalysisDAO
 from app.ai_analysis.schemas import AiAnalysisAddScheme, AiAnalysisScheme, AiAnalysisSearchScheme
 from app.exceptions import ObjectMissingException
 from app.users.auth import auth_bearer_token
+from app.users.dependencies import permission_required
 
 
 router = APIRouter(
@@ -15,14 +16,14 @@ router = APIRouter(
 )
 
 
-@router.get("", response_model=Sequence[AiAnalysisScheme])
+@router.get("", response_model=Sequence[AiAnalysisScheme], dependencies=[Depends(permission_required("frontend"))])
 # @cache(expire=60)
 async def get_all_ai_analysis(filter_query: Annotated[AiAnalysisSearchScheme, Query()]):
     filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
     return await AiAnalysisDAO.find_all(**filter_model)
 
 
-@router.get("/{id}", response_model=AiAnalysisScheme)
+@router.get("/{id}", response_model=AiAnalysisScheme, dependencies=[Depends(permission_required("frontend"))])
 async def get_ai_analysis(id: int):
     ai_analysis = await AiAnalysisScheme.find_one_or_none(id=id)
     if ai_analysis is None:
