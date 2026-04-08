@@ -83,7 +83,7 @@
         for (let i = 0; i < dataCameras.length; i++) {
           reader = new MediaMTXWebRTCReader({
           // url: "https://media.cctv.itmoscow/" + dataCameras[i]["id"] + "_p/whep",
-          url: "https://{{ request.host }}/media/" + dataCameras[i]["id"] + "_p/whep",
+          url: "https://{{ request.origin }}/media/" + dataCameras[i]["id"] + "_p/whep",
           token: access_token,
           onError: (err) => {
               console.error(err);

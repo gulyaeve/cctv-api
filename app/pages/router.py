@@ -116,6 +116,7 @@ async def page_get_videowall_page(
         # name="monitoring/camera_stream.html",
         name="monitoring/videowall.html",
         context={
+            "request": request,
             "cameras": cameras,
             "current_user": current_user
         }
