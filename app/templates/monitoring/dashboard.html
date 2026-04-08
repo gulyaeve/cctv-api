@@ -76,24 +76,67 @@
     <div class="card widget-dashboard">
       <h5>Количество инцидетов по корпусам</h5>
       <hr>
-      <canvas id="incbuildings"></canvas>
+      <div class="" id="incbuildings-window">
+        <div id="incbuildings-window-day" class="collapse show" data-parent="#incbuildings-window">
+          <canvas id="incbuildings-day"></canvas>
+        </div>
+        <div id="incbuildings-window-week" class="collapse" data-parent="#incbuildings-window">
+          <canvas id="incbuildings-week"></canvas>
+        </div>
+        <div id="incbuildings-window-month" class="collapse" data-parent="#incbuildings-window">
+          <canvas id="incbuildings-month"></canvas>
+        </div>
+      </div>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="incbuildings-btn" data-toggle="collapse" data-target="#incbuildings-window-day" aria-expanded="false" aria-controls="collapseExample" checked>Сегодня</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incbuildings-btn" data-toggle="collapse" data-target="#incbuildings-window-week" aria-expanded="false" aria-controls="collapseExample">За неделю</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incbuildings-btn" data-toggle="collapse" data-target="#incbuildings-window-month" aria-expanded="false" aria-controls="collapseExample">За месяц</input>
+        </label>
+      </div>
     </div>
   </div>
+
+  <div class="col-12">
+    <div class="card widget-dashboard" style="margin-bottom: 70px;">
+      <div class="card widget-dashboard">
+        <h5>Количество инцидетов по корпусам</h5>
+        <hr>
+        <div class="" id="incdynamics-window">
+          <div id="incdynamics-window-day" class="collapse show" data-parent="#incdynamics-window">
+            <canvas id="incdynamics-week"></canvas>
+          </div>
+          <div id="incdynamics-window-week" class="collapse" data-parent="#incdynamics-window">
+            <canvas id="incdynamics-month"></canvas>
+          </div>
+        </div>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-secondary active">
+            <input type="radio" name="incdynamics-btn" data-toggle="collapse" data-target="#incdynamics-window-day" aria-expanded="false" aria-controls="collapseExample" checked>Сегодня</input>
+          </label>
+          <label class="btn btn-secondary">
+            <input type="radio" name="incdynamics-btn" data-toggle="collapse" data-target="#incdynamics-window-week" aria-expanded="false" aria-controls="collapseExample">За неделю</input>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="col-12">
     <div class="card widget-dashboard">
-      <h5>Категории инцидентов</h5>
+      <h5>Категории инцидентов <span class="badge badge-pill badge-light">DEMO</span></h5>
       <hr>
       <canvas id="inccategorys"></canvas>
     </div>
   </div>
-  <div class="col-12">
-    <div class="card widget-dashboard" style="margin-bottom: 70px;">
-      <h5>Динамика инцидетов</h5>
-      <hr>
-      <canvas id="incdynamics"></canvas>
-    </div>
-  </div>
+
 </div>
+
+
 
 {% endblock %}
 
@@ -130,9 +173,7 @@
   }
 
   // 2) Текущая неделя (weekStartsOn: 0=Sun,1=Mon,...)
-
   function getCurrentWeek(now = new Date(), weekStartsOn = 0) {
-
     const cur = new Date(now);
     const wDay = cur.getDay();
     const diff = (wDay - weekStartsOn + 7) % 7;
@@ -178,16 +219,13 @@
       } );
 
     url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentDay().start + "&date_to=" + getCurrentDay().end;
-
     response = fetch(url)
       .then(response => response.text())
       .then(result => {
         setTextById('schedule-day-count', result);
       } );
 
-
     url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentWeek().start + "&date_to=" + getCurrentWeek().end;
-
     response = fetch(url)
       .then(response => response.text())
       .then(result => {
@@ -195,7 +233,6 @@
       } );
 
     url = "{{ url_for('count_schedules') }}?date_from=" + getCurrentMonth().start + "&date_to=" + getCurrentMonth().end;
-
     response = fetch(url)
       .then(response => response.text())
       .then(result => {
@@ -210,41 +247,61 @@
 </script>
 
 <script type="text/javascript">
-  const chart3 = document.getElementById('incbuildings');
+  const incbuildingsChartDay = document.getElementById('incbuildings-day');
+  const incbuildingsChartWeek = document.getElementById('incbuildings-week');
+  const incbuildingsChartMonth = document.getElementById('incbuildings-month');
+  url = "{{ url_for('get_all_incidents') }}?status=2";
+  response = fetch(url).then(response => response.json())
+  .then(result => {
+    console.log(getAnalytics(result));
+    console.log(getAnalytics(result,"status"));
+    let data = getAnalytics(result);
 
-  new Chart(chart3, {
-    type: 'bar',
-    data: {
-      labels: ['Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь', 'Январь', 'Февраль', 'Март'],
-      datasets: [{
-        label: 'Центр программирования и кибербезопасности',
-        data: [12, 19, 3, 5, 2, 3, 12],
-        borderWidth: 1
+    new Chart(incbuildingsChartDay, {
+      type: 'bar',
+      data: {
+        labels: data['day']['labels'],
+        datasets: data['day']['datasets']
       },
-      {
-        label: 'Центр городских технологий',
-        data: [10, 5, 7, 20, 32, 1, 11],
-        borderWidth: 1
-      },
-      {
-        label: 'IT.Бирюлево',
-        data: [5, 31, 4, 6, 2, 3, 8],
-        borderWidth: 1
-      },
-      {
-        label: 'Дизайн колледж',
-        data: [8, 10, 5, 27, 12, 1, 5],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         }
       }
-    }
-  });
+    });
+
+    new Chart(incbuildingsChartWeek, {
+      type: 'bar',
+      data: {
+        labels: data['week']['labels'],
+        datasets: data['week']['datasets']
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    new Chart(incbuildingsChartMonth, {
+      type: 'bar',
+      data: {
+        labels: data['month']['labels'],
+        datasets: data['month']['datasets']
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    } );
 </script>
 
 <script type="text/javascript">
@@ -271,26 +328,153 @@
 </script>
 
 <script type="text/javascript">
-  const chart1 = document.getElementById('incdynamics');
+  const incdynamicsChartWeek = document.getElementById('incdynamics-week');
+  const incdynamicsChartMonth = document.getElementById('incdynamics-month');
+  url = "{{ url_for('get_all_incidents') }}";
+  response = fetch(url).then(response => response.json())
+  .then(result => {
+    let data = getAnalytics(result,"status");
 
-  new Chart(chart1, {
-    type: 'line',
-    data: {
-      labels: ['Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь', 'Январь', 'Февраль', 'Март'],
-      datasets: [{
-        label: 'Инциденты',
-        data: [10, 5, 7, 20, 32, 1],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
+    new Chart(incdynamicsChartWeek, {
+      type: 'line',
+      data: {
+        labels: data['week']['labels'],
+        datasets: data['week']['datasets']
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    new Chart(incdynamicsChartMonth, {
+      type: 'line',
+      data: {
+        labels: data['week']['labels'],
+        datasets: data['week']['datasets']
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         }
       }
     }
-  });
+    );
+
+    });
+
+</script>
+
+<script type="text/javascript">
+  function getAnalytics(rawData, groupBy = 'building') {
+    const monthsRu = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+
+    // Определяем, какие периоды нам нужны
+    // Если статус — только неделя и месяц. Если здание — день, неделя, месяц.
+    const activeTypes = groupBy === 'status' ? ['week', 'month'] : ['day', 'week', 'month'];
+
+    const statusConfig = {
+        0: { label: 'Всё хорошо' },
+        3: { label: 'Контроль' },
+        2: { label: 'Инцидент' }
+    };
+
+    // 1. Функции формирования ключей
+    const getKeysAndLabels = {
+        day: (d) => {
+            const date = new Date(d);
+            return { key: date.toISOString().split('T')[0], label: date.toLocaleDateString('ru') };
+        },
+        month: (d) => {
+            const date = new Date(d);
+            return { key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`, label: monthsRu[date.getMonth()] };
+        },
+        week: (d) => {
+            const date = new Date(d);
+            const day = date.getDay() || 7;
+            const monday = new Date(date); monday.setDate(date.getDate() - day + 1);
+            const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+            const fmt = (dt) => dt.toLocaleDateString('ru', {day:'2-digit', month:'2-digit'});
+            return { key: monday.toISOString().split('T')[0], label: `${fmt(monday)}-${fmt(sunday)}` };
+        }
+    };
+
+    // 2. Сбор уникальных периодов (Ось X)
+    const periods = {};
+    const tempMaps = {};
+
+    activeTypes.forEach(type => {
+        periods[type] = { keys: [], labels: [] };
+        tempMaps[type] = new Map();
+    });
+
+    rawData.forEach(item => {
+        const d = new Date(item.time_created);
+        activeTypes.forEach(type => {
+            const data = getKeysAndLabels[type](d);
+            if (!tempMaps[type].has(data.key)) tempMaps[type].set(data.key, data.label);
+        });
+    });
+
+    activeTypes.forEach(type => {
+        periods[type].keys = Array.from(tempMaps[type].keys()).sort();
+        periods[type].labels = periods[type].keys.map(key => tempMaps[type].get(key));
+    });
+
+    // 3. Группировка данных (Ось Y)
+    const groupedData = new Map();
+
+    if (groupBy === 'status') {
+        Object.keys(statusConfig).forEach(s => {
+            const obj = { label: statusConfig[s].label };
+            activeTypes.forEach(type => obj[type] = new Array(periods[type].labels.length).fill(0));
+            groupedData.set(Number(s), obj);
+        });
+    }
+
+    rawData.forEach(item => {
+        const groupId = groupBy === 'status' ? item.status : item.building_name;
+
+        if (!groupedData.has(groupId)) {
+            if (groupBy === 'status') return;
+            const obj = { label: groupId };
+            activeTypes.forEach(type => obj[type] = new Array(periods[type].labels.length).fill(0));
+            groupedData.set(groupId, obj);
+        }
+
+        const group = groupedData.get(groupId);
+        const d = new Date(item.time_created);
+
+        activeTypes.forEach(type => {
+            const key = getKeysAndLabels[type](d).key;
+            const idx = periods[type].keys.indexOf(key);
+            if (idx !== -1) group[type][idx]++;
+        });
+    });
+
+    // 4. Формирование результата
+    const result = {};
+    // Инициализируем все возможные поля, чтобы не было ошибок при обращении
+    ['day', 'week', 'month'].forEach(t => result[t] = { labels: [], datasets: [] });
+
+    activeTypes.forEach(type => {
+        result[type].labels = periods[type].labels;
+        groupedData.forEach(group => {
+            result[type].datasets.push({
+                label: group.label,
+                data: group[type],
+                borderWidth: 1
+            });
+        });
+    });
+
+    return result;
+}
 </script>
 
 {% endblock %}
