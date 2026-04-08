@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class CameraScheme(BaseModel):
@@ -13,6 +13,7 @@ class CameraScheme(BaseModel):
     pos_x: Optional[int] = None
     pos_y: Optional[int] = None
     polygon_map: Optional[str] = None
+    camera_type: Optional[int] = Field(None, description="1 - учебная аудитория, 2 - охранные, 3 - другое")
 
     class Config:
         from_attributes = True
@@ -29,6 +30,7 @@ class CameraAddScheme(BaseModel):
     pos_x: Optional[int] = None
     pos_y: Optional[int] = None
     polygon_map: Optional[str] = None
+    camera_type: Optional[int] = Field(None, description="1 - учебная аудитория, 2 - охранные, 3 - другое")
 
 
 class CameraSearch(BaseModel):
@@ -37,4 +39,5 @@ class CameraSearch(BaseModel):
     camera_ip: Optional[str] = None
     reg_ip: Optional[str] = None
     view: Optional[str] = None
+    camera_type: Optional[int] = Field(None, description="1 - учебная аудитория, 2 - охранные, 3 - другое")
 

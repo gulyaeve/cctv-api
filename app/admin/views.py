@@ -98,6 +98,7 @@ class CamerasAdmin(ModelView, model=CameraModel):
         CameraModel.pos_x,
         CameraModel.pos_y,
         CameraModel.polygon_map,
+        CameraModel.camera_type,
     ]
 
 
