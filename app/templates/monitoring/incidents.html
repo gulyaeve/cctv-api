@@ -68,8 +68,8 @@
           <tr>
               <td><a href="">{{ incident.event }}</a></td>
               <td>{{ incident.time_created }}</td>
-              <td class="text-center">{{ incident.building_id }}, {{ incident.classroom_id }}</td>
-              <td class="text-center">{{ incident.visor_id }}</td>
+              <td class="text-center">{{ incident.building_name }}, {{ incident.classroom_name }}</td>
+              <td class="text-center">{{ incident.visor_name }}</td>
               <td class="text-center">{{ incident.comment }}</td>
               <td class="text-center">
                 {% if incident.status == 0 %}
