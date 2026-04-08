@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     LOG_LEVEL: str
     ORIGINS: list
 
+    ROOT_PATH: str = "/cctv"
+
     POSTGRES_HOST: str
     POSTGRES_PORT: int
     POSTGRES_USER: str

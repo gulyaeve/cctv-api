@@ -70,7 +70,12 @@ async def lifespan(app: FastAPI):
     logging.shutdown()
 
 
-app = FastAPI(title="Система видеонаблюдения", version=version, lifespan=lifespan)
+app = FastAPI(
+    title="Система видеонаблюдения",
+    version=version,
+    lifespan=lifespan,
+    root_path=settings.ROOT_PATH,
+)
 app.mount("/static", StaticFiles(directory="app/static"), "static")
 app.include_router(api)
 app.include_router(pages_router)
