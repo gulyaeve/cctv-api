@@ -45,6 +45,16 @@ async def get_all_cameras(filter_query: Annotated[CameraSearch, Query()]):
     return await CamerasDAO.find_all(**filter_model)
 
 
+@router.get("/count")
+# @cache(expire=60)
+async def count_cameras(filter_query: Annotated[CameraSearch, Query()]):
+    """
+    Count all cameras
+    """
+    filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
+    return await CamerasDAO.find_all_count(**filter_model)
+
+
 @router.get("/videowall", response_model=Sequence[Sequence[CameraScheme]])
 async def get_data_for_videowall(chunk_size: int = 9):
     """
