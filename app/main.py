@@ -3,7 +3,7 @@ from app.version import version
 import logging
 from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sqladmin import Admin
 
@@ -86,6 +86,15 @@ app.add_exception_handler(IncorrectEmailOrPassword, noauth_handler)
 app.add_exception_handler(TokenIncorrect, noauth_handler)
 app.add_exception_handler(TokenMissing, noauth_handler)
 app.add_exception_handler(UserNotPresent, noauth_handler)
+
+
+@app.get("/download-cert")
+async def download_cert():
+    file_path = "files/cctv.itmoscow.crt"
+    return FileResponse(
+        path=file_path, 
+        filename="cctv.itmoscow.crt"
+    )
 
 
 # CORS
