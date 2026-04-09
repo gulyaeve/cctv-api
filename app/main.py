@@ -89,8 +89,8 @@ app.add_exception_handler(UserNotPresent, noauth_handler)
 
 
 @app.get("/download-cert")
-async def download_cert():
-    file_path = "files/cctv.itmoscow.crt"
+async def download_cert(request: Request):
+    file_path = request.url_for('static', path='/files/cctv.itmoscow.crt')
     return FileResponse(
         path=file_path, 
         filename="cctv.itmoscow.crt"
