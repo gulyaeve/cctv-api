@@ -48,9 +48,9 @@
             <td class="text-center">{{ schedule.teacher_name }}</td>
             <td class="text-center">{{ schedule.classroom_name }}</td>
             <td class="text-center">
-              {% if schedule.status == 1 %}
+              {% if schedule.status == 0 %}
                 <span class="badge badge-secondary">Не началось</span>
-              {% elif schedule.status == 2 %}
+              {% elif schedule.status == 1 %}
                 <span class="badge badge-warning">В процессе</span>
               {% else %}
                 <span class="badge badge-success">Завершено</span>
