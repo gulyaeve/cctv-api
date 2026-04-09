@@ -1,60 +1,34 @@
 {% extends "base.html" %}
 
 {% block mainmenu %}
-<div class="accordion" id="accordionExample">
-  <div class="card menu">
-    <div class="card-header" id="m-dashboard">
-      <h2 class="mb-0">
-        <a href="{{ url_for('page_get_dashboard_page') }}" class="btn btn-link btn-block text-left" type="button">
-          <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
-        </a>
-      </h2>
-    </div>
+
+<a class="dropdown-item" href="{{ url_for('page_get_dashboard_page') }}"><i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard</a>
+<a class="dropdown-item" href="{{ url_for('page_get_videowall_page') }}"><i class="fa fa-television" aria-hidden="true"></i> VideoWall</a>
+<a class="dropdown-item" href="{{ url_for('page_get_buildings_page') }}"><i class="fa fa-building-o" aria-hidden="true"></i> Учебные корпуса</a>
+<div class="dropdown-divider"></div>
+<a class="dropdown-item" href="{{ url_for('page_get_active_monitoring') }}"><i class="fa fa-video-camera" aria-hidden="true"></i> Активный мониторинг</a>
+<!-- <div id="accordion">
+  <button class="dropdown-item" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+
+  </button> -->
+  <!-- <div id="activeMonitoringId" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+
   </div>
-  <div class="card menu">
-    <div class="card-header" id="m-dashboard">
-      <h2 class="mb-0">
-        <a href="{{ url_for('page_get_videowall_page') }}" class="btn btn-link btn-block text-left" type="button">
-          <i class="fa fa-television" aria-hidden="true"></i> VideoWall
-        </a>
-      </h2>
-    </div>
-  </div>
-  <div class="card menu">
-    <div class="card-header" id="m-buildings">
-      <h2 class="mb-0">
-        <a href="{{ url_for('page_get_buildings_page') }}" class="btn btn-link btn-block text-left collapsed" type="button">
-          <i class="fa fa-building-o" aria-hidden="true"></i> Учебные корпуса
-        </a>
-      </h2>
-    </div>
-  </div>
-  <div class="card menu">
-    <div class="card-header" id="m-activemonitoring">
-      <h2 class="mb-0">
-        <a href="{{ url_for('page_get_active_monitoring') }}" class="btn btn-link btn-block text-left collapsed" type="button">
-          <i class="fa fa-video-camera" aria-hidden="true"></i> Активный мониторинг
-        </a>
-      </h2>
-    </div>
-  </div>
-  <div class="card menu">
-    <div class="card-header" id="m-schedules">
-      <h2 class="mb-0">
-        <a href="{{ url_for('page_get_schedules_buildings_page') }}" class="btn btn-link btn-block text-left collapsed" type="button">
-          <i class="fa fa-calendar" aria-hidden="true"></i> Расписание
-        </a>
-      </h2>
-    </div>
-  </div>
-  <div class="card menu">
-    <div class="card-header" id="m-incidents">
-      <h2 class="mb-0">
-        <a href="{{ url_for('page_get_incidents_page') }}" class="btn btn-link btn-block text-left collapsed" type="button">
-          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Инциденты
-        </a>
-      </h2>
-    </div>
-  </div>
-</div>
+</div> -->
+<a class="dropdown-item" href="{{ url_for('page_get_schedules_buildings_page') }}"><i class="fa fa-calendar" aria-hidden="true"></i> Расписание</a>
+<a class="dropdown-item" href="{{ url_for('page_get_incidents_page') }}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Инциденты</a>
+
+
+<script type="text/javascript">
+  window.addEventListener('load', () => {
+
+    let url = "{# url_for('get_buildings') #}";
+    let buildings_list = fetch(url)
+          .then(response => response.text())
+          .then(result => {
+
+          } );
+
+  });
+</script>
 {% endblock %}

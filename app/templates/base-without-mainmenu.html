@@ -38,9 +38,19 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark d-none d-lg-block" style="z-index: 2000;">
       <div class="container">
+        <div class="">
+          <div class="btn-group">
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-bars m-1" aria-hidden="true" ></i></button><span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu">
+              {% block mainmenu %}{% endblock %}
+            </div>
+          </div>
         <a class="navbar-brand nav-link" href="{{ url_for('page_get_dashboard_page') }}">
           <strong><i style="color: #5388FF;">CCTV.</i>ITMOSCOW</strong>
         </a>
+        </div>
         <b>
           <div id="clock">Ошибка вывода текущего времени</div>
         </b>
@@ -76,7 +86,7 @@
   </main>
   <!--Main layout-->
   <!--Footer-->
-  <footer class="bg-light text-lg-start fixed-bottom">
+  <footer class="bg-light text-lg-start">
     <!-- Copyright -->
 
   <div class="p-3" style="background-color: rgba(40, 40, 40, 1);">
