@@ -67,7 +67,7 @@ async def add_incident(data: IncidentAppendScheme):
     Add incident with cameras
     """
     # Save to db, without screenshots
-    data_to_save = data.model_dump()
+    data_to_save = data.model_dump(exclude={"building_id"})
     new_object: IncidentModel = await IncidentsDAO.add(**data_to_save)
     if new_object is None:
         raise ObjectMissingException

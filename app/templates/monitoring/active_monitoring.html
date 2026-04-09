@@ -92,7 +92,7 @@
             </div>
             <div class="col-8 p-3 m-0">
               <div class="control-panel-addinc">
-                <form method="post" action="{{url_for('create_incident', building_id=building_id)}}" enctype="multipart/form-data">
+                <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
                 <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
                 <input class="d-none" type="text" name="status" class="d-none" value="0">
                 <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
@@ -119,7 +119,7 @@
                           </div>
                         {% endfor %}
                         <b>Быстрый ввод</b>
-                        <form method="post" action="{{url_for('create_incident', building_id=building_id)}}" enctype="multipart/form-data">
+                        <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
                         <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
                         <input class="d-none" type="text" name="status" class="d-none" value="3">
                         <input name="cameras_ids" type="text" class="cameras_ids_control d-none">
@@ -132,7 +132,7 @@
                       </div>
                       <div class="col-6">
                         <b>Комментарий:</b>
-                        <form method="post" action="/create_incident" enctype="multipart/form-data">
+                        <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
                         <input name="cameras_ids" type="text" class="cameras_ids_control d-none">
                         <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
                         <input class="d-none" type="text" name="status" class="d-none" value="3">
@@ -154,7 +154,7 @@
                         </div>
                       {% endfor %}
                       <b>Быстрый ввод</b>
-                        <form method="post" action="{{url_for('create_incident', building_id=building_id)}}" enctype="multipart/form-data">
+                        <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
                         <input type="text" name="cameras_ids" class="cameras_ids_inc d-none">
                         <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
                         <input class="d-none" type="text" name="status" class="d-none" value="2">
@@ -168,7 +168,7 @@
                     </div>
                     <div class="col-6">
                       <b>Комментарий:</b>
-                      <form method="post" action="/create_incident" enctype="multipart/form-data">
+                      <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
                       <input type="text" name="cameras_ids" class="cameras_ids_inc d-none">
                       <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
                       <input class="d-none" type="text" name="status" class="d-none" value="2">

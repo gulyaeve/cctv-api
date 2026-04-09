@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
@@ -130,6 +130,7 @@ async def page_get_videowall_page(
 )
 async def page_get_active_monitoring(
     request: Request,
+    building_id: Optional[int] = None,
     monitoring_data = Depends(get_active_monitoring),
     current_user: UserModel = Depends(get_current_user)
     ):
@@ -144,6 +145,7 @@ async def page_get_active_monitoring(
             name="monitoring/active_monitoring.html",
             context={
                 "request": request,
+                "building_id": building_id,
                 "monitoring_data": monitoring_data,
                 "current_user": current_user,
                 "cameras": cameras,

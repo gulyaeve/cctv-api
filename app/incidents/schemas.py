@@ -12,6 +12,7 @@ class IncidentBaseScheme(BaseModel):
 
 class IncidentFormScheme(IncidentBaseScheme):
     cameras_ids: str = Field(default="", example="1,2,3")
+    # building_id: Optional[int] = None
 
     @field_validator('cameras_ids')
     def split_str_to_int_list(cls, value: str) -> list[int]:
@@ -22,6 +23,7 @@ class IncidentFormScheme(IncidentBaseScheme):
 
 class IncidentAppendScheme(IncidentBaseScheme):
     cameras_ids: Optional[list[int]] = None
+    building_id: Optional[int] = None
    
 
 class IncidentScheme(IncidentAppendScheme):
@@ -70,5 +72,5 @@ class IncidentFullInfo(BaseModel):
     current_group: str
     current_schedule: str
     current_classroom: str
-    current_visor: str
+    current_visor: Optional[str] = None
     current_building: str

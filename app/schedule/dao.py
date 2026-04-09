@@ -242,7 +242,7 @@ class ScheduleDAO(BaseDAO):
                     ClassroomModel.name.label('current_classroom'),
                     ClassroomModel.id.label('current_classroom_id'),
                     BuildingModel.name.label('current_building'),
-                    BuildingModel.id.label('current_building_id'),
+                    BuildingModel.id.label('building_id'),
                     GroupModel.name.label('current_group'),
                     func.coalesce(incident_subquery.c.status, 1).label('last_status_incident'),
                     incident_subquery.c.time_created.label('time_created_incident'),
