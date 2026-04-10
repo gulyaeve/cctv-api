@@ -36,7 +36,7 @@
 
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark d-none d-lg-block" style="z-index: 2000;">
+    <nav class="navbar navbar-expand-lg navbar-dark d-block fixed-top" style="z-index: 2000; background-color: #333;">
       <div class="container">
         <div class="">
           <div class="btn-group">
@@ -51,11 +51,13 @@
           <strong><i style="color: #5388FF;">CCTV.</i>ITMOSCOW</strong>
         </a>
         </div>
-        <b>
-          <div id="clock">Ошибка вывода текущего времени</div>
-        </b>
-        <div class="d-flex">
-          <div class="lk-link">
+        <div class="d-none d-lg-block">
+          <b>
+            <div id="clock">Ошибка вывода текущего времени</div>
+          </b>
+        </div>
+        <div class="d-flex ">
+          <div class="lk-link d-none d-lg-block">
             <a class="nav-link" href="/lk" rel="nofollow" target="_blank">
               {{ current_user.username if current_user.full_name is none else current_user.full_name }}<br><i style="color: #5388FF;">{{ current_user.email }}</i>
             </a>
@@ -73,7 +75,7 @@
     <!-- Navbar -->
   </header>
   <!--Main layout-->
-  <main class="mt-0">
+  <main style="margin-top: 80px;">
     {# <img style="min-width: 100%; min-height: 100%;" src={{ url_for('static', path='img/background.jpg') }} alt=""> #}
       <!--Section: Content-->
       <div class="container{% block container %}{% endblock %}">

@@ -7,14 +7,10 @@
 <a class="dropdown-item" href="{{ url_for('page_get_buildings_page') }}"><i class="fa fa-building-o" aria-hidden="true"></i> Учебные корпуса</a>
 <div class="dropdown-divider"></div>
 <a class="dropdown-item" href="{{ url_for('page_get_active_monitoring') }}"><i class="fa fa-video-camera" aria-hidden="true"></i> Активный мониторинг</a>
-<!-- <div id="accordion">
-  <button class="dropdown-item" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-
-  </button> -->
-  <!-- <div id="activeMonitoringId" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-
-  </div>
-</div> -->
+<div id="active-monitoring-buildings-list">
+ Загрузка...
+</div>
+<div class="dropdown-divider"></div>
 <a class="dropdown-item" href="{{ url_for('page_get_schedules_buildings_page') }}"><i class="fa fa-calendar" aria-hidden="true"></i> Расписание</a>
 <a class="dropdown-item" href="{{ url_for('page_get_incidents_page') }}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Инциденты</a>
 
@@ -22,13 +18,23 @@
 <script type="text/javascript">
   window.addEventListener('load', () => {
 
-    let url = "{# url_for('get_buildings') #}";
+
+
+    let url = "{{ url_for('get_all_buildings') }}";
     let buildings_list = fetch(url)
-          .then(response => response.text())
+          .then(response => response.json())
           .then(result => {
-
-          } );
-
+            let parent = document.querySelector('#active-monitoring-buildings-list');
+            document.getElementById('active-monitoring-buildings-list').innerHTML = '';
+            console.log(result);
+            for (const building of result) {
+              let dropdown_item = document.createElement('a');
+              dropdown_item.setAttribute('class','dropdown-item');
+              dropdown_item.setAttribute('href','{{ url_for('page_get_active_monitoring') }}?building_id=' + building['id']);
+              dropdown_item.textContent = building['name']; // Можно задать содержимое div
+              parent.appendChild(dropdown_item);
+            };
+          });
   });
 </script>
 {% endblock %}

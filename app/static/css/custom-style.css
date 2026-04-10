@@ -340,12 +340,12 @@ button:focus {
 /* VideoWall */
 
 .videowall-monitoring{
-  height: calc(100vh - 80px);
+  height: calc(100vh - 136px);
 }
 .video-monitoring{
   background: #000;
   border: 1px #333 solid;
-  height: calc((100vh - 80px)/3);
+  height: calc((100vh - 136px)/3);
 }
 
 .video-monitoring video{
