@@ -79,9 +79,9 @@
       <div class="container{% block container %}{% endblock %}">
         <div class="row">
           <div class="col-12">
-            <h2>{% block title %}{% endblock %}</h2>
+            {% if self.title() %}<h2>{% block title %}{% endblock %}</h2>{% endif%}
             {% block breadcrubs %}{% endblock %}
-            <hr>
+            {% if self.title() %}<hr>{% endif%}
             {% block content %}{% endblock %}
           </div>
         </div>
