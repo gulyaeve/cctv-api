@@ -1,7 +1,7 @@
 from typing import Optional
 
-from fastapi import Depends, status
-from fastapi.responses import RedirectResponse
+from fastapi import Depends, Request, status
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from pydantic import EmailStr
@@ -29,12 +29,30 @@ async def auth_bearer_token(
     return token
 
 
-def noauth_handler(request, exc):
-    return RedirectResponse(url=request.url_for("page_get_login"), status_code=status.HTTP_303_SEE_OTHER)
+def noauth_handler(request: Request, exc):
+    if "text/html" in request.headers.get("accept"):
+        return RedirectResponse(
+            url=request.url_for("page_get_login"),
+            status_code=status.HTTP_303_SEE_OTHER
+        )
+    else:
+        return JSONResponse(
+            status_code=getattr(exc, "status_code"),
+            content={"message": getattr(exc, "detail")}
+        )
 
 
 def noperm_handler(request, exc):
-    return RedirectResponse(url=request.url_for("get_403_page"), status_code=status.HTTP_303_SEE_OTHER)
+    if "text/html" in request.headers.get("accept"):
+        return RedirectResponse(
+            url=request.url_for("get_403_page"),
+            status_code=status.HTTP_303_SEE_OTHER
+        )
+    else:
+        return JSONResponse(
+            status_code=getattr(exc, "status_code"),
+            content={"message": getattr(exc, "detail")}
+        )
 
 
 def get_password_hash(password: str) -> str:
