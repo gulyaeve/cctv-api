@@ -17,7 +17,7 @@ class CameraModel(Base):
     pos_x: Mapped[int] = mapped_column(nullable=True)
     pos_y: Mapped[int] = mapped_column(nullable=True)
     polygon_map: Mapped[str] = mapped_column(nullable=True)
-    camera_type: Mapped[int] = mapped_column(nullable=True)
+    # camera_type: Mapped[int] = mapped_column(nullable=True)
 
     classroom = relationship("ClassroomModel", back_populates="cameras")
     ai_analysis_schedule = relationship("AiAnalysisScheduleModel", back_populates="cameras")

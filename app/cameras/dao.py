@@ -1,6 +1,7 @@
 import logging
-from sqlalchemy import func, select
+from sqlalchemy import asc, func, select
 from sqlalchemy.exc import SQLAlchemyError
+from app.classrooms.type.models import ClassroomTypeModel
 from app.database import async_session_maker
 from app.buildings.models import BuildingModel
 from app.cameras.models import CameraModel
@@ -16,11 +17,12 @@ class CamerasDAO(BaseDAO):
     async def find_all(cls, **filter_by):
         filter_mapping = {
             "classroom_id": ClassroomModel.id,
+            "classroom_type_id": ClassroomTypeModel.id,
             "building_id": BuildingModel.id,
             "camera_ip": CameraModel.camera_ip,
             "reg_ip": CameraModel.reg_ip,
             "view": CameraModel.view,
-            "camera_type": CameraModel.camera_type,
+            # "camera_type": CameraModel.camera_type,
         }
         conditions = filter_factory(filter_mapping, filter_by)
 
@@ -28,14 +30,19 @@ class CamerasDAO(BaseDAO):
             query = (
                 select(
                     CameraModel.__table__,
+                    ClassroomModel.id.label("classroom_id"),
                     ClassroomModel.name.label("classroom_name"),
+                    ClassroomTypeModel.id.label("classroom_type_id"),
+                    ClassroomTypeModel.name.label("classroom_type"),
                     BuildingModel.id.label("building_id"),
                     BuildingModel.name.label("building_name"),
                 )
                 .select_from(CameraModel)
                 .join(ClassroomModel, CameraModel.classroom_id == ClassroomModel.id)
+                .join(ClassroomTypeModel, ClassroomModel.type == ClassroomTypeModel.id, isouter=True)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .filter(*conditions)
+                .order_by(asc(CameraModel.id))
             )
             async with async_session_maker() as session:
                 result = await session.execute(query)
@@ -57,7 +64,9 @@ class CamerasDAO(BaseDAO):
             "camera_ip": CameraModel.camera_ip,
             "reg_ip": CameraModel.reg_ip,
             "view": CameraModel.view,
-            "camera_type": CameraModel.camera_type,
+            "classroom_type_id": ClassroomTypeModel.id,
+
+            # "camera_type": CameraModel.camera_type,
         }
         conditions = filter_factory(filter_mapping, filter_by)
 
@@ -68,6 +77,7 @@ class CamerasDAO(BaseDAO):
                 )
                 .select_from(CameraModel)
                 .join(ClassroomModel, CameraModel.classroom_id == ClassroomModel.id)
+                .join(ClassroomTypeModel, ClassroomModel.type == ClassroomTypeModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .filter(*conditions)
             )
