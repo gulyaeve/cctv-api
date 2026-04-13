@@ -2,6 +2,7 @@ from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.database import async_session_maker
+from app.exceptions import ObjectMissingException
 from app.logger import logger
 
 
@@ -116,6 +117,7 @@ class BaseDAO:
         except (SQLAlchemyError, Exception) as e:
             if isinstance(e, SQLAlchemyError):
                 msg = "Database Exc: Cannot update data in table"
+                raise ObjectMissingException
             elif isinstance(e, Exception):
                 msg = "Unknown Exc: Cannot update data in table"
 
