@@ -2,9 +2,10 @@ from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, Query, status
 
 from app.classrooms.dao import ClassroomsDAO
-from app.classrooms.schemas import ClassroomAddScheme, ClassroomScheme, ClassroomSearch
+from app.classrooms.schemas import ClassroomAddScheme, ClassroomScheme, ClassroomSearch, ClassroomUpdateScheme
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
+from app.classrooms.type.router import router as classroom_type_router
 
 
 router = APIRouter(
@@ -12,6 +13,8 @@ router = APIRouter(
     tags=["Кабинеты"],
     dependencies=[Depends(permission_required("classrooms"))]
 )
+router.include_router(classroom_type_router)
+
 
 
 @router.get("", response_model=Sequence[ClassroomScheme])
@@ -91,5 +94,22 @@ async def update_classroom(id: int, data: ClassroomAddScheme):
         raise ObjectMissingException
     else:
         updated_object = await ClassroomsDAO.update(id, **data.model_dump())
+        return updated_object
+    
+
+@router.patch(
+    "/{id}",
+    response_model=ClassroomScheme,
+    dependencies=[Depends(permission_required("classroom_create"))]
+)
+async def patch_classroom(id: int, data: ClassroomUpdateScheme):
+    """
+    patch classroom
+    """
+    existing_object = await ClassroomsDAO.find_one_or_none(id=id)
+    if existing_object is None:
+        raise ObjectMissingException
+    else:
+        updated_object = await ClassroomsDAO.update(id, **data.model_dump(exclude_unset=True))
         return updated_object
     

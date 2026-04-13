@@ -24,6 +24,7 @@ from app.teachers.models import TeacherModel
 from app.groups.models import GroupModel
 from app.incidents.models import IncidentModel
 from app.ai_analysis.models import AiAnalysisScheduleModel
+from app.classrooms.type.models import ClassroomTypeModel
 
 
 # this is the Alembic Config object, which provides
