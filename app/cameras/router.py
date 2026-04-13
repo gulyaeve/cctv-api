@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Query, status
 
 from app.broker_utils.camera_broker import camera_broker_sender
 from app.cameras.dao import CamerasDAO
-from app.cameras.schemas import CameraAddScheme, CameraScheme, CameraSearch
+from app.cameras.schemas import CameraAddScheme, CameraFilter, CameraScheme, CameraSearch
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
 
@@ -56,12 +56,14 @@ async def count_cameras(filter_query: Annotated[CameraSearch, Query()]):
 
 
 @router.get("/videowall", response_model=Sequence[Sequence[CameraScheme]])
-async def get_data_for_videowall(chunk_size: int = 9):
+async def get_data_for_videowall(filter_query: Annotated[CameraFilter, Query()]):
     """
     Получения матрицы камер для видеостены
     :chunk_size: размер чанка, по умолчанию 9
     """
-    cameras = await CamerasDAO.find_all()
+    chunk_size = filter_query.chunk_size
+    filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True, exclude="chunk_size")
+    cameras = await CamerasDAO.find_all(**filter_model)
     if cameras:
         chunks = [cameras[i:i+chunk_size] for i in range(0, len(cameras), chunk_size)]
         return chunks

@@ -41,3 +41,10 @@ class CameraSearch(BaseModel):
     view: Optional[str] = None
     camera_type: Optional[int] = Field(None, description="1 - учебная аудитория, 2 - охранные, 3 - другое")
 
+
+class CameraFilter(BaseModel):
+    chunk_size: int = 9
+    classroom_id: Optional[int] = None
+    building_id: Optional[int] = None
+    camera_type: Optional[int] = Field(None, description="1 - учебная аудитория, 2 - охранные, 3 - другое")
+
