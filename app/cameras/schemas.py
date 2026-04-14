@@ -7,6 +7,7 @@ class CameraScheme(BaseModel):
     classroom_id: int
     camera_ip: Optional[str] = None
     classroom_name: Optional[str] = None
+    classroom_type_id: Optional[int] = None
     classroom_type: Optional[str] = None
     reg_ip: Optional[str] = None
     view: Optional[str] = None
