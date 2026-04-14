@@ -23,7 +23,7 @@
 
   <!--Main layout-->
   <main class="text-center">
-    <form class="form-signin" method="post" enctype="multipart/form-data" action="/api/users/login">
+    <form class="form-signin" method="post" enctype="multipart/form-data" action="{{ url_for('login_user') }}">
       <div class="logo-signin">
         <strong>
           <i style="color: #5388FF;">CCTV.</i>ITMOSCOW
@@ -44,7 +44,7 @@
     </form>
     <span>
       <p class="mt-5 mb-3 text-muted">Не зарегистрированы?</p>
-      <a href="/register" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+      <a href="{{ url_for('get_register_page') }}" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
           Зарегистрироваться
       </a>
     </span>

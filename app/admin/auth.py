@@ -37,11 +37,11 @@ class AdminAuth(AuthenticationBackend):
         token = request.cookies.get("access_token")
 
         if not token:
-            return RedirectResponse("/login", status_code=302)
+            return RedirectResponse(request.url_for("page_get_login"), status_code=302)
         
         user = await get_current_user(token)
         if not user:
-            return RedirectResponse("/login", status_code=302)
+            return RedirectResponse(request.url_for("page_get_login"), status_code=302)
         
         superadmin_role = await role_checker(user.id, "superadmin")
         if superadmin_role:
@@ -50,7 +50,7 @@ class AdminAuth(AuthenticationBackend):
         superadmin_permission = await permission_checker(user.id, "superadmin")
         if not superadmin_permission:
             logger.info(f"{user.id} NOT superadmin")
-            return RedirectResponse("/login", status_code=302)
+            return RedirectResponse(request.url_for("page_get_login"), status_code=302)
 
         # Check the token in depth
         return True

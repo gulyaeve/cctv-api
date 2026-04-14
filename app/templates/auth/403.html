@@ -23,7 +23,7 @@
 
   <!--Main layout-->
   <main class="text-center">
-    <form class="form-signin" method="post" enctype="multipart/form-data" action="/api/users/logout">
+    <form class="form-signin" method="post" enctype="multipart/form-data" action="{{ url_for('logout_user') }}">
       <div class="logo-signin">
         <strong>
           <i style="color: #5388FF;">CCTV.</i>ITMOSCOW
