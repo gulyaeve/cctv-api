@@ -77,7 +77,7 @@ class CamerasDAO(BaseDAO):
                 )
                 .select_from(CameraModel)
                 .join(ClassroomModel, CameraModel.classroom_id == ClassroomModel.id)
-                .join(ClassroomTypeModel, ClassroomModel.type == ClassroomTypeModel.id)
+                .join(ClassroomTypeModel, ClassroomModel.type == ClassroomTypeModel.id, isouter=True)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .filter(*conditions)
             )
