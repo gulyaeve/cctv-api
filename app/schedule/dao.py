@@ -178,7 +178,7 @@ class ScheduleDAO(BaseDAO):
             return None
 
     @classmethod
-    async def find_by_date(cls, search_date: date):
+    async def find_by_date(cls, search_date: date, building_id: int):
         try:
             query = (
                 select(
@@ -188,8 +188,13 @@ class ScheduleDAO(BaseDAO):
                 )
                 .select_from(ScheduleModel)
                 .join(CameraModel, ScheduleModel.classroom_id == CameraModel.classroom_id)
+                .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
+                .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .filter(
-                    cast(ScheduleModel.timestamp_start, Date) == search_date,
+                    and_(
+                        cast(ScheduleModel.timestamp_start, Date) == search_date,
+                        BuildingModel.id == building_id
+                    )
                 )
                 .order_by(ScheduleModel.id)
             )

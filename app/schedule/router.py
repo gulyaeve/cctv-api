@@ -149,7 +149,7 @@ router_daily = APIRouter(
 
 
 @router_daily.get("", response_model=Sequence[ScheduleDaily], dependencies=[Depends(auth_bearer_token)])
-async def find_daily_schedule(date: date):
-    return await ScheduleDAO.find_by_date(date)
+async def find_daily_schedule(date: date, building_id: int = 1):
+    return await ScheduleDAO.find_by_date(date, building_id)
 
 # router.include_router(router2)
