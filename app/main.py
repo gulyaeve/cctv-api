@@ -1,5 +1,4 @@
 from contextlib import asynccontextmanager
-import time
 from app.version import version
 from app.logger import logger
 from fastapi import APIRouter, FastAPI, Request
