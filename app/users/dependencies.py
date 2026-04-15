@@ -31,8 +31,8 @@ async def get_current_user(token: str = Depends(get_token)):
     user_id: int = int(payload.get("sub"))
     if not user_id:
         raise UserNotPresent
-    user = await UsersDAO.find_one_or_none(id=user_id)
-    # user = await UsersDAO.get_user(user_id)
+    # user = await UsersDAO.find_one_or_none(id=user_id)
+    user = await UsersDAO.get_user(user_id)
     if not user:
         raise UserNotPresent
     return user

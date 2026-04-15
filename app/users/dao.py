@@ -12,13 +12,13 @@ class UsersDAO(BaseDAO):
     @classmethod
     async def get_user(cls, user_id: int):
         try:
-            roles_query = (
-                select(
-                    Role.__table__,
-                )
-                .join(user_roles, user_roles.c.user_id == user_id)
-                # .filter(user_roles.c.user_id == user_id)
-            )
+            # roles_query = (
+            #     select(
+            #         Role.__table__,
+            #     )
+            #     .join(user_roles, user_roles.c.user_id == user_id)
+            #     # .filter(user_roles.c.user_id == user_id)
+            # )
             # query = (
             #     select(
             #         UserModel.__table__,
@@ -30,14 +30,24 @@ class UsersDAO(BaseDAO):
             #     .filter(UserModel.id == user_id)
             # )
             query = (
-                select(UserModel.__table__).filter(UserModel.id == user_id)
+                select(
+                    UserModel.id,
+                    UserModel.email,
+                    UserModel.full_name,
+                    UserModel.username,
+                    UserModel.time_created,
+                    UserModel.last_login,
+                    # UserModel.roles
+                )
+                .filter(UserModel.id == user_id)
             )
             async with async_session_maker() as session:
-                result = dict((await session.execute(query)).mappings().one_or_none())
-                result_roles = list((await session.execute(roles_query)).mappings().all())
+                result = await session.execute(query)
+                # result = dict((await session.execute(query)).mappings().one_or_none())
+                # result_roles = list((await session.execute(roles_query)).mappings().all())
+                # result["roles"] = result_roles
                 await session.commit()
-                result["roles"] = result_roles
-                return result
+                return result.mappings().one_or_none()
         except (SQLAlchemyError, Exception) as e:
             if isinstance(e, SQLAlchemyError):
                 msg = "Database Exc: Cannot get data"

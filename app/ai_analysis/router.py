@@ -6,7 +6,8 @@ from app.ai_analysis.dao import AiAnalysisDAO
 from app.ai_analysis.schemas import AiAnalysisAddScheme, AiAnalysisScheme, AiAnalysisSearchScheme
 from app.exceptions import ObjectMissingException
 from app.users.auth import auth_bearer_token
-from app.users.dependencies import permission_required
+from app.users.dependencies import get_current_user, permission_required
+from app.logger import logger
 
 
 router = APIRouter(
@@ -18,8 +19,16 @@ router = APIRouter(
 
 @router.get("", response_model=Sequence[AiAnalysisScheme], dependencies=[Depends(permission_required("frontend"))])
 # @cache(expire=60)
-async def get_all_ai_analysis(filter_query: Annotated[AiAnalysisSearchScheme, Query()]):
+async def get_all_ai_analysis(
+    filter_query: Annotated[AiAnalysisSearchScheme, Query()],
+    current_user = Depends(get_current_user),
+):
     filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
+    logger.info(
+        "User gets ai analysis list",
+        extra=current_user,
+        exc_info=True
+    )
     return await AiAnalysisDAO.find_all(**filter_model)
 
 
@@ -33,8 +42,15 @@ async def get_all_ai_analysis(filter_query: Annotated[AiAnalysisSearchScheme, Qu
     
 
 @router.post("", response_model=AiAnalysisScheme, dependencies=[Depends(auth_bearer_token)], status_code=201)
-async def add_ai_analysis(data: AiAnalysisAddScheme):
+async def add_ai_analysis(
+    data: AiAnalysisAddScheme,
+):
     new_object = await AiAnalysisDAO.add(**data.model_dump())
+    logger.info(
+        "Added ai_analysis",
+        extra=data.model_dump(),
+        exc_info=True
+    )
     if new_object is None:
         raise ObjectMissingException
     else:

@@ -39,11 +39,17 @@ router = APIRouter(
 
 @router.get("", dependencies=[Depends(permission_required("superadmin"))])
 async def get_all_users(
-        filter_query: Annotated[UserSearch, Query()]
+        filter_query: Annotated[UserSearch, Query()],
+        current_user = Depends(get_current_user)
 ) -> Sequence[UserScheme]:
     """
     Get all users
     """
+    logger.info(
+        "Superadmin gets users list",
+        extra=current_user,
+        exc_info=True
+    )
     filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
     return await UsersDAO.find_all(**filter_model)
 
@@ -63,7 +69,11 @@ async def register_user(
         hashed_password=get_password_hash(password),
         username=username
     )
-    logger.info(f"User saved to db: {email}")
+    logger.info(
+        "User registered and saved to db",
+        extra={"email": email},
+        exc_info=True
+    )
     start_page = request.url_for("page_get_dashboard_page")
     response = RedirectResponse(start_page, status_code=status.HTTP_302_FOUND)
     return response
@@ -87,6 +97,11 @@ async def login_user(
         httponly=False,
         expires=datetime.now(timezone.utc) + timedelta(hours=settings.TOKEN_TTL_MINUTES)
         )
+    logger.info(
+        "User logged in",
+        extra={"email": user.email},
+        exc_info=True
+    )
     return response
 
 
@@ -98,12 +113,22 @@ async def logout_user(response: Response, request: Request):
 
 
 @router.get("/me")
-async def user_get_itself(current_user = Depends(get_current_user)):
+async def user_get_itself(current_user = Depends(get_current_user)) -> UserScheme:
+    logger.info(
+        "User gets itself info",
+        extra=current_user,
+        exc_info=True
+    )
     return current_user
     
 
 @router.get("/{id}", dependencies=[Depends(permission_required("superadmin"))])
 async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Optional[UserScheme]:
+    logger.info(
+        "Superadmin gets user info",
+        extra=current_user,
+        exc_info=True
+    )
     return await UsersDAO.find_one_or_none(id=id)
 
 
