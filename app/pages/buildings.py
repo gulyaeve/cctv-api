@@ -9,6 +9,7 @@ from app.classrooms.dao import ClassroomsDAO
 from app.schedule.dao import ScheduleDAO
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
+from app.logger import logger
 
 
 router = APIRouter(
@@ -30,7 +31,12 @@ async def page_get_buildings_page(
     request: Request,
     buildings: BuildingModel=Depends(get_all_buildings),
     current_user: UserModel = Depends(get_current_user)
-    ):
+):
+    logger.info(
+        "User open list of buildings",
+        extra=current_user,
+        exc_info=True
+    )
     return templates.TemplateResponse(
         request=request,
         name="buildings/buildings.html",
@@ -52,7 +58,15 @@ async def page_get_building_classrooms_page(
     request: Request,
     building: BuildingModel=Depends(get_building),
     current_user: UserModel = Depends(get_current_user),
-    ):
+):
+    logger.info(
+        "User open list of classrooms",
+        extra={
+            **current_user,
+            "building_id": id,
+        },
+        exc_info=True
+    )
     classrooms = await ClassroomsDAO.find_all(building_id=id)
     return templates.TemplateResponse(
         request=request,
@@ -75,8 +89,16 @@ async def page_get_building_classrooms_list_page(
     request: Request,
     building: BuildingModel=Depends(get_building),
     current_user: UserModel = Depends(get_current_user),
-    ):
+):
     classrooms = await ClassroomsDAO.find_all(building_id=id)
+    logger.info(
+        "User open list of classrooms",
+        extra={
+            **current_user,
+            "building_id": id,
+        },
+        exc_info=True
+    )
     return templates.TemplateResponse(
         request=request,
         name="buildings/list.html",
@@ -98,9 +120,17 @@ async def page_get_building_classrooms_map_page(
     request: Request,
     building: BuildingModel=Depends(get_building),
     current_user: UserModel = Depends(get_current_user),
-    ):
+):
     classrooms = await ClassroomsDAO.find_all(building_id=id)
     cameras = await CamerasDAO.find_all(building_id=id)
+    logger.info(
+        "User open map of classrooms",
+        extra={
+            **current_user,
+            "building_id": id,
+        },
+        exc_info=True
+    )
     return templates.TemplateResponse(
         request=request,
         name="buildings/map.html",
@@ -123,8 +153,16 @@ async def page_get_building_schedule_page(
     request: Request,
     building: BuildingModel=Depends(get_building),
     current_user: UserModel = Depends(get_current_user),
-    ):
+):
     schedules = await ScheduleDAO.find_all(building_id=id)
+    logger.info(
+        "User open list of schedules",
+        extra={
+            **current_user,
+            "building_id": id,
+        },
+        exc_info=True
+    )
     return templates.TemplateResponse(
         request=request,
         name="buildings/building_schedule.html",
