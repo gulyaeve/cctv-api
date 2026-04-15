@@ -1,10 +1,12 @@
 from contextlib import asynccontextmanager
+import time
 from app.version import version
-import logging
+from app.logger import logger
 from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from prometheus_fastapi_instrumentator import Instrumentator
 from sqladmin import Admin
 
 from app.admin.views import (
@@ -62,12 +64,11 @@ async def lifespan(app: FastAPI):
 
     # Create exchange and queue in RabbitMQ
     await declare_exchange_and_queue()
-    logging.info("RabbitMQ data ready")
+    logger.info("RabbitMQ data ready")
 
     yield
     # After shutdown
-    logging.info("Application shutdown")
-    logging.shutdown()
+    logger.info("Application shutdown")
 
 
 app = FastAPI(
@@ -110,6 +111,13 @@ app.add_middleware(
 )
 
 
+instrumentator = Instrumentator(
+    should_group_status_codes=False,
+    excluded_handlers=[".*admin.*", "/metrics"],
+)
+instrumentator.instrument(app).expose(app)
+
+
 admin = Admin(app, engine, authentication_backend=authentication_backend)
 # admin = Admin(app, engine)
 admin.add_view(UsersAdmin)
@@ -129,3 +137,14 @@ def redirect_to_login_page(request: Request):
     start_page = request.url_for("page_get_dashboard_page")
     return RedirectResponse(start_page)
 
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    # При подключении Prometheus + Grafana подобный лог не требуется
+    logger.info("Request handling time", extra={
+        "process_time": round(process_time, 4)
+    })
+    return response

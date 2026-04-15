@@ -1,4 +1,4 @@
-import logging
+from app.logger import logger
 from sqlalchemy import Date, and_, cast, desc, func, select
 from app.buildings.models import BuildingModel
 from app.database import async_session_maker
@@ -78,7 +78,7 @@ class IncidentsDAO(BaseDAO):
             elif isinstance(e, Exception):
                 msg = "Unknown Exc: Data not found"
 
-            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
             return None
         
     @classmethod
@@ -132,7 +132,7 @@ class IncidentsDAO(BaseDAO):
             elif isinstance(e, Exception):
                 msg = "Unknown Exc: Data not found"
 
-            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
             return None
 
     @classmethod
@@ -166,7 +166,7 @@ class IncidentsDAO(BaseDAO):
             elif isinstance(e, Exception):
                 msg = "Unknown Exc: Data not found"
 
-            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
             return None
 
     @classmethod
@@ -201,5 +201,5 @@ class IncidentsDAO(BaseDAO):
             elif isinstance(e, Exception):
                 msg = "Unknown Exc: Data not found"
 
-            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
             return None

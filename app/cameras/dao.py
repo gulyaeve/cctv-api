@@ -1,4 +1,4 @@
-import logging
+from app.logger import logger
 from sqlalchemy import asc, func, select
 from sqlalchemy.exc import SQLAlchemyError
 from app.classrooms.type.models import ClassroomTypeModel
@@ -53,7 +53,7 @@ class CamerasDAO(BaseDAO):
             elif isinstance(e, Exception):
                 msg = "Unknown Exc: Data not found"
 
-            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
             return None
 
     @classmethod
@@ -90,5 +90,5 @@ class CamerasDAO(BaseDAO):
             elif isinstance(e, Exception):
                 msg = "Unknown Exc: Data not found"
 
-            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
             return None

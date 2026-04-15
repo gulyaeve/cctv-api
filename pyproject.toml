@@ -14,6 +14,7 @@ dependencies = [
     "gunicorn>=25.0.3",
     "itsdangerous>=2.2.0",
     "passlib>=1.7.4",
+    "prometheus-fastapi-instrumentator>=7.1.0",
     "pydantic-settings>=2.12.0",
     "pydantic[email]>=2.12.5",
     "python-jose>=3.5.0",

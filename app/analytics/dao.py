@@ -1,4 +1,4 @@
-import logging
+from app.logger import logger
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -130,5 +130,5 @@ class AnalyticsDAO:
             elif isinstance(e, Exception):
                 msg = "Unknown Exc: Data not found"
 
-            logging.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
             return None

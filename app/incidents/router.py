@@ -1,5 +1,5 @@
 from datetime import datetime
-import logging
+from app.logger import logger
 from typing import Sequence, Annotated
 from fastapi import APIRouter, Query, status, Depends
 
@@ -85,7 +85,7 @@ async def add_incident(data: IncidentAppendScheme):
     # Send to messenger
     if new_object.status in [0, 2]:
         incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
-        logging.info(f"send {incident_full_info=}")
+        logger.info(f"send {incident_full_info=}")
         await message_to_tg(incident_full_info)
 
     return incident_full_info
