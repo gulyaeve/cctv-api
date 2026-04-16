@@ -1,7 +1,8 @@
 {% extends "mainmenu.html" %}
 
 {% block title %}{{ building.name }}. Расписание занятий{% endblock %}
-
+{% block head %}
+{% endblock %}
 {% block breadcrubs %}
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
@@ -12,16 +13,24 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', path='js/datatables.min.js') }}"></script>
-<script src="{{ url_for('static', path='js/moment.min.js') }}"></script>
+<script src="{{ url_for('static', path='js/datatables.js') }}"></script>
+<script src="{{ url_for('static', path='js/pdfmake.min.js') }}"></script>
 <script type="text/javascript">
+  $.fn.dataTable.ext.buttons.reload = {
+    text: 'TEST',
+    action: function ()
+    {
+        window.location.href = "{{url_for('page_get_schedules_buildings_page') }}";
+    }
+  };
  new DataTable('#data', {
-    columnDefs: [
-        {
-            targets: 1,
-            render: DataTable.render.datetime('YYYY-MM-DD H:i:s', 'MMM D, YY', 'ru')
-        }
-    ]
+   layout: {
+       topStart: {
+           buttons: [
+            'copy', 'excel', 'pdf', 'reload',
+           ]
+       }
+   },
 });
 </script>
 {% endblock %}
@@ -40,10 +49,21 @@
         </tr>
     </thead>
     <tbody>
+        <!-- <tr>
+          <form class="" action="index.html" method="post">
+            <td><input type="text" name="" value=""></td>
+            <td><input type="text" name="" value=""></td>
+            <td><input type="text" name="" value=""></td>
+            <td><input type="text" name="" value=""></td>
+            <td><input type="text" name="" value=""></td>
+            <td><input type="text" name="" value=""></td>
+            <td><button type="submit" name="button">Создать</button></td>
+          </form>
+        </tr> -->
         {% for schedule in schedules %}
         <tr>
             <td><a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}">{{ schedule.subject }}</a></td>
-            <td>{{ schedule.timestamp_start }}</td>
+            <td>{{ schedule.timestamp_start.strftime('%d.%m.%Y %H:%M') }}-{{ schedule.timestamp_end.strftime('%H:%M') }}</td>
             <td class="text-center">{{ schedule.group_name }}</td>
             <td class="text-center">{{ schedule.teacher_name }}</td>
             <td class="text-center">{{ schedule.classroom_name }}</td>
