@@ -31,8 +31,6 @@
       <div class="scheme">
         {% set pathSVG = "buildings/" ~ building.id ~ "/" ~ floor ~ ".svg" %}
         <img src="{{url_for('static', path=pathSVG)}}" alt="">
-
-
         <svg>
           {% for classroom in classrooms %}
             {% if classroom.floor == floor %}
@@ -47,9 +45,9 @@
                         <!-- поле зрения: треугольник, вершина в центре объектива -->
                         <polygon class="fov"
                                  points="{{camera.pos_x}},{{camera.pos_y}} {{camera.pos_x + 34}},{{camera.pos_y - 20}} {{camera.pos_x + 34}},{{camera.pos_y + 20}}"
-                                 fill="#ffa500" fill-opacity="0.12" stroke="#5582FF" stroke-opacity="0.6" stroke-width="1"/>
+                                 fill="#ffa500" fill-opacity="0.12" stroke="{% if classroom.type == 1 %} #5582FF {% elif classroom.type == 2 %} #ff9330 {% endif %}" stroke-opacity="0.6" stroke-width="1"/>
                       </g>
-                      <circle id="lens" cx="{{camera.pos_x}}" cy="{{camera.pos_y}}" r="6" fill="#5582FF" stroke="#5582FF" stroke-width="1"/>
+                      <circle id="lens" cx="{{camera.pos_x}}" cy="{{camera.pos_y}}" r="6" fill="{% if classroom.type == 1 %} #5582FF {% elif classroom.type == 2 %} #ff9330 {% endif %}" stroke="{% if classroom.type == 1 %} #5582FF {% elif classroom.type == 2 %} #ff9330 {% endif %}" stroke-width="1"/>
                     </g>
                   {% endif %}
                 {% endif %}
@@ -64,7 +62,7 @@
           {% if classroom.floor == floor %}
               <div class="scheme-item" data-id="{{classroom.id}}" style="">
                 <a href="{{url_for('page_get_cameras_view_page', id=classroom.id)}}">
-                  <div class="scheme-name">{{classroom.name}}</div>
+                  <div class="scheme-name {% if classroom.type == 1 %}edu{% else %}another{% endif %}-classroom">{{classroom.name}}</div>
                 </a>
               </div>
           {% endif %}

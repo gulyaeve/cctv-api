@@ -290,6 +290,9 @@ button:focus {
 	fill: rgba(100,100,100,0.1);
 	cursor: pointer;
 }
+.another-classroom{
+  color: #ff9330 !important;
+}
 
 /* Названия и подсказки */
 .scheme-item {
