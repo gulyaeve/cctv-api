@@ -10,12 +10,20 @@ clients:
 
 scrape_configs:
 - job_name: docker-logs
-  static_configs:
-  - targets:
-      - localhost
-    labels:
-      job: docker-logs
-      __path__: /var/lib/docker/containers/*/*log
+  docker_sd_configs:
+  - host: unix:///var/run/docker.sock
+    refresh_interval: 10s
+    filters:
+    # Только контейнеры с определенным именем
+    - name: name
+      values: ["cctv_backend"]
+
+  # static_configs:
+  # - targets:
+  #     - localhost
+  #   labels:
+  #     job: docker-logs
+  #     __path__: /var/lib/docker/containers/*/*log
 
   pipeline_stages:
 
