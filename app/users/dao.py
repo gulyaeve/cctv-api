@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import SQLAlchemyError
 from app.logger import logger
 from app.database import async_session_maker
@@ -46,6 +46,28 @@ class UsersDAO(BaseDAO):
                 # result = dict((await session.execute(query)).mappings().one_or_none())
                 # result_roles = list((await session.execute(roles_query)).mappings().all())
                 # result["roles"] = result_roles
+                await session.commit()
+                return result.mappings().one_or_none()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Cannot get data"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Cannot get data"
+
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
+        
+    @classmethod
+    async def update_password(cls, user_id: int, hashed_password: str):
+        try:
+            query = (
+                update(UserModel)
+                .where(cls.model.id == user_id)
+                .values(hashed_password=hashed_password)
+                .returning(UserModel.__table__)
+            )
+            async with async_session_maker() as session:
+                result = await session.execute(query)
                 await session.commit()
                 return result.mappings().one_or_none()
         except (SQLAlchemyError, Exception) as e:

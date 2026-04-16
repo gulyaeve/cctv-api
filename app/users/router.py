@@ -8,12 +8,12 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
 
 
-from app.users.auth import auth_user, get_password_hash, create_token
+from app.users.auth import auth_user, get_password_hash, create_token, verify_password
 from app.users.dependencies import get_current_user, permission_required, validate_token
 # from app.users.models import UserModel
 from app.users.schemas import MediaMTXPayload, UserScheme, UserSearch
 from app.users.dao import UsersDAO
-from app.exceptions import UserExistException, UserNotPresent
+from app.exceptions import IncorrectEmailOrPassword, IncorrectPasswordValidation, UserExistException, UserNotPresent
 from app.config import settings
 # from fastapi_cache.decorator import cache
 
@@ -77,6 +77,22 @@ async def register_user(
     start_page = request.url_for("page_get_dashboard_page")
     response = RedirectResponse(start_page, status_code=status.HTTP_302_FOUND)
     return response
+
+
+@router.post("/change_password", status_code=201, response_model=UserScheme)
+async def change_password(
+    old_password: Annotated[str, Form()],
+    new_password_1: Annotated[str, Form()],
+    new_password_2: Annotated[str, Form()],
+    current_user = Depends(get_current_user),
+):
+    if new_password_1 != new_password_2:
+        raise IncorrectPasswordValidation
+    user = await UsersDAO.find_one_or_none(id=current_user.id)
+    if not verify_password(old_password, user.hashed_password):
+        raise IncorrectEmailOrPassword
+    return await UsersDAO.update_password(current_user.id, get_password_hash(new_password_1))
+    
 
 
 @router.post("/login")

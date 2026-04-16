@@ -19,6 +19,11 @@ class IncorrectEmailOrPassword(BaseException):
     detail = "Некорректный email или пароль"
 
 
+class IncorrectPasswordValidation(BaseException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Пароли не совпадают"
+
+
 class TokenMissing(BaseException):
     status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Токен отсутствует"
