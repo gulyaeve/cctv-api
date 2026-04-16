@@ -84,7 +84,13 @@
                       <td>{{ schedule.group }}</td>
                       <td></td>
                       <td>{{ schedule.classroom }}</td>
-                      <td>{{ schedule.teacher }}</td>
+                      <td>
+                        <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+                          <option selected>{{ schedule.teacher }}</option>
+                          <option value="1">Один</option>
+                          <option value="2">Два</option>
+                          <option value="3">Три</option>
+                        </select></td>
                       <td>
                         {% if schedule.status == 0 %} Не началось {% elif schedule.status == 1 %} В процессе {% else %} Завершено {% endif %}
                       </td>

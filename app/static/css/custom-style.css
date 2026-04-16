@@ -355,3 +355,11 @@ button:focus {
   width: inherit;
   height: inherit;
 }
+.dt-button-create {
+	background-color: #009800 !important;
+	border-radius: .25rem !important;
+}
+.dt-button-create:hover {
+	background-color: #00AC00 !important;
+	border-radius: .25rem !important;
+}

@@ -16,22 +16,99 @@
 <script src="{{ url_for('static', path='js/datatables.js') }}"></script>
 <script src="{{ url_for('static', path='js/pdfmake.min.js') }}"></script>
 <script type="text/javascript">
-  $.fn.dataTable.ext.buttons.reload = {
-    text: 'TEST',
+  $.fn.dataTable.ext.buttons.today = {
+    text: 'Сегодня',
     action: function ()
     {
-        window.location.href = "{{url_for('page_get_schedules_buildings_page') }}";
+        window.location.href = "{{ url_for('page_get_building_schedule_page', id=building.id)}}?date_from=" + getCurrentDay().start + "&date_to=" + getCurrentDay().end;
+    }
+  };
+  $.fn.dataTable.ext.buttons.week = {
+    text: 'На этой неделе',
+    action: function ()
+    {
+        window.location.href = "{{ url_for('page_get_building_schedule_page', id=building.id)}}?date_from=" + getCurrentWeek().start + "&date_to=" + getCurrentWeek().end;
+    }
+  };
+  $.fn.dataTable.ext.buttons.month = {
+    text: 'В этом месяце',
+    action: function ()
+    {
+        window.location.href = "{{ url_for('page_get_building_schedule_page', id=building.id)}}?date_from=" + getCurrentMonth().start + "&date_to=" + getCurrentMonth().end;
+    }
+  };
+  $.fn.dataTable.ext.buttons.all = {
+    text: 'Всё расписание',
+    action: function ()
+    {
+        window.location.href = "{{ url_for('page_get_building_schedule_page', id=building.id)}}";
+    }
+  };
+  $.fn.dataTable.ext.buttons.create = {
+    text: '<i class="fa fa-file-o" aria-hidden="true"></i> Создать',
+    className: 'dt-button-create',
+    action: function ()
+    {
+        window.location.href = "";
     }
   };
  new DataTable('#data', {
    layout: {
        topStart: {
-           buttons: [
-            'copy', 'excel', 'pdf', 'reload',
-           ]
+        buttons: ['create', 'csv', {
+          text: '<i class="fa fa-filter" aria-hidden="true"></i>',
+          action: function () {
+          },
+          split: ['today', 'week', 'month', 'all']
+        }]
        }
    },
 });
+</script>
+<script type="text/javascript">
+  function setTextById(id, text, useHTML = false) {
+    const el = document.getElementById(id);
+    if (!el) {
+      console.warn(`Element with id="${id}" not found`);
+      return false;
+    }
+    if (useHTML)
+      el.innerHTML = text;
+    else
+      el.textContent = text;
+    return true;
+  }
+
+  const pad = n => String(n).padStart(2, '0');
+  const formatDate = d => {
+    const D = new Date(d);
+    return `${D.getFullYear()}-${pad(D.getMonth()+1)}-${pad(D.getDate())}`;
+  };
+
+  // 1) Текущий день
+  function getCurrentDay(now = new Date()) {
+    const cur = new Date(now);
+    const date = formatDate(cur);
+    return { start: date, end: date };
+  }
+
+  // 2) Текущая неделя (weekStartsOn: 0=Sun,1=Mon,...)
+  function getCurrentWeek(now = new Date(), weekStartsOn = 0) {
+    const cur = new Date(now);
+    const wDay = cur.getDay();
+    const diff = (wDay - weekStartsOn + 7) % 7;
+    const weekStart = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() - diff);
+    const weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6);
+    return { start: formatDate(weekStart), end: formatDate(weekEnd) };
+  }
+
+  // 3) Текущий месяц
+  function getCurrentMonth(now = new Date()) {
+    const cur = new Date(now);
+    const monthStart = new Date(cur.getFullYear(), cur.getMonth(), 1);
+    const monthEnd = new Date(cur.getFullYear(), cur.getMonth() + 1, 0);
+    return { start: formatDate(monthStart), end: formatDate(monthEnd) };
+  }
 </script>
 {% endblock %}
 
@@ -49,37 +126,29 @@
         </tr>
     </thead>
     <tbody>
-        <!-- <tr>
-          <form class="" action="index.html" method="post">
-            <td><input type="text" name="" value=""></td>
-            <td><input type="text" name="" value=""></td>
-            <td><input type="text" name="" value=""></td>
-            <td><input type="text" name="" value=""></td>
-            <td><input type="text" name="" value=""></td>
-            <td><input type="text" name="" value=""></td>
-            <td><button type="submit" name="button">Создать</button></td>
-          </form>
-        </tr> -->
         {% for schedule in schedules %}
-        <tr>
-            <td><a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}">{{ schedule.subject }}</a></td>
-            <td>{{ schedule.timestamp_start.strftime('%d.%m.%Y %H:%M') }}-{{ schedule.timestamp_end.strftime('%H:%M') }}</td>
-            <td class="text-center">{{ schedule.group_name }}</td>
-            <td class="text-center">{{ schedule.teacher_name }}</td>
-            <td class="text-center">{{ schedule.classroom_name }}</td>
-            <td class="text-center">
-              {% if schedule.status == 0 %}
-                <span class="badge badge-secondary">Не началось</span>
-              {% elif schedule.status == 1 %}
-                <span class="badge badge-warning">В процессе</span>
-              {% else %}
-                <span class="badge badge-success">Завершено</span>
-              {% endif %}
-            </td>
-            <th class="text-center">
-              <a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
-            </th>
-        </tr>
+        <form class="" action="index.html" method="post">
+          <tr>
+              <td><a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}">{{ schedule.subject }}</a></td>
+              <td>{{ schedule.timestamp_start.strftime('%d.%m.%Y %H:%M') }}-{{ schedule.timestamp_end.strftime('%H:%M') }}</td>
+              <td class="text-center">{{ schedule.group_name }}</td>
+              <td class="text-center">{{ schedule.teacher_name }}</td>
+              <td class="text-center">{{ schedule.classroom_name }}</td>
+              <td class="text-center">
+                {% if schedule.status == 0 %}
+                  <span class="badge badge-secondary">Не началось</span>
+                {% elif schedule.status == 1 %}
+                  <span class="badge badge-warning">В процессе</span>
+                {% else %}
+                  <span class="badge badge-success">Завершено</span>
+                {% endif %}
+              </td>
+              <th class="text-center">
+                <a href=""><i class="fa fa-edit" aria-hidden="true"></i></a>
+                <a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+              </th>
+          </tr>
+        </form>
         {% endfor %}
     </tbody>
 </table>
