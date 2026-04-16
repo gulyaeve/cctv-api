@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" class="dark">
+<html lang="ru" class="dark h-100">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -18,7 +18,7 @@
     {% block head %}{% endblock %}
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
   <!--Main Navigation-->
   <header>
     <style>
@@ -36,7 +36,7 @@
 
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark d-block fixed-top" style="z-index: 2000; background-color: #333;">
+    <nav class="navbar navbar-expand-lg navbar-dark d-block fixed-top" style="background-color: #333;">
       <div class="container">
         <div class="">
           <div class="btn-group">
@@ -63,11 +63,18 @@
             </a>
           </div>
           <div class="avatar-placeholder">
-            <form id="logout" action="{{ url_for('logout_user') }}" method="post">
-              <a class="navbar-brand nav-link" type="submit" href="javascript:void(0);" onclick="document.getElementById('logout').submit();">
+
+            <div class="dropdown">
+              <a class="navbar-brand nav-link"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img src="{{ url_for('static', path='img/login.png') }}">
               </a>
-            </form>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" type="button" data-toggle="modal" data-target="#changePassword">Смена пароля</a>
+                <form id="logout" action="{{ url_for('logout_user') }}" method="post">
+                  <a class="dropdown-item" type="submit" href="javascript:void(0);" onclick="document.getElementById('logout').submit();">Выход</a>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -92,7 +99,7 @@
   </main>
   <!--Main layout-->
   <!--Footer-->
-  <footer class="bg-light text-lg-start">
+  <footer class="bg-light text-lg-start footer mt-auto">
     <!-- Copyright -->
 
   <div class="p-3" style="background-color: rgba(40, 40, 40, 1);">
@@ -112,6 +119,47 @@
     <!-- Copyright -->
   </footer>
   <!--Footer-->
+
+
+  <!--Change password-->
+  <div class="modal" tabindex="-1" role="dialog" id="changePassword">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Смена пароля</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form class="" action="{{ url_for('change_password') }}" method="post" enctype="multipart/form-data">
+          <div class="modal-body">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="old_password">Старый пароль</span>
+              </div>
+              <input type="password" name="old_password" class="form-control" aria-label="Default" aria-describedby="old_password" required>
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="new_password_1">Новый пароль</span>
+              </div>
+              <input type="password" name="new_password_1" class="form-control" aria-label="Default" aria-describedby="new_password_1" required>
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="new_password_2">Повторить новый пароль</span>
+              </div>
+              <input type="password" name="new_password_2" class="form-control" aria-label="Default" aria-describedby="new_password_2" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            <button type="submit" class="btn btn-primary">Сохранить изменение</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 </body>
 
