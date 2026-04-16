@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -7,6 +9,8 @@ from app.buildings.router import get_all_buildings, get_building
 from app.cameras.dao import CamerasDAO
 from app.classrooms.dao import ClassroomsDAO
 from app.schedule.dao import ScheduleDAO
+from app.schedule.models import ScheduleModel
+from app.schedule.router import get_all_schedules
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 from app.logger import logger
@@ -151,10 +155,11 @@ async def page_get_building_classrooms_map_page(
 async def page_get_building_schedule_page(
     id: int,
     request: Request,
-    building: BuildingModel=Depends(get_building),
+    building: BuildingModel = Depends(get_building),
     current_user: UserModel = Depends(get_current_user),
+    schedules: List[ScheduleModel] = Depends(get_all_schedules)
 ):
-    schedules = await ScheduleDAO.find_all(building_id=id)
+    # schedules = await ScheduleDAO.find_all(building_id=id)
     logger.info(
         "User open list of schedules",
         extra={
