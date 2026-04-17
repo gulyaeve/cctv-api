@@ -45,9 +45,9 @@
                         <!-- поле зрения: треугольник, вершина в центре объектива -->
                         <polygon class="fov"
                                  points="{{camera.pos_x}},{{camera.pos_y}} {{camera.pos_x + 34}},{{camera.pos_y - 20}} {{camera.pos_x + 34}},{{camera.pos_y + 20}}"
-                                 fill="#ffa500" fill-opacity="0.12" stroke="{% if classroom.type == 1 %} #5582FF {% elif classroom.type == 2 %} #ff9330 {% endif %}" stroke-opacity="0.6" stroke-width="1"/>
+                                 fill="#ffa500" fill-opacity="0.12" stroke="{% if classroom.type == 1 %} #5582FF {% else %} #ff9330 {% endif %}" stroke-opacity="0.6" stroke-width="1"/>
                       </g>
-                      <circle id="lens" cx="{{camera.pos_x}}" cy="{{camera.pos_y}}" r="6" fill="{% if classroom.type == 1 %} #5582FF {% elif classroom.type == 2 %} #ff9330 {% endif %}" stroke="{% if classroom.type == 1 %} #5582FF {% elif classroom.type == 2 %} #ff9330 {% endif %}" stroke-width="1"/>
+                      <circle id="lens" cx="{{camera.pos_x}}" cy="{{camera.pos_y}}" r="6" fill="{% if classroom.type == 1 %} #5582FF {% else %} #ff9330 {% endif %}" stroke="{% if classroom.type == 1 %} #5582FF {% else %} #ff9330 {% endif %}" stroke-width="1"/>
                     </g>
                   {% endif %}
                 {% endif %}
@@ -73,7 +73,7 @@
   </div>
 {% endblock %}
 
-{% block script %}
+{% block scripts %}
   <script type="text/javascript">
     function positionSchemeItems({
       containerSelector = '.scheme',
@@ -147,38 +147,36 @@
         });
       });
     }
-    // Первичный вызов и обновления при ресайзе/скролле
     positionSchemeItems();
     window.addEventListener('resize', () => positionSchemeItems());
     window.addEventListener('scroll', () => positionSchemeItems());
-    // Если SVG/DOM обновляются динамически, вызовите positionSchemeItems() после изменений.
+
 
   </script>
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('g.camera').forEach(g => {
-      const angle = parseFloat(g.dataset.angle);
-      if (isNaN(angle)) return;
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('g.camera').forEach(g => {
+        const angle = parseFloat(g.dataset.angle);
+        if (isNaN(angle)) return;
+        const circle = g.querySelector('circle');
+        const cx = circle ? parseFloat(circle.getAttribute('cx')) : (parseFloat(g.dataset.cx) || 14);
+        const cy = circle ? parseFloat(circle.getAttribute('cy')) : (parseFloat(g.dataset.cy) || 24);
+        const fov = g.querySelector('.fov-group') || g.querySelector('polygon');
+        if (!fov) return;
+        fov.setAttribute('transform', `rotate(${angle} ${cx} ${cy})`);
+      });
+    });
+
+    window.setCamAngle = (id, angle) => {
+      const g = document.getElementById(id);
+      if (!g) return;
       const circle = g.querySelector('circle');
       const cx = circle ? parseFloat(circle.getAttribute('cx')) : (parseFloat(g.dataset.cx) || 14);
       const cy = circle ? parseFloat(circle.getAttribute('cy')) : (parseFloat(g.dataset.cy) || 24);
       const fov = g.querySelector('.fov-group') || g.querySelector('polygon');
       if (!fov) return;
       fov.setAttribute('transform', `rotate(${angle} ${cx} ${cy})`);
-    });
-  });
-
-  window.setCamAngle = (id, angle) => {
-    const g = document.getElementById(id);
-    if (!g) return;
-    const circle = g.querySelector('circle');
-    const cx = circle ? parseFloat(circle.getAttribute('cx')) : (parseFloat(g.dataset.cx) || 14);
-    const cy = circle ? parseFloat(circle.getAttribute('cy')) : (parseFloat(g.dataset.cy) || 24);
-    const fov = g.querySelector('.fov-group') || g.querySelector('polygon');
-    if (!fov) return;
-    fov.setAttribute('transform', `rotate(${angle} ${cx} ${cy})`);
-    g.dataset.angle = angle;
-  };
-
+      g.dataset.angle = angle;
+    };
   </script>
 {% endblock %}
