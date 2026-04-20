@@ -10,6 +10,7 @@ class ClassroomTypeModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
+    map_color: Mapped[str] = mapped_column(nullable=True)
 
     classrooms: Mapped[List["ClassroomModel"]] = relationship(back_populates="classroom_type")
 
