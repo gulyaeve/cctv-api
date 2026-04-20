@@ -93,7 +93,7 @@ async def change_password(
     user = await UsersDAO.find_one_or_none(id=current_user.id)
     if not verify_password(old_password, user.hashed_password):
         raise IncorrectEmailOrPassword
-    return await UsersDAO.update_password(current_user.id, get_password_hash(new_password_1))
+    return await UsersDAO.update_password(current_user.id, get_password_hash(new_password_1.get_secret_value()))
     
 
 
