@@ -27,6 +27,7 @@ class UsersAdmin(ModelView, model=UserModel):
         UserModel.last_login,
         UserModel.roles,
     ]
+    form_excluded_columns = [UserModel.hashed_password]
     column_details_exclude_list = [UserModel.hashed_password]
 
 
