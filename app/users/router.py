@@ -79,7 +79,7 @@ async def register_user(
     return response
 
 
-@router.post("/change_password", status_code=201, response_model=UserScheme)
+@router.post("/change_password", status_code=status.HTTP_200_OK, response_model=UserScheme)
 async def change_password(
     old_password: Annotated[SecretStr, Form()],
     new_password_1: Annotated[SecretStr, Form(min_length=8)],
