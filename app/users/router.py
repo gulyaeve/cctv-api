@@ -13,7 +13,7 @@ from app.users.dependencies import get_current_user, permission_required, valida
 # from app.users.models import UserModel
 from app.users.schemas import MediaMTXPayload, UserScheme, UserSearch
 from app.users.dao import UsersDAO
-from app.exceptions import IncorrectEmailOrPassword, IncorrectPasswordValidation, UserExistException, UserNotPresent
+from app.exceptions import IncorrectEmailOrPassword, PasswordNotValidate, PasswordsDontMatchValidation, UserExistException, UserNotPresent
 from app.config import settings
 # from fastapi_cache.decorator import cache
 
@@ -87,7 +87,9 @@ async def change_password(
     current_user = Depends(get_current_user),
 ):
     if new_password_1 != new_password_2:
-        raise IncorrectPasswordValidation
+        raise PasswordsDontMatchValidation
+    if not new_password_1:
+        raise PasswordNotValidate
     user = await UsersDAO.find_one_or_none(id=current_user.id)
     if not verify_password(old_password, user.hashed_password):
         raise IncorrectEmailOrPassword

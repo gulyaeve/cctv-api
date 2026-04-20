@@ -19,9 +19,15 @@ class IncorrectEmailOrPassword(BaseException):
     detail = "Некорректный email или пароль"
 
 
-class IncorrectPasswordValidation(BaseException):
+class PasswordsDontMatchValidation(BaseException):
     status_code = status.HTTP_400_BAD_REQUEST
     detail = "Пароли не совпадают"
+
+
+class PasswordNotValidate(BaseException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Слишком простой пароль"
+
 
 
 class TokenMissing(BaseException):
