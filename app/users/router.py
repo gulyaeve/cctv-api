@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request, Res
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 # from fastapi_login import LoginManager
-from pydantic import EmailStr
+from pydantic import EmailStr, SecretStr
 
 
 from app.users.auth import auth_user, get_password_hash, create_token, verify_password
@@ -81,9 +81,9 @@ async def register_user(
 
 @router.post("/change_password", status_code=201, response_model=UserScheme)
 async def change_password(
-    old_password: Annotated[str, Form()],
-    new_password_1: Annotated[str, Form()],
-    new_password_2: Annotated[str, Form()],
+    old_password: Annotated[SecretStr, Form()],
+    new_password_1: Annotated[SecretStr, Form(min_length=8)],
+    new_password_2: Annotated[SecretStr, Form(min_length=8)],
     current_user = Depends(get_current_user),
 ):
     if new_password_1 != new_password_2:
