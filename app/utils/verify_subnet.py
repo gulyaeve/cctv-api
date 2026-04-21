@@ -11,7 +11,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 class SubnetAccessMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if request.headers.get("X-Forwarded-For") is not None:
-            client_ip = ipaddress.ip_address(request.headers.get("X-Forwarded-For"))
+            client_ip = ipaddress.ip_address(request.headers.get("X-Forwarded-For").split(',')[0].strip())
         else:
             client_ip = ipaddress.ip_address(request.client.host)
         print(settings.secured_paths)
