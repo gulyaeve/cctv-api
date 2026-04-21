@@ -1,12 +1,12 @@
 # from typing import Literal
 
-# во 2 версии Pydantic модуль BaseSettings 
-# был вынесен в отдельную библиотеку pydantic-settings
-# from pydantic import BaseSettings
+from ipaddress import ip_network
+
 from faststream.rabbit import RabbitBroker
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from urllib.parse import quote
+from urllib.parse import quote, urljoin
+
 
 
 
@@ -16,8 +16,18 @@ class Settings(BaseSettings):
     DOMAIN: str
     LOG_LEVEL: str
     ORIGINS: list
+    ALLOWED_SUBNETS: list = ["127.0.0.1/32"]
+
+    @property
+    def allowed_subnets(self):
+        return [ip_network(subnet) for subnet in self.ALLOWED_SUBNETS]
 
     ROOT_PATH: str = "/cctv"
+    SECURED_PATHS: list = ["admin", "docs", "openapi.json"]
+
+    @property
+    def secured_paths(self):
+        return [urljoin(f"{self.ROOT_PATH}/", path) for path in self.SECURED_PATHS] + [urljoin("/", path) for path in self.SECURED_PATHS]
 
     POSTGRES_HOST: str
     POSTGRES_PORT: int

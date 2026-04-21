@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from app.utils.verify_subnet import SubnetAccessMiddleware
 from app.version import version
 from app.logger import logger
 from fastapi import APIRouter, FastAPI, Request
@@ -34,7 +35,7 @@ from app.pages.router import router as pages_router
 from app.schedule.router import router as schedule_router
 from app.schedule.router import router_daily as schedule_router_daily
 from app.teachers.router import router as teachers_router
-from app.users.auth import noauth_handler, noperm_handler
+from app.users.auth import noauth_handler, noperm_handler, notfound_handler
 from app.users.router import router as users_router
 from app.active_monitoring.router import router as active_monitoring_router
 from app.analytics.router import router as analytics_router
@@ -60,12 +61,15 @@ api.include_router(ai_analysis_router)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Before startup
-
+ 
     # Create exchange and queue in RabbitMQ
     await declare_exchange_and_queue()
     logger.info("RabbitMQ data ready")
 
+    logger.info(f"Started app {app.title} v{app.version}")
+
     yield
+
     # After shutdown
     logger.info("Application shutdown")
 
@@ -75,12 +79,17 @@ app = FastAPI(
     version=version,
     lifespan=lifespan,
     root_path=settings.ROOT_PATH,
+    redoc_url=None,
 )
+
+app.add_middleware(SubnetAccessMiddleware)
+
 app.mount("/static", StaticFiles(directory="app/static"), "static")
 app.include_router(api)
 app.include_router(pages_router)
 app.include_router(active_monitoring_router)
 
+app.add_exception_handler(404, notfound_handler)
 app.add_exception_handler(OperationNotPermited, noperm_handler)
 app.add_exception_handler(IncorrectEmailOrPassword, noauth_handler)
 app.add_exception_handler(TokenIncorrect, noauth_handler)

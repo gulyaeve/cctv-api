@@ -225,3 +225,8 @@ async def get_register_page(request: Request):
 @router.get("/403", response_class=HTMLResponse)
 async def get_403_page(request: Request):
     return templates.TemplateResponse("auth/403.html", {"request": request})
+
+
+@router.get("/404", response_class=HTMLResponse)
+async def get_404_page(request: Request):
+    return templates.TemplateResponse("auth/404.html", {"request": request})
