@@ -57,6 +57,7 @@
               <th>Дисциплина</th>
               <th>Дата и время</th>
               <th>Корпус, Кабинет</th>
+              <th>Преподаватель</th>
               <th>Визор</th>
               <th>Комментарий</th>
               <th>Статус</th>
@@ -69,6 +70,7 @@
               <td><a href="">{{ incident.subject }}</a></td>
               <td>{{ incident.time_created }}</td>
               <td class="text-center">{{ incident.building_name }}, {{ incident.classroom_name }}</td>
+              <td>{{ incident.teacher_name }}</td>
               <td class="text-center">{{ incident.visor_name }}</td>
               <td class="text-center">{{ incident.comment }}</td>
               <td class="text-center">
