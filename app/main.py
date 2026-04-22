@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from time import time
 from app.utils.verify_subnet import SubnetAccessMiddleware
 from app.version import version
 from app.logger import logger
@@ -148,10 +149,11 @@ def redirect_to_login_page(request: Request):
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
+    start_time = time()
     response = await call_next(request)
-
-    # start_time = time.time()
-    # process_time = time.time() - start_time
+    process_time = time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    
     # При подключении Prometheus + Grafana подобный лог не требуется
     # logger.info("Request handling time", extra={
     #     "process_time": round(process_time, 4)
