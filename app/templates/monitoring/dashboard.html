@@ -102,7 +102,6 @@
   </div>
 
   <div class="col-12">
-    <div class="card widget-dashboard">
       <div class="card widget-dashboard">
         <h5>Динамика инцидентов</h5>
         <hr>
@@ -123,14 +122,21 @@
           </label>
         </div>
       </div>
-    </div>
   </div>
 
-  <div class="col-12">
+  <div class="col-md-6">
     <div class="card widget-dashboard" style="margin-bottom: 70px;">
       <h5>Категории инцидентов <span class="badge badge-pill badge-light">DEMO</span></h5>
       <hr>
       <canvas id="inccategorys"></canvas>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card widget-dashboard" style="margin-bottom: 70px;">
+      <h5>Типы инцидентов по корпусам <span class="badge badge-pill badge-light">DEMO</span></h5>
+      <hr>
+      <canvas id="incbuildings-all"></canvas>
     </div>
   </div>
 
@@ -238,11 +244,6 @@
       .then(result => {
         setTextById('schedule-month-count', result);
       } );
-
-
-
-
-
   });
 </script>
 
@@ -324,6 +325,34 @@
         }
       }
     }
+  });
+</script>
+
+<script type="text/javascript">
+  const chartBuildingsAll = document.getElementById('incbuildings-all');
+
+  new Chart(chartBuildingsAll, {
+    type: 'bar',
+    data: {
+      labels: ['Студент(ы) спит(ят)', 'Преподаватель отсутствует', 'Преподаватель спит', 'Студенты бездельничают', 'Камера не работает', 'Другое'],
+      datasets: [{
+        label: 'Инциденты',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true
+          }
+        }
+    }
+
   });
 </script>
 
