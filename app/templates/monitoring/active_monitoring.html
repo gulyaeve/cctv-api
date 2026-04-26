@@ -3,23 +3,138 @@
 {% block container %}-xxl{% endblock %}
 
 {% block head %}
-  <script src="{{ url_for('static', path='scripts/script.js') }}"></script>
+  <script src="{{ url_for('static', path='js/script_activemonitoring.js') }}"></script>
+{% endblock %}
+
+{% block scripts %}
+  <script defer src="{{ url_for('static', path='js/reader.js') }}"></script>
+  <script>
+      function getCookie(name) {
+      const cookieValue = document.cookie
+              .split('; ')
+              .find((row) => row.startsWith(`${name}=`))
+              ?.split('=')[1]; // The optional chaining operator (?) is used here
+
+          return cookieValue || null;
+      }
+      const access_token = getCookie('access_token');
+      // console.log(token);
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let busy = false;
+
+      const updateLabel = (cb) => {
+        if (!cb) return;
+        const lab = cb.closest('label') || (cb.id && document.querySelector(`label[for="${cb.id}"]`));
+        if (lab) lab.classList.toggle('active', !!cb.checked);
+      };
+
+      // инициализация
+      document.querySelectorAll('input[type="checkbox"][data-group]').forEach(cb => updateLabel(cb));
+
+      document.addEventListener('change', (e) => {
+        const src = e.target;
+        if (busy) return;
+        if (!src.matches('input[type="checkbox"][data-group]')) return;
+        const grp = src.dataset.group;
+        const checked = !!src.checked;
+        const others = document.querySelectorAll(`input[type="checkbox"][data-group="${grp}"]`);
+        busy = true;
+        others.forEach(cb => {
+          cb.checked = checked;
+          updateLabel(cb);
+        });
+        busy = false;
+      });
+    });
+  </script>
+
+  <script>
+    function collectValuesByPrefix(prefix) {
+        // ВАЖНО: Весь селектор должен быть строкой в кавычках ` `
+        const selector = `input[type="checkbox"][id^="cam-${prefix}-"]`;
+
+        return Array.from(document.querySelectorAll(selector))
+            .filter(cb => cb.checked)
+            .map(cb => cb.value)
+            .join(",");
+    }
+
+    function updateIncidentTypeIds(prefix) {
+        // Собираем цифры из ID чекбоксов (например '1' из 'type-inc-alert-1')
+        const selector = `input[type="checkbox"][id^="type-${prefix}-"]`;
+        const checkedValues = Array.from(document.querySelectorAll(selector))
+            .filter(cb => cb.checked)
+            .map(cb => cb.id.split('-').pop())
+            .join(",");
+
+        const hiddenInput = document.querySelector(`.type_ids_${prefix}`);
+        if (hiddenInput) {
+            hiddenInput.value = checkedValues;
+        }
+        // console.log(checkedValues);
+    }
+
+    function updateInputs(prefix) {
+        const str = collectValuesByPrefix(prefix);
+
+        const selector = prefix === "control"
+            ? "input.cameras_ids_control"
+            : "input.cameras_ids_inc";
+
+        document.querySelectorAll(selector).forEach(inp => {
+            inp.value = str;
+        });
+    }
+
+    document.addEventListener("change", (e) => {
+        // Проверяем, что кликнули именно по нужному чекбоксу
+        updateInputs("control");
+        updateInputs("inc");
+
+        // Логика инцидентов (Текст + ID)
+        if (e.target.matches(`input[type="checkbox"][id^="type-"]`)) {
+            const checkbox = e.target;
+            const textToManage = checkbox.value.trim();
+            const container = checkbox.closest('.row');
+            const textarea = container.querySelector('.control-panel-details-textarea');
+
+            if (checkbox.checked) {
+                // Добавление текста
+                if (textarea.value.trim() === "") {
+                    textarea.value = textToManage;
+                } else {
+                    const lines = textarea.value.split('\n').map(l => l.trim());
+                    if (!lines.includes(textToManage)) {
+                        textarea.value += '\n' + textToManage;
+                    }
+                }
+            } else {
+                // Удаление текста
+                const lines = textarea.value.split('\n');
+                const filteredLines = lines.filter(line => line.trim() !== textToManage);
+                textarea.value = filteredLines.join('\n');
+            }
+
+            // Обновляем скрытое поле с ID инцидентов
+            updateIncidentTypeIds("control");
+            updateIncidentTypeIds("inc");
+        }
+
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateInputs("control");
+        updateInputs("inc");
+    });
+  </script>
+
 {% endblock %}
 
 {% block content %}
-<script defer src="{{ url_for('static', path='js/reader.js') }}"></script>
-<script>
-    function getCookie(name) {
-    const cookieValue = document.cookie
-            .split('; ')
-            .find((row) => row.startsWith(`${name}=`))
-            ?.split('=')[1]; // The optional chaining operator (?) is used here
 
-        return cookieValue || null;
-    }
-    const access_token = getCookie('access_token');
-    // console.log(token);
-</script>
 
       <!--Section: Content-->
       <div class="row m-0">
@@ -33,6 +148,11 @@
                     <div class="video {% if len_cameras == 1 %} w-100 {% endif %} d-inline">
                     <!-- <a href="#" data-toggle="modal" data-target="#cam{{ cameras.index(camera) + 1 }}"><img src="/camera_view/{{ camera.id }}" alt=""></a> -->
                     <!-- <video id="camera_{{ camera.id }}" controls muted autoplay width="640" height="480"></video> -->
+                      <div class="btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-secondary camera_num_title active" id="lab{{ camera.id }}">
+                          <input type="checkbox" data-group="#camera_g{{ camera.id }}" checked> {{ camera.id }}
+                        </label>
+                      </div>
                       <video id="camera_{{ camera.id }}" controls muted autoplay ></video>
                       <script>
                         let reader_{{ camera.id }} = null;
@@ -92,92 +212,136 @@
             </div>
             <div class="col-8 p-3 m-0">
               <div class="control-panel-addinc">
-                <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
-                <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
-                <input class="d-none" type="text" name="status" class="d-none" value="0">
-                <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}'>
-                <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                 <div class="control-panel-buttons d-flex">
-                  <button class="control-panel-btn btn-inc-alright" type="submit" name="button">Всё хорошо</button>
-                  </form>
+                  <button class="control-panel-btn btn-inc-alright" type="button" name="button">Всё хорошо</button>
                   <button class="control-panel-btn btn-inc-control" type="button" name="button">Контроль</button>
                   <button class="control-panel-btn btn-inc-alert" type="button" name="button">Инцидент</button>
                 </div>
-
-                  <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}" >
-                  <input class="d-none" type="text" name="status" class="d-none" value="3" >
-                  <input name="cameras_ids" type="text" class="d-none cameras_ids_control">
-                  <!-- <input class="d-none" type="text" name="cameras_ids" class="d-none" value='{{ cameras_ids }}' > -->
-                  <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}" >
-                  <div class="control-panel-details st-inc-control d-none">
-                    <div class="row">
-                      <div class="col-6">
-                        {% for camera in cameras %}
-                          <div class="cam">
-                            <input type="checkbox" id="cam-control-{{ cameras.index(camera) + 1 }}" value="{{ camera.id }}">
-                            <label for="cam-control-{{ cameras.index(camera) + 1 }}">Камера {{ cameras.index(camera) + 1 }}</label>
-                          </div>
-                        {% endfor %}
-                        <b>Быстрый ввод</b>
-                        <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
-                        <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
-                        <input class="d-none" type="text" name="status" class="d-none" value="3">
-                        <input name="cameras_ids" type="text" class="cameras_ids_control d-none">
-                        <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
-                        <button class="control-panel-btn" type="submit" name="comment" value="Студент(ы) спит(ят)">Студент(ы) спит(ят)</button>
-                        <button class="control-panel-btn" type="submit" name="comment" value="Преподаватель отсутствует">Преподаватель отсутствует</button>
-                        <button class="control-panel-btn" type="submit" name="comment" value="Преподаватель спит">Преподаватель спит</button>
-                        <button class="control-panel-btn" type="submit" name="comment" value="Студенты бездельничают">Студенты бездельничают</button>
-                        </form>
-                      </div>
-                      <div class="col-6">
-                        <b>Комментарий:</b>
-                        <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
-                        <input name="cameras_ids" type="text" class="cameras_ids_control d-none">
-                        <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
-                        <input class="d-none" type="text" name="status" class="d-none" value="3">
-                        <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
-                        <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
-                        <button class="control-panel-btn" type="submit" name="button">Отправить информацию</button>
-                        </form>
-                      </div>
+                <div class="control-panel-details st-inc-alright d-none">
+                  <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
+                  <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
+                  <input class="d-none" type="text" name="status" class="d-none" value="0">
+                  <input name="cameras_ids" type="text" class="cameras_ids_control d-none" value='{{ cameras_ids }}'>
+                  <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
+                  <div class="row">
+                    <!-- <div class="col-6">
+                      <legend>Быстрый ввод</legend>
+                      <button class="control-panel-btn" type="button" name="comment" value="Студент(ы) спит(ят)">Студент(ы) спит(ят)</button>
+                      <button class="control-panel-btn" type="button" name="comment" value="Преподаватель отсутствует">Преподаватель отсутствует</button>
+                      <button class="control-panel-btn" type="button" name="comment" value="Преподаватель спит">Преподаватель спит</button>
+                      <button class="control-panel-btn" type="button" name="comment" value="Студенты бездельничают">Студенты бездельничают</button>
+                    </div> -->
+                    <div class="col-12">
+                      <legend>Комментарий:</legend>
+                      <textarea class="control-panel-details-textarea" name="comment" rows="6"></textarea>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary btn-block mt-2" type="submit" name="button">Отправить информацию</button>
                     </div>
                   </div>
-                </form>
-                <div class="control-panel-details st-inc-alert d-none">
+                  </form>
+                </div>
+                <div class="control-panel-details st-inc-control d-none">
+                  <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col-6">
+                    <input type="text" name="cameras_ids" class="cameras_ids_control d-none">
+                    <input type="text" name="type_ids" class="type_ids_control d-none">
+                    <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
+                    <input class="d-none" type="text" name="status" class="d-none" value="3">
+                    <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
+                    <div class="col-12">
+                      <fieldset>
                       {% for camera in cameras %}
-                        <div class="cam-inc">
-                          <input type="checkbox" id="cam-inc-{{ cameras.index(camera) + 1 }}" value="{{ camera.id }}">
-                          <label for="cam-inc-{{ cameras.index(camera) + 1 }}">Камера {{ cameras.index(camera) + 1 }}</label>
+                        <div class="form-check-inline">
+                          <input type="checkbox" id="cam-control-{{ cameras.index(camera) + 1 }}" value="{{ camera.id }}" class="form-check-input" data-group="#camera_g{{ camera.id }}" checked>
+                          <label for="cam-control-{{ cameras.index(camera) + 1 }}" class="form-check-label">Камера {{ cameras.index(camera) + 1 }}</label>
                         </div>
                       {% endfor %}
-                      <b>Быстрый ввод</b>
-                        <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
-                        <input type="text" name="cameras_ids" class="cameras_ids_inc d-none">
-                        <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
-                        <input class="d-none" type="text" name="status" class="d-none" value="2">
-                        <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
-                        <button class="control-panel-btn" type="submit" name="comment" value="Студент(ы) спит(ят)">Студент(ы) спит(ят)</button>
-                        <button class="control-panel-btn" type="submit" name="comment" value="Преподаватель отсутствует">Преподаватель отсутствует</button>
-                        <button class="control-panel-btn" type="submit" name="comment" value="Преподаватель спит">Преподаватель спит</button>
-                        <button class="control-panel-btn" type="submit" name="comment" value="Студенты бездельничают">Студенты бездельничают</button>
-                        <button class="control-panel-btn" type="submit" name="comment" value="Камера не работает">Камера не работает</button>
-                        </form>
+                      </fieldset>
                     </div>
                     <div class="col-6">
-                      <b>Комментарий:</b>
-                      <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
-                      <input type="text" name="cameras_ids" class="cameras_ids_inc d-none">
-                      <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
-                      <input class="d-none" type="text" name="status" class="d-none" value="2">
-                      <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
-                      <textarea class="control-panel-details-textarea" name="comment" rows="8"></textarea>
-                      <button class="control-panel-btn" type="submit" name="button">Отправить информацию</button>
-                      </form>
+                      <fieldset>
+                        <legend>Тип инцидента</legend>
+                        <div class="form-check">
+                          <input id="type-control-1" type="checkbox" name="comment" value="Студент(ы) спит(ят)" class="form-check-input">
+                          <label for="type-control-1" class="form-check-label">Студент(ы) спит(ят)</label>
+                        </div>
+                        <div class="form-check">
+                          <input id="type-control-2" type="checkbox" name="comment" value="Преподаватель отсутствует" class="form-check-input">
+                          <label for="type-control-2" class="form-check-label">Преподаватель отсутствует</label>
+                        </div>
+                        <div class="form-check">
+                          <input id="type-control-3" type="checkbox" name="comment" value="Преподаватель спит" class="form-check-input">
+                          <label for="type-control-3" class="form-check-label">Преподаватель спит</label>
+                        </div>
+                        <div class="form-check">
+                          <input id="type-control-4" type="checkbox" name="comment" value="Студенты бездельничают" class="form-check-input">
+                          <label for="type-control-4" class="form-check-label">Студенты бездельничают</label>
+                        </div>
+                      </fieldset>
+                    </div>
+                    <div class="col-6">
+                      <legend>Комментарий:</legend>
+                      <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary btn-block mt-2" type="submit" name="button">Отправить информацию</button>
                     </div>
                   </div>
+                  </form>
+                </div>
+                <div class="control-panel-details st-inc-alert d-none">
+                  <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
+                  <input type="text" name="cameras_ids" class="cameras_ids_inc d-none">
+                  <input type="text" name="type_ids" class="type_ids_inc d-none">
+                  <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
+                  <input class="d-none" type="text" name="status" class="d-none" value="2">
+                  <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
+                  <div class="row">
+                    <div class="col-12">
+                      <fieldset>
+                      {% for camera in cameras %}
+                        <div class="form-check-inline">
+                          <input type="checkbox" id="cam-inc-{{ cameras.index(camera) + 1 }}" value="{{ camera.id }}" class="form-check-input" data-group="#camera_g{{ camera.id }}" checked>
+                          <label for="cam-inc-{{ cameras.index(camera) + 1 }}" class="form-check-label">Камера {{ cameras.index(camera) + 1 }}</label>
+                        </div>
+                      {% endfor %}
+                      </fieldset>
+                    </div>
+                    <div class="col-6">
+                      <fieldset>
+                        <legend>Тип инцидента</legend>
+                        <div class="form-check">
+                          <input id="type-inc-1" type="checkbox" name="comment" value="Студент(ы) спит(ят)" class="form-check-input">
+                          <label for="type-inc-1" class="form-check-label">Студент(ы) спит(ят)</label>
+                        </div>
+                        <div class="form-check">
+                          <input id="type-inc-2" type="checkbox" name="comment" value="Преподаватель отсутствует" class="form-check-input">
+                          <label for="type-inc-2" class="form-check-label">Преподаватель отсутствует</label>
+                        </div>
+                        <div class="form-check">
+                          <input id="type-inc-3" type="checkbox" name="comment" value="Преподаватель спит" class="form-check-input">
+                          <label for="type-inc-3" class="form-check-label">Преподаватель спит</label>
+                        </div>
+                        <div class="form-check">
+                          <input id="type-inc-4" type="checkbox" name="comment" value="Студенты бездельничают" class="form-check-input">
+                          <label for="type-inc-4" class="form-check-label">Студенты бездельничают</label>
+                        </div>
+                        <div class="form-check">
+                          <input id="type-inc-5" type="checkbox" name="comment" value="Камера не работает" class="form-check-input">
+                          <label for="type-inc-5" class="form-check-label">Камера не работает</label>
+                        </div>
+                      </fieldset>
+                    </div>
+                    <div class="col-6">
+                      <legend>Комментарий:</legend>
+                      <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary btn-block mt-2" type="submit" name="button">Отправить информацию</button>
+                    </div>
+                  </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -224,11 +388,9 @@
                 {{ incident_data.current_teacher }}<br>
                 <b>Группа:</b><br>
                 {{ incident_data.current_group }}<br>
-                {% if incident_data.status in (2,3) %}
                 <br>
-                <b>{% if incident_data.status == 2 %}Инцидент{% elif incident_data.status == 3 %}Контроль{% endif %}:</b><br>
+                <b>{% if incident_data.status == 2 %}Инцидент{% elif incident_data.status == 3 %}Контроль{% elif incident_data.status == 0 %}Комментарий{% endif %}:</b><br>
                 {{ incident_data.comment }}<br>
-                {% endif %}
               </div>
             </div>
             {% endfor %}
@@ -238,42 +400,5 @@
     </div>
   </div>
 
-<script>
-  function collectValuesByPrefix(prefix) {
-      // ВАЖНО: Весь селектор должен быть строкой в кавычках ` `
-      const selector = `input[type="checkbox"][id^="cam-${prefix}-"]`;
 
-      return Array.from(document.querySelectorAll(selector))
-          .filter(cb => cb.checked)
-          .map(cb => cb.value)
-          .join(",");
-  }
-
-  function updateInputs(prefix) {
-      const str = collectValuesByPrefix(prefix);
-
-      const selector = prefix === "control"
-          ? "input.cameras_ids_control"
-          : "input.cameras_ids_inc";
-
-      document.querySelectorAll(selector).forEach(inp => {
-          inp.value = str;
-      });
-  }
-
-  document.addEventListener("change", (e) => {
-      // Проверяем, что кликнули именно по нужному чекбоксу
-      if (e.target.matches('input[type="checkbox"][id^="cam-control-"]')) {
-          updateInputs("control");
-      }
-      if (e.target.matches('input[type="checkbox"][id^="cam-inc-"]')) {
-          updateInputs("inc");
-      }
-  });
-
-  document.addEventListener("DOMContentLoaded", () => {
-      updateInputs("control");
-      updateInputs("inc");
-  });
-</script>
 {% endblock %}

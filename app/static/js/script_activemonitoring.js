@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnAlright = document.querySelector('.btn-inc-alright');
     const btnControl = document.querySelector('.btn-inc-control');
     const btnAlert = document.querySelector('.btn-inc-alert');
+    const detailAlright = document.querySelector('.st-inc-alright');
     const detailControl = document.querySelector('.st-inc-control');
     const detailAlert = document.querySelector('.st-inc-alert');
 
@@ -9,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let activeDetail = null;
 
     function hideAllDetails() {
+        detailAlright.classList.add('d-none');
         detailControl.classList.add('d-none');
         detailAlert.classList.add('d-none');
         activeButton = null;
@@ -30,6 +32,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     btnAlright.addEventListener('click', function () {
         hideAllDetails();
+        detailAlright.classList.remove('d-none');
+        activeButton = this;
+        activeDetail = detailAlright;
+        setTimeout(() => setArrowPosition(this, detailAlright), 10);
     });
 
     btnControl.addEventListener('click', function () {

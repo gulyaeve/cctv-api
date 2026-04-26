@@ -70,6 +70,19 @@ button:focus {
   object-fit: contain;
   margin: 0 auto;
 }
+.camera_num_title {
+	background-color: rgba(50,50,50,0.5);
+	height: 50px;
+	width: 50px;
+	text-align: center;
+	border-radius: 25px;
+	font-size: 1.5em;
+  margin: 10px;
+}
+.camera_num_title h5 {
+  margin: auto;
+}
+
 .status-log {
   background-color: #222222;
   width: 100%;
@@ -158,6 +171,11 @@ button:focus {
   margin: 0 1% 0 1%;
   width: 98%;
 }
+
+.control-panel-details.st-inc-alright {
+  background: linear-gradient(to bottom, #3e9d3f 2%, #4a4a4a 6%, #4a4a4a 92%);
+}
+
 .control-panel-details.st-inc-control {
   background: linear-gradient(to bottom, #d0c34f 2%, #4a4a4a 6%, #4a4a4a 92%);
 }
@@ -197,12 +215,20 @@ button:focus {
   border-bottom: 10px solid transparent;
 }
 
+.control-panel-details.st-inc-alright::before {
+  border-bottom-color: #3e9d3f;
+}
+
 .control-panel-details.st-inc-control::before {
   border-bottom-color: #d0c34f;
 }
 
 .control-panel-details.st-inc-alert::before {
   border-bottom-color: #c04736;
+}
+
+.control-panel-details.st-inc-alright .control-panel-btn.active {
+  border: 3px solid #3e9d3f;
 }
 
 .control-panel-details.st-inc-control .control-panel-btn.active {
