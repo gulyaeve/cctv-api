@@ -148,9 +148,9 @@
                     <div class="video {% if len_cameras == 1 %} w-100 {% endif %} d-inline">
                     <!-- <a href="#" data-toggle="modal" data-target="#cam{{ cameras.index(camera) + 1 }}"><img src="/camera_view/{{ camera.id }}" alt=""></a> -->
                     <!-- <video id="camera_{{ camera.id }}" controls muted autoplay width="640" height="480"></video> -->
-                      <div class="btn-group-toggle" data-toggle="buttons">
+                      <div class="btn-group-toggle" data-toggle="buttons" style="position: absolute;">
                         <label class="btn btn-secondary camera_num_title active" id="lab{{ camera.id }}">
-                          <input type="checkbox" data-group="#camera_g{{ camera.id }}" checked> {{ camera.id }}
+                          <input type="checkbox" data-group="#camera_g{{ camera.id }}" checked> {{ cameras.index(camera) }}
                         </label>
                       </div>
                       <video id="camera_{{ camera.id }}" controls muted autoplay ></video>
