@@ -150,7 +150,7 @@
                     <!-- <video id="camera_{{ camera.id }}" controls muted autoplay width="640" height="480"></video> -->
                       <div class="btn-group-toggle" data-toggle="buttons" style="position: absolute;">
                         <label class="btn btn-secondary camera_num_title active" id="lab{{ camera.id }}">
-                          <input type="checkbox" data-group="#camera_g{{ camera.id }}" checked> {{ cameras.index(camera) }}
+                          <input type="checkbox" data-group="#camera_g{{ camera.id }}" checked> {{ cameras.index(camera) + 1 }}
                         </label>
                       </div>
                       <video id="camera_{{ camera.id }}" controls muted autoplay ></video>
