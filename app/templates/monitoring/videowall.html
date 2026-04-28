@@ -11,15 +11,15 @@
       <div class="row">
         <div class="form-group mr-5">
           <label for="buildings-list">Корпус</label>
-          <input type="text" id="buildings-id" name="building_id" class="d-none" disabled>
-          <select class="form-control" id="buildings-list">
+          <input type="text" id="building-id" name="building_id" class="d-none" disabled>
+          <select class="form-control" id="building_id">
             <option value="0">Все корпуса</option>
           </select>
         </div>
         <div class="form-group mr-5">
           <label for="type-list">Тип камеры</label>
           <input type="text" id="types-id" name="classroom_type_id" class="d-none" disabled>
-          <select class="form-control" id="types-list" >
+          <select class="form-control" id="classroom_type_id" >
             <option value="0">Все типы</option>
           </select>
         </div>
@@ -188,7 +188,7 @@
   </script>
 
   <script type="text/javascript">
-    window.addEventListener('load', () => {
+    window.addEventListener('DOMContentLoaded', () => {
       let url_buildings = "{{ url_for('get_all_buildings') }}";
       let url_types = "{{ url_for('get_all_classroom_types') }}";
 
@@ -197,25 +197,43 @@
       let current_classroom_type_id = params.get('classroom_type_id');
       let current_timeout = params.get('timeout');
 
+      const t1 = document.getElementById('classroom_type_id');
+      const t2 = document.getElementById('types-id');
+      const b1 = document.getElementById('building_id');
+      const b2 = document.getElementById('building-id');
+
+      function sync(i1, i2) {
+        if (i1.value === '0') {
+          i2.disabled = true;
+          i2.value = '';
+        } else {
+          i2.disabled = false;
+          i2.value = i1.value;
+        }
+        console.log(i2);
+        console.log(i1);
+      }
+
       let buildings_list = fetch(url_buildings)
             .then(response => response.json())
             .then(result => {
-              let parent = document.querySelector('#buildings-list');
+              let parent = document.querySelector('#building_id');
               for (const building of result) {
                 let dropdown_item = document.createElement('option');
                 if (building['id'] == current_buildings_id) {
                   dropdown_item.setAttribute('selected', 'selected');
-                  console.log('DONE!!!!');
                 }
                 dropdown_item.setAttribute('value',building['id']);
                 dropdown_item.textContent = building['name'];
                 parent.appendChild(dropdown_item);
               };
+              sync(b1, b2);
+              b1.addEventListener('change', () => sync(b1, b2));
             });
       let types_list = fetch(url_types)
             .then(response => response.json())
             .then(result => {
-              let parent = document.querySelector('#types-list');
+              let parent = document.querySelector('#classroom_type_id');
               for (const type of result) {
                 let dropdown_item = document.createElement('option');
                 if (type['id'] == current_classroom_type_id) {
@@ -225,33 +243,10 @@
                 dropdown_item.textContent = type['name'];
                 parent.appendChild(dropdown_item);
               };
+              sync(t1, t2);
+              t1.addEventListener('change', () => sync(t1, t2));
             });
-    });
 
-  </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const t1 = document.getElementById('types-list');
-      const t2 = document.getElementById('types-id');
-      const b1 = document.getElementById('buildings-list');
-      const b2 = document.getElementById('buildings-id');
-
-      function sync(i1, i2) {
-        console.log(i2);
-        console.log(i1);
-        if (i1.value === '0') {
-          i2.disabled = true;
-          i2.value = '';
-        } else {
-          i2.disabled = false;
-          i2.value = i1.value;
-        }
-      }
-
-      t1.addEventListener('change', () => sync(t1, t2));
-      b1.addEventListener('change', () => sync(b1, b2));
-
-      const params = new URLSearchParams(window.location.search);
       document.querySelectorAll('select[id]').forEach(sel => {
         const val = params.get(sel.id);
         if (val == null) return;
@@ -265,5 +260,7 @@
       });
 
     });
+
   </script>
+
 {% endblock %}

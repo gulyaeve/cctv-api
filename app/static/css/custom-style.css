@@ -410,13 +410,13 @@ p {
    z-index: 999;
 }
 #menu {
-   padding: 10px 0;
-   border-bottom: solid 5px #333333;
-   background: #111;
-   display: none;
-   left: 0;
-   right: 0;
-   margin: 0 auto;
+	padding: 10px 0;
+	border: solid #333;
+	background: #111;
+	margin: 0 auto;
+	border-radius: 0 0 50px 50px;
+	width: 50%;
+  display: none;
 }
 #menu ul {
    overflow: hidden;
