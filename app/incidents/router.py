@@ -11,6 +11,7 @@ from app.incidents.dao import IncidentsDAO
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
+from app.incidents.type.router import router as incident_type_router
 # from fastapi_cache.decorator import cache
 
 
@@ -19,6 +20,7 @@ router = APIRouter(
     tags=["Incidents"],
     dependencies=[Depends(permission_required("incidents"))]
 )
+router.include_router(incident_type_router)
 
 
 @router.get("/schedule/{id}")
@@ -67,11 +69,11 @@ async def add_incident(data: IncidentAppendScheme):
     Add incident with cameras
     """
     # Save to db, without screenshots
-    data_to_save = data.model_dump(exclude={"building_id"})
-    new_object: IncidentModel = await IncidentsDAO.add(**data_to_save)
+    new_object: IncidentModel = await IncidentsDAO.add(data)
     if new_object is None:
         raise ObjectMissingException
     
+    data_to_save = data.model_dump(exclude={"building_id", "incident_types"})
     if data.cameras_ids:
         # Update in db with screenshots paths
         filenames = []
@@ -82,22 +84,23 @@ async def add_incident(data: IncidentAppendScheme):
         await IncidentsDAO.update(new_object.id, **data_to_save)
 
     incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
+    logger.info("created incident", extra=dict(incident_full_info), exc_info=True)
     # Send to messenger
     if new_object.status in [0, 2]:
         incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
-        logger.info(f"send {incident_full_info=}")
+        logger.info("send to queue", extra=dict(incident_full_info), exc_info=True)
         await message_to_tg(incident_full_info)
-
+    
     return incident_full_info
 
 
-@router.post(
-    "/bulk",
-    status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(permission_required("incident_create"))]
-)
-async def bulk_add_incidents(items: Sequence[IncidentAppendScheme]) -> Sequence[IncidentScheme]:
-    return await IncidentsDAO.add_bulk([item.model_dump() for item in items])
+# @router.post(
+#     "/bulk",
+#     status_code=status.HTTP_201_CREATED,
+#     dependencies=[Depends(permission_required("incident_create"))]
+# )
+# async def bulk_add_incidents(items: Sequence[IncidentAppendScheme]) -> Sequence[IncidentScheme]:
+#     return await IncidentsDAO.add_bulk([item.model_dump() for item in items])
 
 
 @router.delete(

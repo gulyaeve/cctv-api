@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from pydantic import BaseModel, Field, field_validator
-from typing import Optional
+from typing import List, Optional
 
 
 class IncidentBaseScheme(BaseModel):
@@ -12,6 +12,7 @@ class IncidentBaseScheme(BaseModel):
 
 class IncidentFormScheme(IncidentBaseScheme):
     cameras_ids: str = Field(default="", example="1,2,3")
+    incident_types: str = Field(default="", example="1,2,3")
     # building_id: Optional[int] = None
 
     @field_validator('cameras_ids')
@@ -24,9 +25,10 @@ class IncidentFormScheme(IncidentBaseScheme):
 class IncidentAppendScheme(IncidentBaseScheme):
     cameras_ids: Optional[list[int]] = None
     building_id: Optional[int] = None
+    incident_types: Optional[List[int]] = None
    
 
-class IncidentScheme(IncidentAppendScheme):
+class IncidentScheme(IncidentBaseScheme):
     id: int
     time_created: datetime
     cameras_screenshots: Optional[list[str]] = None
@@ -39,6 +41,7 @@ class IncidentScheme(IncidentAppendScheme):
     teacher_id: Optional[int] = None
     subject: Optional[str] = None
     teacher_name: Optional[str] = None
+    incident_type_names: Optional[List[str]] = None
 
     class Config:
         from_attributes = True
@@ -56,6 +59,7 @@ class IncidentSearch(BaseModel):
     teacher_id: Optional[int] = None
     subject: Optional[str] = None
     teacher_name: Optional[str] = None
+    incident_type_id: Optional[int] = None
    
 
 # TODO: Check for remove
@@ -74,3 +78,4 @@ class IncidentFullInfo(BaseModel):
     current_classroom: str
     current_visor: Optional[str] = None
     current_building: str
+    incident_type_names: Optional[List[str]] = None

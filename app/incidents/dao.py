@@ -1,5 +1,7 @@
+from app.incidents.schemas import IncidentAppendScheme
+from app.incidents.type.models import IncidentTypeModel
 from app.logger import logger
-from sqlalchemy import Date, and_, cast, desc, func, select
+from sqlalchemy import ARRAY, Date, String, and_, cast, desc, func, select
 from app.buildings.models import BuildingModel
 from app.database import async_session_maker
 from app.classrooms.models import ClassroomModel
@@ -18,6 +20,34 @@ class IncidentsDAO(BaseDAO):
     model = IncidentModel
 
     @classmethod
+    async def add(cls, data: IncidentAppendScheme):
+        try:
+            async with async_session_maker() as session:
+                if data.incident_types:
+                    incident_types_query = await session.execute(
+                        select(IncidentTypeModel).where(IncidentTypeModel.id.in_(data.incident_types))
+                    )
+                    incident_types = incident_types_query.scalars().all()
+                    data_to_save = data.model_dump(exclude={"building_id", "incident_types"})
+                    new_incident: IncidentModel = IncidentModel(**data_to_save)
+                    new_incident.incident_types = list(incident_types)
+                else:
+                    data_to_save = data.model_dump(exclude={"building_id", "incident_types"})
+                    new_incident: IncidentModel = IncidentModel(**data_to_save)
+                session.add(new_incident)
+                await session.commit()
+                await session.refresh(new_incident)
+                return new_incident
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Cannot insert data into table"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Cannot insert data into table"
+
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None
+
+    @classmethod
     async def find_all(cls, **filter_by):
         date_from = filter_by.pop("date_from") if filter_by.get("date_from") else None
         date_to = filter_by.pop("date_to") if filter_by.get("date_to") else None
@@ -32,6 +62,7 @@ class IncidentsDAO(BaseDAO):
             "teacher_id": TeacherModel.id,
             "subject": ScheduleModel.subject,
             "teacher_name": TeacherModel.name,
+            "incident_type_id": IncidentTypeModel.id,
         }
         conditions = filter_factory(filter_mapping, filter_by)
 
@@ -58,7 +89,11 @@ class IncidentsDAO(BaseDAO):
                     UserModel.full_name.label("visor_name"),
                     ScheduleModel.teacher_id.label("teacher_id"),
                     ScheduleModel.subject.label("subject"),
-                    TeacherModel.name.label("teacher_name")
+                    TeacherModel.name.label("teacher_name"),
+                    func.coalesce(
+                        func.array_agg(IncidentTypeModel.name).filter(IncidentTypeModel.name.is_not(None)),
+                        func.cast([], ARRAY(String))
+                    ).label('incident_type_names'),
                 )
                 .select_from(IncidentModel)
                 .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
@@ -66,8 +101,20 @@ class IncidentsDAO(BaseDAO):
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .join(UserModel, IncidentModel.visor_id == UserModel.id)
+                .outerjoin(IncidentModel.incident_types)
                 .filter(filter_query)
                 .order_by(desc(IncidentModel.time_created))
+                .group_by(
+                    IncidentModel.id,
+                    TeacherModel.name,
+                    ScheduleModel.subject,
+                    ScheduleModel.teacher_id,
+                    ClassroomModel.id,
+                    ClassroomModel.name,
+                    UserModel.full_name,
+                    BuildingModel.id,
+                    BuildingModel.name,
+                )
             )
             async with async_session_maker() as session:
                 result = await session.execute(query)
@@ -178,11 +225,15 @@ class IncidentsDAO(BaseDAO):
                     TeacherModel.name.label('current_teacher'),
                     GroupModel.name.label('current_group'),
                     ScheduleModel.subject.label('current_schedule'),
-                    ClassroomModel.name.label('classroom_id'),
+                    ClassroomModel.id.label('classroom_id'),
                     ClassroomModel.name.label('current_classroom'),
                     UserModel.full_name.label('current_visor'),
                     BuildingModel.id.label('building_id'),
                     BuildingModel.name.label('current_building'),
+                    func.coalesce(
+                        func.array_agg(IncidentTypeModel.name).filter(IncidentTypeModel.name.is_not(None)),
+                        func.cast([], ARRAY(String))
+                    ).label('incident_type_names'),
                 )
                 .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
@@ -190,7 +241,19 @@ class IncidentsDAO(BaseDAO):
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .join(UserModel, IncidentModel.visor_id == UserModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
+                .outerjoin(IncidentModel.incident_types)
                 .filter(IncidentModel.id == id)
+                .group_by(
+                    IncidentModel.id,
+                    TeacherModel.name,
+                    GroupModel.name,
+                    ScheduleModel.subject,
+                    ClassroomModel.id,
+                    ClassroomModel.name,
+                    UserModel.full_name,
+                    BuildingModel.id,
+                    BuildingModel.name,
+                )
             )
             async with async_session_maker() as session:
                 result = await session.execute(query)

@@ -3,6 +3,8 @@ from sqladmin import ModelView
 from app.buildings.models import BuildingModel
 from app.cameras.models import CameraModel
 from app.classrooms.models import ClassroomModel
+from app.classrooms.type.models import ClassroomTypeModel
+from app.incidents.type.models import IncidentTypeModel
 from app.users.models import UserModel
 from app.users.models import Role
 from app.users.models import Permission
@@ -83,6 +85,18 @@ class ClassroomsAdmin(ModelView, model=ClassroomModel):
     ]
 
 
+class ClassroomTypeAdmin(ModelView, model=ClassroomTypeModel):
+    can_create = True
+    can_delete = True
+    name = "classroom type"
+    name_plural = "classroom types"
+    column_list = [
+        ClassroomTypeModel.id,
+        ClassroomTypeModel.name,
+        ClassroomTypeModel.map_color,
+    ]
+
+
 class CamerasAdmin(ModelView, model=CameraModel):
     can_create = True
     can_delete = True
@@ -149,5 +163,17 @@ class IncidentsAdmin(ModelView, model=IncidentModel):
         IncidentModel.id,
         IncidentModel.comment,
         IncidentModel.schedule,
-        IncidentModel.visor
+        IncidentModel.visor,
+    ]
+
+
+class IncidentTypeAdmin(ModelView, model=IncidentTypeModel):
+    can_create = True
+    can_delete = True
+    name = "incident type"
+    name_plural = "incident types"
+    column_list = [
+        IncidentTypeModel.id,
+        IncidentTypeModel.name,
+        IncidentTypeModel.status_binding,
     ]

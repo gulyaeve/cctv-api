@@ -1,8 +1,19 @@
 from datetime import datetime
-from sqlalchemy import ARRAY, INTEGER, VARCHAR, Column, Integer, String, ForeignKey, func
+from typing import List
+
+from sqlalchemy import ARRAY, INTEGER, VARCHAR, Column, Integer, String, ForeignKey, Table, func
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from app.database import Base
+
+
+incidents_and_types = Table(
+    "incidents_and_types",
+    Base.metadata,
+    Column("incident_id", Integer, ForeignKey("incidents.id"), primary_key=True),
+    Column("incident_type_id", Integer, ForeignKey("incident_types.id"), primary_key=True),
+    
+)
 
 
 class IncidentModel(Base):
@@ -19,6 +30,7 @@ class IncidentModel(Base):
 
     schedule= relationship("ScheduleModel", back_populates="incidents")
     visor = relationship("UserModel", back_populates="incidents")
+    incident_types: Mapped[List["IncidentTypeModel"]] = relationship("IncidentTypeModel", secondary=incidents_and_types, back_populates="incidents")
     
     def __str__(self) -> str:
         return f"{self.comment}"

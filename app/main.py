@@ -13,8 +13,10 @@ from sqladmin import Admin
 from app.admin.views import (
     BuildingsAdmin,
     CamerasAdmin,
+    ClassroomTypeAdmin,
     ClassroomsAdmin,
     GroupsAdmin,
+    IncidentTypeAdmin,
     IncidentsAdmin,
     PermissionsAdmin,
     RolesAdmin,
@@ -134,11 +136,13 @@ admin.add_view(RolesAdmin)
 admin.add_view(PermissionsAdmin)
 admin.add_view(BuildingsAdmin)
 admin.add_view(ClassroomsAdmin)
+admin.add_view(ClassroomTypeAdmin)
 admin.add_view(CamerasAdmin)
 admin.add_view(ScheduleAdmin)
 admin.add_view(TeachersAdmin)
 admin.add_view(GroupsAdmin)
 admin.add_view(IncidentsAdmin)
+admin.add_view(IncidentTypeAdmin)
 
 
 @app.get("/", response_class=RedirectResponse)
