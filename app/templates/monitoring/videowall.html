@@ -215,7 +215,7 @@
       let types_list = fetch(url_types)
             .then(response => response.json())
             .then(result => {
-              let parent = document.querySelector('#type-list');
+              let parent = document.querySelector('#types-list');
               for (const type of result) {
                 let dropdown_item = document.createElement('option');
                 if (type['id'] == current_classroom_type_id) {
