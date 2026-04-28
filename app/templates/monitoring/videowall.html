@@ -100,9 +100,18 @@
 
     let params = new URLSearchParams(document.location.search);
     let timeout = params.get('timeout');
+    let current_buildings_id = params.get('building_id');
+    let current_classroom_type_id = params.get('classroom_type_id');
 
     window.addEventListener('load', () => {
-      let url = "{{ url_for('get_data_for_videowall') }}";
+
+      let url = "{{ url_for('get_data_for_videowall') }}?";
+      if (current_buildings_id != null){
+        url = url + "building_id=" + current_buildings_id;
+      }
+      if (current_classroom_type_id != null){
+        url = url + "classroom_type_id=" + current_classroom_type_id;
+      }
       let response = fetch(url)
         .then(response => response.json())
         .then(result => {
