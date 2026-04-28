@@ -27,7 +27,6 @@
           <label for="timeout-list">Таймаут</label>
 
           <select class="form-control" id="timeout" name="timeout">
-            <option value="10000">10 сек</option>
             <option value="20000">20 сек</option>
             <option value="30000">30 сек</option>
             <option value="40000">40 сек</option>
@@ -89,7 +88,7 @@
           return cookieValue || null;
       }
       const access_token = getCookie('access_token');
-      // console.log(token);
+
   </script>
   <script type="text/javascript">
 
@@ -100,6 +99,9 @@
 
     let params = new URLSearchParams(document.location.search);
     let timeout = params.get('timeout');
+    if (timeout == null) {
+      timeout = 20000;
+    }
     let current_buildings_id = params.get('building_id');
     let current_classroom_type_id = params.get('classroom_type_id');
 
@@ -124,7 +126,7 @@
 
     function cameraConnect(dataCameras) {
         reader
-        console.log("currentChunk = " + cunckCount);
+
         for (let i = 0; i < dataCameras.length; i++) {
           reader = new MediaMTXWebRTCReader({
           // url: "https://media.cctv.itmoscow/" + dataCameras[i]["id"] + "_p/whep",
@@ -210,8 +212,7 @@
           i2.disabled = false;
           i2.value = i1.value;
         }
-        console.log(i2);
-        console.log(i1);
+
       }
 
       let buildings_list = fetch(url_buildings)
