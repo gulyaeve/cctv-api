@@ -389,3 +389,107 @@ button:focus {
 	background-color: #00AC00 !important;
 	border-radius: .25rem !important;
 }
+
+
+/*----------------------- Выезжающее меню ------------------------------ */
+
+.content {
+   margin: 0 auto 20px;
+   max-width: 680px;
+   padding: 0 3%;
+}
+p {
+   font-size: 110%;
+   line-height: 1.5;
+   margin: 4px;
+}
+.slide_container {
+   width: 100%;
+   position: fixed;
+   top: 81px;
+   z-index: 999;
+}
+#menu {
+   padding: 10px 0;
+   border-bottom: solid 5px #333333;
+   background: #111;
+   display: none;
+   left: 0;
+   right: 0;
+   margin: 0 auto;
+}
+#menu ul {
+   overflow: hidden;
+   margin: 0 auto;
+   padding: 0;
+   max-width: 800px;
+   width: 100%;
+}
+#menu li {
+   padding: 0;
+   width: 100%;
+}
+#menu li a {
+    display: block;
+    color: #CCC;
+     font-size: 18px;
+}
+#menu li a:hover {
+   color: #FFF;
+}
+#btn {
+   margin: 0 auto;
+   width: 200px;
+   height: 30px;
+   border-radius: 0 0 5px 5px;
+   background: #333333;
+   cursor: pointer;
+   position: fixed;
+   left: 0;
+   right: 0;
+   z-index: 1;
+}
+#btn span {
+   position: relative;
+   top: 12px;
+   left: 50%;
+   display: block;
+   margin-left: -25px;
+   width: 50px;
+   height: 5px;
+   border-radius: 5px;
+   background: #fff;
+   box-shadow: inset 1px 1px 2px #ddd;
+}
+.layer {
+   position: fixed;
+   top: 0;
+   width: 100%;
+   height: 100%;
+   background-color: #000;
+   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=50)";
+   opacity: 0.5;
+   z-index: 300;
+}
+@media screen and (max-width: 480px) {
+  #menu {
+   padding: 5%;
+  }
+  #menu li {
+   width: 100%;
+  }
+  #menu li a {
+   border-top: none;
+  }
+  #menu li a:hover {
+   margin-top: -1px;
+  }
+}
+.fixed {
+  position:fixed; /*позицианируем чтобы исчез скролл*/
+  width:100%; /*что бы верстка не складывалась по ширине*/
+}
+.logo-menu img{
+  width: 100%;
+  filter: saturate(0);
+}

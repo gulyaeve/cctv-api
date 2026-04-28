@@ -1,12 +1,50 @@
 
 {% extends "mainmenu.html" %}
 
-
-{% block container %}-fluid{% endblock %}
+{% block container %}-fluid p-0{% endblock %}
 
 {% block content %}
-<div class="row videowall-monitoring">
+<div class="slide_container">
+  <nav id="menu">
+    <div class="container-sm">
+      <form class="" action="{{ url_for('page_get_videowall_page') }}" method="get" enctype="multipart/form-data">
+      <div class="row">
+        <div class="form-group mr-5">
+          <label for="buildings-list">Корпус</label>
+          <input type="text" id="buildings-id" name="building_id" class="d-none" disabled>
+          <select class="form-control" id="buildings-list">
+            <option value="0">Все корпуса</option>
+          </select>
+        </div>
+        <div class="form-group mr-5">
+          <label for="type-list">Тип камеры</label>
+          <input type="text" id="types-id" name="classroom_type_id" class="d-none" disabled>
+          <select class="form-control" id="types-list" >
+            <option value="0">Все типы</option>
+          </select>
+        </div>
+        <div class="form-group mr-5">
+          <label for="timeout-list">Таймаут</label>
 
+          <select class="form-control" id="timeout" name="timeout">
+            <option value="10000">10 сек</option>
+            <option value="20000">20 сек</option>
+            <option value="30000">30 сек</option>
+            <option value="40000">40 сек</option>
+            <option value="50000">50 сек</option>
+            <option value="60000">60 сек</option>
+          </select>
+        </div>
+        <div class="form-group mr-5" style="display: flex;">
+          <button class="btn btn-primary" type="submit" style="margin: auto;">Сформировать</button>
+        </div>
+      </div>
+      </form>
+    </div>
+  </nav>
+  <div id="btn"><span></span></div>
+</div>
+<div class="row videowall-monitoring">
   <div class="col-4 p-0 video-monitoring" style="">
     <video id="camera0" controls muted autoplay ></video>
   </div>
@@ -33,7 +71,6 @@
   </div>
   <div class="col-4 p-0 video-monitoring">
     <video id="camera8" controls muted autoplay ></video>
-
   </div>
 </div>
 
@@ -61,24 +98,23 @@
     let reader = null;
     let cunckCount = 0;
 
+    let params = new URLSearchParams(document.location.search);
+    let timeout = params.get('timeout');
 
     window.addEventListener('load', () => {
-
       let url = "{{ url_for('get_data_for_videowall') }}";
       let response = fetch(url)
-
         .then(response => response.json())
         .then(result => {
           dataCameras = result;
           dataCamerasLength = dataCameras.length;
           cameraConnect(dataCameras[cunckCount], cunckCount);
         } );
-
-      let timer = setInterval(() => cameraConnect(dataCameras[cunckCount]), 20000);
-
+      let timer = setInterval(() => cameraConnect(dataCameras[cunckCount]), timeout);
     });
 
     function cameraConnect(dataCameras) {
+        reader
         console.log("currentChunk = " + cunckCount);
         for (let i = 0; i < dataCameras.length; i++) {
           reader = new MediaMTXWebRTCReader({
@@ -99,19 +135,125 @@
           },
           });
         }
-
         cunckCount++;
         if (cunckCount >= dataCamerasLength) {
           // console.log('dataCamerasLength = ' + dataCamerasLength)
           cunckCount = 0;
         }
+        setTimeout(() => reader.close(), timeout);
 
     };
 
     window.addEventListener("beforeunload", () => {
         if (reader !== null) {
-        reader.close();
+          reader.close();
         }
+    });
+  </script>
+  <script>
+    $(function() {
+      var openBtn = $('#btn'),
+      slideMenu = $('#menu'),
+      layer = document.getElementById("blackout");
+      openBtn.on("click", function() {
+        if (slideMenu.is(':hidden')) {
+            $(layer).addClass('layer');
+            openBtn.slideDown(300);
+            slideMenu.slideDown(300);
+            $("html,body").css("overflow","hidden");
+        } else {
+          slideMenu.slideUp(300);
+          openBtn.slideDown(300);
+          $(layer).removeClass("layer");
+          $("html,body").css("overflow","auto");
+        }
+      });
+    });
+    function closeMenu() {
+      var openBtn = $('#btn'), slideMenu = $('#menu'), layer = document.getElementById("blackout");
+      slideMenu.slideUp(300);
+      openBtn.slideDown(300);
+      $(layer).removeClass("layer");
+      $("html,body").css("overflow","auto");
+    };
+  </script>
+
+  <script type="text/javascript">
+    window.addEventListener('load', () => {
+      let url_buildings = "{{ url_for('get_all_buildings') }}";
+      let url_types = "{{ url_for('get_all_classroom_types') }}";
+
+      let params = new URLSearchParams(document.location.search);
+      let current_buildings_id = params.get('building_id');
+      let current_classroom_type_id = params.get('classroom_type_id');
+      let current_timeout = params.get('timeout');
+
+      let buildings_list = fetch(url_buildings)
+            .then(response => response.json())
+            .then(result => {
+              let parent = document.querySelector('#buildings-list');
+              for (const building of result) {
+                let dropdown_item = document.createElement('option');
+                if (building['id'] == current_buildings_id) {
+                  dropdown_item.setAttribute('selected', 'selected');
+                  console.log('DONE!!!!');
+                }
+                dropdown_item.setAttribute('value',building['id']);
+                dropdown_item.textContent = building['name'];
+                parent.appendChild(dropdown_item);
+              };
+            });
+      let types_list = fetch(types_list)
+            .then(response => response.json())
+            .then(result => {
+              let parent = document.querySelector('#type-list');
+              for (const type of result) {
+                let dropdown_item = document.createElement('option');
+                if (type['id'] == current_classroom_type_id) {
+                  dropdown_item.setAttribute('selected', 'selected');
+                }
+                dropdown_item.setAttribute('value',type['id']);
+                dropdown_item.textContent = type['name'];
+                parent.appendChild(dropdown_item);
+              };
+            });
+    });
+
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const t1 = document.getElementById('types-list');
+      const t2 = document.getElementById('types-id');
+      const b1 = document.getElementById('buildings-list');
+      const b2 = document.getElementById('buildings-id');
+
+      function sync(i1, i2) {
+        console.log(i2);
+        console.log(i1);
+        if (i1.value === '0') {
+          i2.disabled = true;
+          i2.value = '';
+        } else {
+          i2.disabled = false;
+          i2.value = i1.value;
+        }
+      }
+
+      t1.addEventListener('change', () => sync(t1, t2));
+      b1.addEventListener('change', () => sync(b1, b2));
+
+      const params = new URLSearchParams(window.location.search);
+      document.querySelectorAll('select[id]').forEach(sel => {
+        const val = params.get(sel.id);
+        if (val == null) return;
+        if ([...sel.options].some(o => o.value === val)) {
+          sel.value = val;
+        } else {
+          const opt = [...sel.options].find(o => o.text === val);
+          if (opt) sel.value = opt.value;
+        }
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+      });
 
     });
   </script>
