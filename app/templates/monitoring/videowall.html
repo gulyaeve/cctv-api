@@ -212,7 +212,7 @@
                 parent.appendChild(dropdown_item);
               };
             });
-      let types_list = fetch(types_list)
+      let types_list = fetch(url_types)
             .then(response => response.json())
             .then(result => {
               let parent = document.querySelector('#type-list');
