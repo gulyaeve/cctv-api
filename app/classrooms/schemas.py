@@ -1,5 +1,7 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
+
+from app.classrooms.type.schemas import ClassroomTypeScheme
 
 
 class ClassroomScheme(BaseModel):
@@ -9,6 +11,7 @@ class ClassroomScheme(BaseModel):
     floor: int
     polygon_map: Optional[str] = None
     type: Optional[int] = None
+    classroom_type: Optional[ClassroomTypeScheme]
 
     class Config:
         from_attributes = True
