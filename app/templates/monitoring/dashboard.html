@@ -132,6 +132,14 @@
     </div>
   </div>
 
+  <div class="col-md-12">
+    <div class="card widget-dashboard">
+      <h5>Инциденты по преподавателям <span class="badge badge-pill badge-light">DEMO</span></h5>
+      <hr>
+      <canvas id="incteachers-all"></canvas>
+    </div>
+  </div>
+
   <div class="col-md-6">
     <div class="card widget-dashboard">
       <h5>Категории инцидентов <span class="badge badge-pill badge-light">DEMO</span></h5>
@@ -333,9 +341,6 @@
 <script type="text/javascript">
   const chartBuildingsAll = document.getElementById('incbuildings-all');
 
-  const DATA_COUNT = 7;
-  const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
-
   new Chart(chartBuildingsAll, {
     type: 'bar',
     data: {
@@ -343,20 +348,56 @@
       datasets: [{
           label: 'Всё хорошо',
           data: [50, 40, 45, 60],
-          backgroundColor: '#0F0',
+          backgroundColor: "#4bc0c0",
         },
         {
           label: 'Контроль',
           data: [12, 10, 16, 13],
-          backgroundColor: '#FF0',
+          backgroundColor: "#ffcd56",
         },
         {
           label: 'Инцидент',
           data: [12, 5, 10, 15],
-          backgroundColor: '#F00',
+          backgroundColor: "#ff6384",
       }],
     },
     options: {
+      barThickness: 15,
+      indexAxis: 'y',
+      responsive: true,
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true
+          }
+        }
+    }
+
+  });
+</script>
+
+<script type="text/javascript">
+  const chartTeachersAll = document.getElementById('incteachers-all');
+
+  new Chart(chartTeachersAll, {
+    type: 'bar',
+    data: {
+      labels: ['Иванов И.И.', 'Петров П.П.', 'Васильев В.В.', 'Александров А.А.'],
+      datasets: [{
+          label: 'Всё хорошо',
+          data: [50, 40, 45, 60],
+          backgroundColor: "#4bc0c0",
+        },
+        {
+          label: 'Инцидент',
+          data: [12, 5, 10, 15],
+          backgroundColor: "#ff6384",
+      }],
+    },
+    options: {
+      indexAxis: 'y',
       responsive: true,
         scales: {
           x: {
