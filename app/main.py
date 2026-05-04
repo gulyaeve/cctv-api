@@ -163,3 +163,15 @@ async def add_process_time_header(request: Request, call_next):
     #     "process_time": round(process_time, 4)
     # })
     return response
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    # Log the full error details for internal debugging
+    logger.error(f"Unhandled error: {exc}", exc_info=True)
+    
+    # # Return a safe, generic message to the user
+    # return JSONResponse(
+    #     status_code=500,
+    #     content={"message": "An internal server error occurred. Please try again later."},
+    # )

@@ -8,6 +8,7 @@ from pydantic import EmailStr
 from jose import jwt
 from datetime import datetime, timedelta
 
+from app.logger import logger
 from app.users.dao import UsersDAO
 from app.exceptions import IncorrectEmailOrPassword, TokenIncorrect
 from app.config import settings
@@ -56,6 +57,7 @@ def noperm_handler(request, exc):
     
 
 def notfound_handler(request, exc):
+    logger.warning(exc_info=True, extra={"message": getattr(exc, "detail")})
     if "text/html" in request.headers.get("accept"):
         return RedirectResponse(
             url=request.url_for("get_404_page"),

@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import joinedload
 
 from app.database import async_session_maker
 from app.classrooms.models import ClassroomModel
@@ -19,7 +19,7 @@ class ClassroomsDAO(BaseDAO):
             ).filter_by(
                 **filter_by
             ).options(
-                selectinload(ClassroomModel.classroom_type)
+                joinedload(ClassroomModel.classroom_type)
             )
             async with async_session_maker() as session:
                 result = await session.execute(query)
@@ -41,7 +41,7 @@ class ClassroomsDAO(BaseDAO):
             ).filter_by(
                 **filter_by
             ).options(
-                selectinload(ClassroomModel.classroom_type)
+                joinedload(ClassroomModel.classroom_type)
             ).order_by(
                 ClassroomModel.id
             )
