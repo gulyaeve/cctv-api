@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Query, status
 
 from app.broker_utils.camera_broker import camera_broker_sender
 from app.cameras.dao import CamerasDAO
-from app.cameras.schemas import CameraAddScheme, CameraFilter, CameraScheme, CameraSearch
+from app.cameras.schemas import CameraAddScheme, CameraFilter, CameraInVideoWallScheme, CameraScheme, CameraSearch
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
 
@@ -55,7 +55,7 @@ async def count_cameras(filter_query: Annotated[CameraSearch, Query()]):
     return await CamerasDAO.find_all_count(**filter_model)
 
 
-@router.get("/videowall", response_model=Sequence[Sequence[CameraScheme]])
+@router.get("/videowall", response_model=Sequence[Sequence[CameraInVideoWallScheme]])
 async def get_data_for_videowall(filter_query: Annotated[CameraFilter, Query()]):
     """
     Получения матрицы камер для видеостены
