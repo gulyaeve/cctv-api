@@ -66,8 +66,9 @@ async def lifespan(app: FastAPI):
     # Before startup
  
     # Create exchange and queue in RabbitMQ
-    await declare_exchange_and_queue()
-    logger.info("RabbitMQ data ready")
+    if settings.rabbitmq_url:
+        await declare_exchange_and_queue()
+        logger.info("RabbitMQ data ready")
 
     logger.info(f"Started app {app.title} v{app.version}")
 

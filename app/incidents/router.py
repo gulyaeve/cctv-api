@@ -12,6 +12,7 @@ from app.exceptions import ObjectMissingException
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 from app.incidents.type.router import router as incident_type_router
+from app.config import settings
 # from fastapi_cache.decorator import cache
 
 
@@ -85,8 +86,9 @@ async def add_incident(data: IncidentAppendScheme):
 
     incident_full_info = await IncidentsDAO.get_incident_full_info(new_object.id)
     logger.info("created incident", extra=dict(incident_full_info), exc_info=True)
-    # Send to messenger
-    if new_object.status in [0, 2]:
+
+    # Send to queue
+    if new_object.status in [0, 2] and settings.rabbitmq_url:
         incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
         logger.info("send to queue", extra=dict(incident_full_info), exc_info=True)
         await message_to_tg(incident_full_info)

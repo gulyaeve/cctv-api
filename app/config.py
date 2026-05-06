@@ -1,6 +1,7 @@
 # from typing import Literal
 
 from ipaddress import ip_network
+from typing import Optional
 
 from faststream.rabbit import RabbitBroker
 from pydantic import Field
@@ -64,16 +65,17 @@ class Settings(BaseSettings):
     REDIS_PORT: int
 
     # RabbitMQ
-    RABBITMQ_HOST: str
-    RABBITMQ_PORT: int
-    RABBITMQ_DEFAULT_USER: str
-    RABBITMQ_DEFAULT_PASS: str
+    RABBITMQ_HOST: Optional[str] = None
+    RABBITMQ_PORT: Optional[int] = None
+    RABBITMQ_DEFAULT_USER: Optional[str] = None
+    RABBITMQ_DEFAULT_PASS: Optional[str] = None
 
     @property
-    def rabbitmq_url(self) -> str:
-        return (
-            f"amqp://{self.RABBITMQ_DEFAULT_USER}:{quote(self.RABBITMQ_DEFAULT_PASS)}@" f"{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}"
-        )
+    def rabbitmq_url(self) -> str | None:
+        if self.RABBITMQ_HOST:
+            return (
+                f"amqp://{self.RABBITMQ_DEFAULT_USER}:{quote(self.RABBITMQ_DEFAULT_PASS)}@" f"{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}"
+            )
     
     QUEUE_NAME: str = "cctv_scr_save"
     QUEUE_NAME_TG: str = "cctv_tg"
