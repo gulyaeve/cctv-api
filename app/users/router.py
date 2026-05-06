@@ -80,7 +80,11 @@ async def register_user(
     return response
 
 
-@router.post("/generate_bearer_token", status_code=201)
+@router.post(
+    "/generate_bearer_token",
+    status_code=201,
+    dependencies=[Depends(permission_required("superadmin"))],
+)
 async def generate_bearer_token(
     current_user = Depends(get_current_user)
 ):
