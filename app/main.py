@@ -38,7 +38,7 @@ from app.pages.router import router as pages_router
 from app.schedule.router import router as schedule_router
 from app.schedule.router import router_daily as schedule_router_daily
 from app.teachers.router import router as teachers_router
-from app.users.auth import noauth_handler, noperm_handler, notfound_handler
+from app.handlers import noauth_handler, noperm_handler, notfound_handler
 from app.users.router import router as users_router
 from app.active_monitoring.router import router as active_monitoring_router
 from app.analytics.router import router as analytics_router

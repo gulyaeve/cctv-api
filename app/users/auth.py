@@ -1,14 +1,12 @@
 from typing import Optional
 
-from fastapi import Depends, Request, status
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from pydantic import EmailStr
 from jose import jwt
 from datetime import datetime, timedelta
 
-from app.logger import logger
 from app.users.dao import UsersDAO
 from app.exceptions import IncorrectEmailOrPassword, TokenIncorrect
 from app.config import settings
@@ -28,46 +26,6 @@ async def auth_bearer_token(
     if auth is None or (token := auth.credentials) not in known_tokens:
         raise TokenIncorrect
     return token
-
-
-def noauth_handler(request: Request, exc):
-    if "text/html" in request.headers.get("accept"):
-        return RedirectResponse(
-            url=request.url_for("page_get_login"),
-            status_code=status.HTTP_303_SEE_OTHER
-        )
-    else:
-        return JSONResponse(
-            status_code=getattr(exc, "status_code"),
-            content={"message": getattr(exc, "detail")}
-        )
-
-
-def noperm_handler(request, exc):
-    if "text/html" in request.headers.get("accept"):
-        return RedirectResponse(
-            url=request.url_for("get_403_page"),
-            status_code=status.HTTP_303_SEE_OTHER
-        )
-    else:
-        return JSONResponse(
-            status_code=getattr(exc, "status_code"),
-            content={"message": getattr(exc, "detail")}
-        )
-    
-
-def notfound_handler(request, exc):
-    logger.warning(msg=f"404 {getattr(exc, 'detail')}", exc_info=True)
-    if "text/html" in request.headers.get("accept"):
-        return RedirectResponse(
-            url=request.url_for("get_404_page"),
-            status_code=status.HTTP_303_SEE_OTHER
-        )
-    else:
-        return JSONResponse(
-            status_code=getattr(exc, "status_code"),
-            content={"message": getattr(exc, "detail")}
-        )
 
 
 def get_password_hash(password: str) -> str:
