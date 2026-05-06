@@ -1,4 +1,5 @@
-from fastapi import Request, status
+from fastapi import status
+from starlette.requests import Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from app.logger import logger
 
@@ -17,7 +18,7 @@ def noauth_handler(request: Request, exc):
         )
 
 
-def noperm_handler(request, exc):
+def noperm_handler(request: Request, exc):
     if "text/html" in request.headers.get("accept"):
         return RedirectResponse(
             url=request.url_for("get_403_page"),
@@ -30,7 +31,7 @@ def noperm_handler(request, exc):
         )
     
 
-def notfound_handler(request, exc):
+def notfound_handler(request: Request, exc):
     logger.warning(msg=f"404 {getattr(exc, 'detail')}", exc_info=True)
     if "text/html" in request.headers.get("accept"):
         return RedirectResponse(
