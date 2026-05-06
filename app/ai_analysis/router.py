@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Query
 from app.ai_analysis.dao import AiAnalysisDAO
 from app.ai_analysis.schemas import AiAnalysisAddScheme, AiAnalysisScheme, AiAnalysisSearchScheme
 from app.exceptions import ObjectMissingException
-from app.users.auth import auth_bearer_token
+# from app.users.auth import auth_bearer_token
 from app.users.dependencies import get_current_user, permission_required
 from app.logger import logger
 
@@ -40,8 +40,9 @@ async def get_all_ai_analysis(
 #     else:
 #         return ai_analysis
     
-
-@router.post("", response_model=AiAnalysisScheme, dependencies=[Depends(auth_bearer_token)], status_code=201)
+# TODO: remove after test
+# @router.post("", response_model=AiAnalysisScheme, dependencies=[Depends(auth_bearer_token)], status_code=201)
+@router.post("", response_model=AiAnalysisScheme, dependencies=[Depends(get_current_user)], status_code=201)
 async def add_ai_analysis(
     data: AiAnalysisAddScheme,
 ):

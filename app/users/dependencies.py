@@ -1,41 +1,52 @@
 
-from typing import Callable
+from typing import Callable, Optional
 from fastapi import Depends, HTTPException, Request, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from app.exceptions import OperationNotPermited, TokenMissing, TokenIncorrect, UserNotPresent
 from app.config import settings
 from app.users.dao import PermissionDAO, RolesDAO, UsersDAO
 from app.users.models import UserModel
+from app.users.auth import get_bearer_token, known_tokens
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
 
 
 def get_token(request: Request):
-    token = request.cookies.get("access_token")
-    if not token:
-        raise TokenMissing
-    return token
+    return request.cookies.get("access_token")
 
+    
+async def get_current_user(
+        jwt_token: Optional[str] = Depends(get_token),
+        bearer_auth: Optional[HTTPAuthorizationCredentials] = Depends(get_bearer_token)
+    ):
+    if jwt_token:
+        try:
+            payload = jwt.decode(
+                jwt_token,
+                settings.SECRET_KEY,
+                settings.ALGORITHM,
+            )
+        except JWTError:
+            raise TokenIncorrect
+        user_id: int = int(payload.get("sub"))
+        if not user_id:
+            raise UserNotPresent
+        # user = await UsersDAO.find_one_or_none(id=user_id)
+        user = await UsersDAO.get_user(user_id)
+        if not user:
+            raise UserNotPresent
+        return user
+    if bearer_auth:
+        bearer_token = bearer_auth.credentials
+        user = await UsersDAO.find_one_or_none(bearer_token=bearer_token)
+        if user:
+            return user
+        if bearer_token in known_tokens:
+            return await UsersDAO.find_one_or_none(id=1)
+    raise TokenMissing
 
-async def get_current_user(token: str = Depends(get_token)):
-    try:
-        payload = jwt.decode(
-            token,
-            settings.SECRET_KEY,
-            settings.ALGORITHM,
-        )
-    except JWTError:
-        raise TokenIncorrect
-    user_id: int = int(payload.get("sub"))
-    if not user_id:
-        raise UserNotPresent
-    # user = await UsersDAO.find_one_or_none(id=user_id)
-    user = await UsersDAO.get_user(user_id)
-    if not user:
-        raise UserNotPresent
-    return user
 
 
 async def validate_token(token: str):
@@ -59,6 +70,7 @@ async def validate_token(token: str):
 
 async def get_fake_user():
     return await UsersDAO.find_one_or_none(id=1)
+
 
 def permission_required(permission: str) -> Callable:
     async def permission_checker(current_user: UserModel = Depends(get_current_user)):

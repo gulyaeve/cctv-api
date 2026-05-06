@@ -8,7 +8,7 @@ from app.cameras.dao import CamerasDAO
 from app.schedule.dao import ScheduleDAO
 from app.schedule.schemas import ActiveMonitoringSearch, ScheduleAddScheme, ScheduleAiSchema, ScheduleAiTask, ScheduleDaily, ScheduleScheme, ScheduleSearch
 from app.exceptions import ObjectMissingException, ScheduleNotQuitException
-from app.users.auth import auth_bearer_token
+# from app.users.auth import auth_bearer_token
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 
@@ -148,7 +148,9 @@ router_daily = APIRouter(
 )
 
 
-@router_daily.get("", response_model=Sequence[ScheduleDaily], dependencies=[Depends(auth_bearer_token)])
+# TODO: remove after test
+# @router_daily.get("", response_model=Sequence[ScheduleDaily], dependencies=[Depends(auth_bearer_token)])
+@router_daily.get("", response_model=Sequence[ScheduleDaily], dependencies=[Depends(get_current_user)])
 async def find_daily_schedule(date: date, building_id: int = 1):
     return await ScheduleDAO.find_by_date(date, building_id)
 

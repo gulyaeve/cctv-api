@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from secrets import token_urlsafe
 from app.logger import logger
 from typing import Optional, Sequence, Annotated
 from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request, Response, status
@@ -77,6 +78,20 @@ async def register_user(
     start_page = request.url_for("page_get_dashboard_page")
     response = RedirectResponse(start_page, status_code=status.HTTP_302_FOUND)
     return response
+
+
+@router.post("/generate_bearer_token", status_code=201)
+async def generate_bearer_token(
+    current_user = Depends(get_current_user)
+):
+    logger.info(
+        "User creates bearer token",
+        extra=current_user,
+        exc_info=True
+    )
+    bearer_token = token_urlsafe(32)
+    await UsersDAO.update(current_user.id, bearer_token=bearer_token)
+    return bearer_token
 
 
 @router.post("/change_password", status_code=status.HTTP_200_OK, response_model=UserScheme)

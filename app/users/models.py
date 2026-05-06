@@ -32,6 +32,7 @@ class UserModel(Base):
     hashed_password = Column(String)
     time_created: Mapped[datetime] = mapped_column(server_default=func.now())
     last_login = Column(DateTime, nullable=True, default=None)
+    bearer_token = Column(String, nullable=True)
 
     roles = relationship("Role", secondary=user_roles, back_populates="users")
     incidents = relationship("IncidentModel", back_populates="visor")
