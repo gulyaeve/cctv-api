@@ -4,8 +4,9 @@ from fastapi import APIRouter, Depends, Query, status
 from app.broker_utils.camera_broker import camera_broker_sender
 from app.cameras.dao import CamerasDAO
 from app.cameras.schemas import CameraAddScheme, CameraFilter, CameraInVideoWallScheme, CameraScheme, CameraSearch
-from app.exceptions import ObjectMissingException
+from app.exceptions import ObjectMissingException, RabbitMQIsNotSet
 from app.users.dependencies import permission_required
+from app.config import settings
 
 
 router = APIRouter(
@@ -15,8 +16,10 @@ router = APIRouter(
 )
 
 
-@router.post("/run_streams")
+@router.post("/run_streams", dependencies=[Depends(permission_required("camera_create"))])
 async def run_all_streams():
+    if settings.rabbitmq_url is None:
+        raise RabbitMQIsNotSet
     cameras = await CamerasDAO.find_all()
     for camera in cameras:
         await camera_broker_sender(
@@ -25,8 +28,10 @@ async def run_all_streams():
         )
 
 
-@router.delete("/delete_streams")
+@router.delete("/delete_streams", dependencies=[Depends(permission_required("camera_delete"))])
 async def delete_all_streams():
+    if settings.rabbitmq_url is None:
+        raise RabbitMQIsNotSet
     cameras = await CamerasDAO.find_all()
     for camera in cameras:
         await camera_broker_sender(

@@ -63,3 +63,8 @@ class NotAuthenticatedException(BaseException):
 class ScheduleNotQuitException(BaseException):
     status_code = status.HTTP_409_CONFLICT
     detail = "Мероприятие не завершено"
+
+
+class RabbitMQIsNotSet(BaseException):
+    status_code = status.HTTP_501_NOT_IMPLEMENTED
+    detail = "RabbitMQ не настроен"

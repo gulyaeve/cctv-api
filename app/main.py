@@ -169,7 +169,7 @@ async def add_process_time_header(request: Request, call_next):
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     # Log the full error details for internal debugging
-    logger.error(msg=f"Unhandled error: {exc}", exc_info=True)
+    logger.error(msg=f"Unhandled error: {exc}", extra={"request": request}, exc_info=True)
     
     # # Return a safe, generic message to the user
     # return JSONResponse(
