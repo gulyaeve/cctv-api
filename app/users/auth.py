@@ -20,6 +20,7 @@ known_tokens = {settings.TOKEN_BEARER}
 get_bearer_token = HTTPBearer(auto_error=False)
 
 
+# TODO: delete after test
 async def auth_bearer_token(
     auth: Optional[HTTPAuthorizationCredentials] = Depends(get_bearer_token),
 ) -> str:
