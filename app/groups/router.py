@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Sequence, Annotated
 from fastapi import APIRouter, Depends, Query, status
 
@@ -28,6 +29,15 @@ async def get_all_groups(filter_query: Annotated[GroupSearch, Query()]):
 @router.get("/{id}", response_model=GroupScheme)
 async def get_group(id: int):
     item = await GroupsDAO.find_one_or_none(id=id)
+    if item is None:
+        raise ObjectMissingException
+    else:
+        return item
+    
+
+@router.get("/{id}/schedule")
+async def get_schedule_for_group(id: int, timestamp: datetime = datetime.now()):
+    item = await GroupsDAO.find_schedule_for_group(id, timestamp)
     if item is None:
         raise ObjectMissingException
     else:
