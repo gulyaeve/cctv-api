@@ -31,6 +31,7 @@ class IncidentModel(Base):
     schedule= relationship("ScheduleModel", back_populates="incidents")
     visor = relationship("UserModel", back_populates="incidents")
     incident_types: Mapped[List["IncidentTypeModel"]] = relationship("IncidentTypeModel", secondary=incidents_and_types, back_populates="incidents")
+    incident_answers: Mapped[List["IncidentAnswerModel"]] = relationship(back_populates="incident")
     
     def __str__(self) -> str:
         return f"{self.comment}"

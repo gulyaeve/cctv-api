@@ -1,6 +1,6 @@
 from datetime import datetime
 from app.logger import logger
-from typing import Sequence, Annotated
+from typing import Annotated, Sequence
 from fastapi import APIRouter, Query, status, Depends
 
 from app.broker_utils.incident_tg import message_to_tg
@@ -12,6 +12,7 @@ from app.exceptions import ObjectMissingException
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 from app.incidents.type.router import router as incident_type_router
+from app.incidents.answers.router import router as incident_answer_router
 from app.config import settings
 # from fastapi_cache.decorator import cache
 
@@ -22,6 +23,7 @@ router = APIRouter(
     dependencies=[Depends(permission_required("incidents"))]
 )
 router.include_router(incident_type_router)
+router.include_router(incident_answer_router)
 
 
 @router.get("/schedule/{id}")
@@ -31,6 +33,7 @@ async def get_active_monitoring(id: int, current_user: UserModel = Depends(get_c
 
 
 @router.get("", response_model=Sequence[IncidentScheme])
+# @router.get("")
 # @cache(expire=60)
 async def get_all_incidents(filter_query: Annotated[IncidentSearch, Query()]):
     """

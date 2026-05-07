@@ -1,7 +1,9 @@
+from app.incidents.answers.models import IncidentAnswerModel
 from app.incidents.schemas import IncidentAppendScheme
 from app.incidents.type.models import IncidentTypeModel
 from app.logger import logger
-from sqlalchemy import ARRAY, Date, String, and_, cast, desc, func, select
+from sqlalchemy import ARRAY, Date, String, and_, cast, desc, distinct, func, select
+from sqlalchemy.dialects.postgresql import JSONB
 from app.buildings.models import BuildingModel
 from app.database import async_session_maker
 from app.classrooms.models import ClassroomModel
@@ -78,7 +80,16 @@ class IncidentsDAO(BaseDAO):
         else:
             filter_query = and_(*conditions)
 
-        try:
+        try:           
+            # answers_agg_subquery = (
+            #     select(
+            #         IncidentAnswerModel.incident_id,
+            #         func.jsonb_agg(IncidentAnswerModel.__table__.table_valued()).label("answers_list")
+            #     )
+            #     .group_by(IncidentAnswerModel.incident_id)
+            #     .subquery()
+            # )
+
             query = (
                 select(
                     IncidentModel.__table__,
@@ -91,21 +102,22 @@ class IncidentsDAO(BaseDAO):
                     ScheduleModel.subject.label("subject"),
                     TeacherModel.name.label("teacher_name"),
                     func.coalesce(
-                        func.array_agg(IncidentTypeModel.name).filter(IncidentTypeModel.name.is_not(None)),
+                        func.array_agg(distinct(IncidentTypeModel.name)).filter(IncidentTypeModel.name.is_not(None)),
                         func.cast([], ARRAY(String))
                     ).label('incident_type_names'),
+                    # func.coalesce(answers_agg_subquery.c.answers_list, func.cast([], JSONB)).label("incident_answers")
                 )
-                .select_from(IncidentModel)
                 .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
                 .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .join(UserModel, IncidentModel.visor_id == UserModel.id)
                 .outerjoin(IncidentModel.incident_types)
+                # .outerjoin(answers_agg_subquery, IncidentModel.id == answers_agg_subquery.c.incident_id) 
                 .filter(filter_query)
                 .order_by(desc(IncidentModel.time_created))
                 .group_by(
-                    IncidentModel.id,
+                    IncidentModel,
                     TeacherModel.name,
                     ScheduleModel.subject,
                     ScheduleModel.teacher_id,
@@ -114,6 +126,7 @@ class IncidentsDAO(BaseDAO):
                     UserModel.full_name,
                     BuildingModel.id,
                     BuildingModel.name,
+                    # answers_agg_subquery.c.answers_list
                 )
             )
             async with async_session_maker() as session:
@@ -219,6 +232,15 @@ class IncidentsDAO(BaseDAO):
     @classmethod
     async def get_incident_full_info(cls, id: int):
         try:
+            answers_agg_subquery = (
+                select(
+                    IncidentAnswerModel.incident_id,
+                    func.jsonb_agg(IncidentAnswerModel.__table__.table_valued()).label("answers_list")
+                )
+                .group_by(IncidentAnswerModel.incident_id)
+                .subquery()
+            )
+
             query = (
                 select(
                     IncidentModel.__table__,
@@ -234,6 +256,7 @@ class IncidentsDAO(BaseDAO):
                         func.array_agg(IncidentTypeModel.name).filter(IncidentTypeModel.name.is_not(None)),
                         func.cast([], ARRAY(String))
                     ).label('incident_type_names'),
+                    func.coalesce(answers_agg_subquery.c.answers_list, func.cast([], JSONB)).label("incident_answers")
                 )
                 .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
@@ -242,6 +265,7 @@ class IncidentsDAO(BaseDAO):
                 .join(UserModel, IncidentModel.visor_id == UserModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .outerjoin(IncidentModel.incident_types)
+                .outerjoin(answers_agg_subquery, IncidentModel.id == answers_agg_subquery.c.incident_id) 
                 .filter(IncidentModel.id == id)
                 .group_by(
                     IncidentModel.id,
@@ -253,6 +277,7 @@ class IncidentsDAO(BaseDAO):
                     UserModel.full_name,
                     BuildingModel.id,
                     BuildingModel.name,
+                    answers_agg_subquery.c.answers_list
                 )
             )
             async with async_session_maker() as session:

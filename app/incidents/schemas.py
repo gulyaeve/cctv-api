@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing import List, Optional
 
 
@@ -42,9 +42,8 @@ class IncidentScheme(IncidentBaseScheme):
     subject: Optional[str] = None
     teacher_name: Optional[str] = None
     incident_type_names: Optional[List[str]] = None
-
-    class Config:
-        from_attributes = True
+    
+    model_config = ConfigDict(from_attributes=True)
 
 
 class IncidentSearch(BaseModel):
@@ -62,7 +61,6 @@ class IncidentSearch(BaseModel):
     incident_type_id: Optional[int] = None
    
 
-# TODO: Check for remove
 class IncidentFullInfo(BaseModel):
     id: int
     comment: str
@@ -79,3 +77,6 @@ class IncidentFullInfo(BaseModel):
     current_visor: Optional[str] = None
     current_building: str
     incident_type_names: Optional[List[str]] = None
+    incident_answers: Optional[List] = Field(default_factory=list)
+
+    model_config = ConfigDict(from_attributes=True)

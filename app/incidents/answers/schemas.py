@@ -1,0 +1,25 @@
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
+
+
+class IncidentAnswerScheme(BaseModel):
+    id: int
+    comment: str
+    author: str
+    incident_id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class IncidentAnswerAddScheme(BaseModel):
+    comment: str
+    author: str
+    incident_id: int
+   
+
+class IncidentAnswerSearch(BaseModel):
+    comment: str = ""
+    author: str = ""
+    incident_id: Optional[int] = None
+

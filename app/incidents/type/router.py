@@ -14,8 +14,7 @@ router = APIRouter(
 )
 
 
-# @router.get("", response_model=Sequence[ClassroomTypeScheme])
-@router.get("")
+@router.get("", response_model=Sequence[IncidentTypeScheme])
 # @cache(expire=60)
 async def get_all_incident_types(filter_query: Annotated[IncidentTypeSearch, Query()]):
     """
