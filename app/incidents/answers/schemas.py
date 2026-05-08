@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
@@ -8,6 +9,7 @@ class IncidentAnswerScheme(BaseModel):
     comment: str
     author: str
     incident_id: int
+    time_created: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 
