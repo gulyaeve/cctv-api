@@ -16,7 +16,7 @@ scrape_configs:
     filters:
     # Только контейнеры с определенным именем
     - name: name
-      values: ["cctv_backend"]
+      values: ["cctv_backend", "cctv_max_bot"]
 
   # static_configs:
   # - targets:
