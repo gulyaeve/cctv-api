@@ -4,6 +4,7 @@ from app.buildings.models import BuildingModel
 from app.cameras.models import CameraModel
 from app.classrooms.models import ClassroomModel
 from app.classrooms.type.models import ClassroomTypeModel
+from app.incidents.answers.models import IncidentAnswerModel
 from app.incidents.type.models import IncidentTypeModel
 from app.users.models import UserModel
 from app.users.models import Role
@@ -176,4 +177,17 @@ class IncidentTypeAdmin(ModelView, model=IncidentTypeModel):
         IncidentTypeModel.id,
         IncidentTypeModel.name,
         IncidentTypeModel.status_binding,
+    ]
+
+class IncidentAnswerAdmin(ModelView, model=IncidentAnswerModel):
+    can_create = True
+    can_delete = True
+    name = "incident answer"
+    name_plural = "incident answers"
+    column_list = [
+        IncidentAnswerModel.id,
+        IncidentAnswerModel.author,
+        IncidentAnswerModel.comment,
+        IncidentAnswerModel.incident_id,
+        IncidentAnswerModel.time_created,
     ]

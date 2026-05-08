@@ -16,6 +16,7 @@ from app.admin.views import (
     ClassroomTypeAdmin,
     ClassroomsAdmin,
     GroupsAdmin,
+    IncidentAnswerAdmin,
     IncidentTypeAdmin,
     IncidentsAdmin,
     PermissionsAdmin,
@@ -144,6 +145,7 @@ admin.add_view(TeachersAdmin)
 admin.add_view(GroupsAdmin)
 admin.add_view(IncidentsAdmin)
 admin.add_view(IncidentTypeAdmin)
+admin.add_view(IncidentAnswerAdmin)
 
 
 @app.get("/", response_class=RedirectResponse)
