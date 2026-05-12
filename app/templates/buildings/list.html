@@ -17,28 +17,36 @@
 {% endblock %}
 
 {% block content %}
-<table id="data" class="display">
-    <thead>
-        <tr>
-            <th>Условное обозначение</th>
-            <th>Этаж</th>
-            <th>Корпус</th>
-            <th>Количество камер</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for classroom in classrooms %}
-        <tr>
-            <td><a href="{{ url_for('page_get_cameras_view_page', id=classroom.id)}}">{{ classroom.name }}</a></td>
-            <td class="text-center">{{ classroom.floor }}</td>
-            <td>{{ building.name }}</td>
-            <td></td>
-            <th>
-              <a href="{{ url_for('page_get_cameras_view_page', id=classroom.id)}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
-            </th>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+  <ul class="nav nav-tabs mb-5">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('page_get_building_classrooms_map_page', id=building.id)}}">Карта</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active">Список</a>
+    </li>
+  </ul>
+  <table id="data" class="display">
+      <thead>
+          <tr>
+              <th>Условное обозначение</th>
+              <th>Этаж</th>
+              <th>Корпус</th>
+              <th>Количество камер</th>
+              <th></th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for classroom in classrooms %}
+          <tr>
+              <td><a href="{{ url_for('page_get_cameras_view_page', id=classroom.id)}}">{{ classroom.name }}</a></td>
+              <td class="text-center">{{ classroom.floor }}</td>
+              <td>{{ building.name }}</td>
+              <td></td>
+              <th>
+                <a href="{{ url_for('page_get_cameras_view_page', id=classroom.id)}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+              </th>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
 {% endblock %}

@@ -22,7 +22,7 @@
               <tbody>
                   {% for building in buildings %}
                   <tr>
-                      <td><a href="{{ url_for('page_get_building_classrooms_list_page', id=building.id)}}">{{ building.name }}</a></td>
+                      <td><a href="{{ url_for('page_get_building_classrooms_map_page', id=building.id)}}">{{ building.name }}</a></td>
                       <td>{{ building.location }}</td>
                       <td>ГБПОУ ИТ.МОСКВА</td>
                       <th>

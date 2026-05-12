@@ -5,7 +5,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{{url_for('page_get_buildings_page') }}">Учебные корпуса</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('page_get_building_classrooms_list_page', id=building.id) }}">{{ building.name }}. Список</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('page_get_building_classrooms_map_page', id=building.id) }}">{{ building.name }}. Карта</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ building.name }}. Кабинет {{ classroom.name }}</li>
   </ol>
 </nav>

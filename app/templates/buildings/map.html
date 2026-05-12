@@ -12,6 +12,14 @@
 {% endblock %}
 
 {% block content %}
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <a class="nav-link active">Карта</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('page_get_building_classrooms_list_page', id=building.id)}}">Список</a>
+    </li>
+  </ul>
   <div class="floor-btn text-center">
     <h5 style="text-center">Этаж</h5>
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
