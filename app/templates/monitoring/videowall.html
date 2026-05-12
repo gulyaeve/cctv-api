@@ -122,15 +122,15 @@
         .then(result => {
           dataCameras = result;
           dataCamerasLength = dataCameras.length;
-          cameraConnect(dataCameras[cunckCount], cunckCount);
+          cameraConnect(dataCameras[cunckCount], timeout);
         } );
       let timer = setInterval(() => cameraConnect(dataCameras[cunckCount]), timeout);
     });
 
-    function cameraConnect(dataCameras) {
+    function cameraConnect(dataCameras, timeout) {
         reader
 
-        for (let i = 0; i < dataCamerasLength; i++) {
+        for (let i = 0; i < dataCameras.length; i++) {
           reader = new MediaMTXWebRTCReader({
           // url: "https://media.cctv.itmoscow/" + dataCameras[i]["id"] + "_p/whep",
           url: "https://{{ request.base_url.hostname }}/media/" + dataCameras[i]["id"] + "_p/whep",
