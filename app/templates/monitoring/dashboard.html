@@ -126,7 +126,7 @@
 
   <div class="col-md-12">
     <div class="card widget-dashboard">
-      <h5>Типы инцидентов по корпусам <span class="badge badge-pill badge-light">DEMO</span></h5>
+      <h5>Типы инцидентов по корпусам</h5>
       <hr>
       <canvas id="incbuildings-all"></canvas>
     </div>
@@ -134,7 +134,7 @@
 
   <div class="col-md-12">
     <div class="card widget-dashboard">
-      <h5>Инциденты по преподавателям <span class="badge badge-pill badge-light">DEMO</span></h5>
+      <h5>Инциденты по преподавателям</h5>
       <hr>
       <canvas id="incteachers-all"></canvas>
     </div>
@@ -341,75 +341,67 @@
 <script type="text/javascript">
   const chartBuildingsAll = document.getElementById('incbuildings-all');
 
-  new Chart(chartBuildingsAll, {
-    type: 'bar',
-    data: {
-      labels: ['Центр программирования и кибербезопасности', 'Дизайн Колледж', 'Центр городских технологий', 'IT.Бирюлево'],
-      datasets: [{
-          label: 'Всё хорошо',
-          data: [50, 40, 45, 60],
-          backgroundColor: "#4bc0c0",
-        },
-        {
-          label: 'Контроль',
-          data: [12, 10, 16, 13],
-          backgroundColor: "#ffcd56",
-        },
-        {
-          label: 'Инцидент',
-          data: [12, 5, 10, 15],
-          backgroundColor: "#ff6384",
-      }],
-    },
-    options: {
-      barThickness: 15,
-      indexAxis: 'y',
-      responsive: true,
-        scales: {
-          x: {
-            stacked: true,
-          },
-          y: {
-            stacked: true
+  url = "{{ url_for('get_all_incidents') }}";
+  response = fetch(url).then(response => response.json())
+  .then(result => {
+    console.log(getAnalytics(result));
+    console.log(getAnalytics(result,"status"));
+    let data = getBuildingChartData(result);
+    new Chart(chartBuildingsAll, {
+      type: 'bar',
+      data: {
+        labels: data.labels,
+        datasets: data.datasets,
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+          scales: {
+            x: {
+              stacked: true,
+            },
+            y: {
+              stacked: true
+            }
           }
-        }
-    }
-
+      }
+    });
   });
+
 </script>
 
 <script type="text/javascript">
-  const chartTeachersAll = document.getElementById('incteachers-all');
+    const chartTeachersAll = document.getElementById('incteachers-all');
+    // const chartTeachersDay = document.getElementById('incteachers-day');
+    // const chartTeachersWeek = document.getElementById('incteachers-week');
+    // const chartTeachersMonth = document.getElementById('incteachers-month');
 
-  new Chart(chartTeachersAll, {
-    type: 'bar',
-    data: {
-      labels: ['Иванов И.И.', 'Петров П.П.', 'Васильев В.В.', 'Александров А.А.'],
-      datasets: [{
-          label: 'Всё хорошо',
-          data: [50, 40, 45, 60],
-          backgroundColor: "#4bc0c0",
+    url = "{{ url_for('get_all_incidents') }}";
+    response = fetch(url).then(response => response.json())
+    .then(result => {
+      console.log(getAnalytics(result));
+      console.log(getAnalytics(result,"status"));
+      let data = getTeacherChartData(result);
+      new Chart(chartTeachersAll, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: data.datasets,
         },
-        {
-          label: 'Инцидент',
-          data: [12, 5, 10, 15],
-          backgroundColor: "#ff6384",
-      }],
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-        scales: {
-          x: {
-            stacked: true,
-          },
-          y: {
-            stacked: true
-          }
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+            scales: {
+              x: {
+                stacked: true,
+              },
+              y: {
+                stacked: true
+              }
+            }
         }
-    }
-
-  });
+      });
+    });
 </script>
 
 <script type="text/javascript">
@@ -560,6 +552,81 @@
 
     return result;
 }
+
+// // Инциденты по преподавателям. Применение
+//     let analyticsTeachers = getTeacherChartData(data); // преобразовали данные
+//     console.log(analyticsTeachers); // вывод преобразованных данных
+//     console.log(analyticsTeachers.labels); // получили подписи (список преподов)
+//     console.log(analyticsTeachers.datasets); // получили данные по двум статусам, тут ещё цвет закладывается
+
+// Функция
+function getTeacherChartData(rawData) {
+    // 1. Получаем уникальный список преподавателей по алфавиту
+    const labels = [...new Set(rawData.map(item => item.teacher_name))].sort();
+
+    // 2. Формируем датасеты напрямую
+    return {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Всё хорошо',
+                backgroundColor: "#4bc0c0",
+                data: labels.map(name =>
+                    rawData.filter(item => item.teacher_name === name && item.status === 0).length
+                )
+            },
+            {
+                label: 'Инцидент',
+                backgroundColor: "#ff6384",
+                data: labels.map(name =>
+                    rawData.filter(item => item.teacher_name === name && item.status === 2).length
+                )
+            }
+        ]
+    };
+  }
+
+  // Типы инцидентов по корпусам. Применение
+    // let analytics = getBuildingChartData(data);
+    // console.log(analytics); // преобразованные данные
+    // console.log(analytics.labels); // Подписи корпусов
+    // console.log(analytics.datasets); // Данные за период
+
+// Функция
+  function getBuildingChartData(rawData) {
+      // 1. Конфигурация статусов (можно вынести наружу, если она глобальная)
+      const statusConfig = {
+          0: { label: 'Всё хорошо', color: '#4bc0c0' },
+          3: { label: 'Контроль', color: '#ffcd56' },
+          2: { label: 'Инцидент', color: '#ff6384' }
+      };
+
+      // 2. Получаем уникальный список зданий по алфавиту
+      const labels = [...new Set(rawData.map(item => item.building_name))].sort();
+
+      // 3. Определяем, какие статусы нам нужны для зданий и в каком порядке
+      const statusesToShow = [0, 3, 2]; // 0: Всё хорошо, 3: Контроль, 2: Инцидент
+
+      // 4. Формируем датасеты
+      const datasets = statusesToShow.map(statusId => {
+          const config = statusConfig[statusId]; // Получаем label и color из конфигурации
+          return {
+              label: config.label,
+              backgroundColor: config.color,
+              data: labels.map(buildingName => {
+                  // Считаем количество инцидентов для этого здания с этим статусом
+                  return rawData.filter(item =>
+                      item.building_name === buildingName && item.status === statusId
+                  ).length;
+              })
+          };
+      });
+
+      return {
+          labels: labels,
+          datasets: datasets
+      };
+  }
 </script>
 
 {% endblock %}
