@@ -114,19 +114,19 @@
         <h5>Динамика инцидентов</h5>
         <hr>
         <div class="" id="incdynamics-window">
-          <div id="incdynamics-window-day" class="collapse show" data-parent="#incdynamics-window">
+          <div id="incdynamics-window-week" class="collapse show" data-parent="#incdynamics-window">
             <canvas id="incdynamics-week"></canvas>
           </div>
-          <div id="incdynamics-window-week" class="collapse" data-parent="#incdynamics-window">
+          <div id="incdynamics-window-month" class="collapse" data-parent="#incdynamics-window">
             <canvas id="incdynamics-month"></canvas>
           </div>
         </div>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <label class="btn btn-secondary active">
-            <input type="radio" name="incdynamics-btn" data-toggle="collapse" data-target="#incdynamics-window-day" aria-expanded="false" aria-controls="collapseExample" checked>Недели</input>
+            <input type="radio" name="incdynamics-btn" data-toggle="collapse" data-target="#incdynamics-window-week" aria-expanded="false" aria-controls="collapseExample" checked>Недели</input>
           </label>
           <label class="btn btn-secondary">
-            <input type="radio" name="incdynamics-btn" data-toggle="collapse" data-target="#incdynamics-window-week" aria-expanded="false" aria-controls="collapseExample">Месяцы</input>
+            <input type="radio" name="incdynamics-btn" data-toggle="collapse" data-target="#incdynamics-window-month" aria-expanded="false" aria-controls="collapseExample">Месяцы</input>
           </label>
         </div>
       </div>
@@ -493,6 +493,7 @@
 <script type="text/javascript">
   const incdynamicsChartWeek = document.getElementById('incdynamics-week');
   const incdynamicsChartMonth = document.getElementById('incdynamics-month');
+
   url = "{{ url_for('get_all_incidents') }}";
   response = fetch(url).then(response => response.json())
   .then(result => {
@@ -516,8 +517,8 @@
     new Chart(incdynamicsChartMonth, {
       type: 'line',
       data: {
-        labels: data['week']['labels'],
-        datasets: data['week']['datasets']
+        labels: data['month']['labels'],
+        datasets: data['month']['datasets']
       },
       options: {
         scales: {
