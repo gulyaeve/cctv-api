@@ -84,6 +84,17 @@
     <div class="card widget-dashboard">
       <h5>Количество инцидентов по корпусам</h5>
       <hr>
+      <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="incbuildings-btn" data-toggle="collapse" data-target="#incbuildings-window-day" aria-expanded="false" aria-controls="collapseExample" checked>Дни</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incbuildings-btn" data-toggle="collapse" data-target="#incbuildings-window-week" aria-expanded="false" aria-controls="collapseExample">Недели</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incbuildings-btn" data-toggle="collapse" data-target="#incbuildings-window-month" aria-expanded="false" aria-controls="collapseExample">Месяцы</input>
+        </label>
+      </div>
       <div class="" id="incbuildings-window">
         <div id="incbuildings-window-day" class="collapse show" data-parent="#incbuildings-window">
           <canvas id="incbuildings-day"></canvas>
@@ -95,17 +106,6 @@
           <canvas id="incbuildings-month"></canvas>
         </div>
       </div>
-      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-          <input type="radio" name="incbuildings-btn" data-toggle="collapse" data-target="#incbuildings-window-day" aria-expanded="false" aria-controls="collapseExample" checked>Дни</input>
-        </label>
-        <label class="btn btn-secondary">
-          <input type="radio" name="incbuildings-btn" data-toggle="collapse" data-target="#incbuildings-window-week" aria-expanded="false" aria-controls="collapseExample">Недели</input>
-        </label>
-        <label class="btn btn-secondary">
-          <input type="radio" name="incbuildings-btn" data-toggle="collapse" data-target="#incbuildings-window-month" aria-expanded="false" aria-controls="collapseExample">Месяцы</input>
-        </label>
-      </div>
     </div>
   </div>
 
@@ -113,6 +113,14 @@
       <div class="card widget-dashboard">
         <h5>Динамика инцидентов</h5>
         <hr>
+        <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+          <label class="btn btn-secondary active">
+            <input type="radio" name="incdynamics-btn" data-toggle="collapse" data-target="#incdynamics-window-week" aria-expanded="false" aria-controls="collapseExample" checked>Недели</input>
+          </label>
+          <label class="btn btn-secondary">
+            <input type="radio" name="incdynamics-btn" data-toggle="collapse" data-target="#incdynamics-window-month" aria-expanded="false" aria-controls="collapseExample">Месяцы</input>
+          </label>
+        </div>
         <div class="" id="incdynamics-window">
           <div id="incdynamics-window-week" class="collapse show" data-parent="#incdynamics-window">
             <canvas id="incdynamics-week"></canvas>
@@ -121,14 +129,7 @@
             <canvas id="incdynamics-month"></canvas>
           </div>
         </div>
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <label class="btn btn-secondary active">
-            <input type="radio" name="incdynamics-btn" data-toggle="collapse" data-target="#incdynamics-window-week" aria-expanded="false" aria-controls="collapseExample" checked>Недели</input>
-          </label>
-          <label class="btn btn-secondary">
-            <input type="radio" name="incdynamics-btn" data-toggle="collapse" data-target="#incdynamics-window-month" aria-expanded="false" aria-controls="collapseExample">Месяцы</input>
-          </label>
-        </div>
+
       </div>
   </div>
 
@@ -136,6 +137,17 @@
     <div class="card widget-dashboard">
       <h5>Типы инцидентов по корпусам</h5>
       <hr>
+      <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="incbuildings-count-btn" data-toggle="collapse" data-target="#incbuildings-count-window-day" aria-expanded="false" aria-controls="collapseExample" checked>Сегодня</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incbuildings-count-btn" data-toggle="collapse" data-target="#incbuildings-count-window-week" aria-expanded="false" aria-controls="collapseExample">Текущая неделя</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incbuildings-count-btn" data-toggle="collapse" data-target="#incbuildings-count-window-month" aria-expanded="false" aria-controls="collapseExample">Текущий месяц</input>
+        </label>
+      </div>
       <div id="incbuildings-count-window">
         <div id="incbuildings-count-window-day" class="collapse show" data-parent="#incbuildings-count-window">
           <canvas id="incbuildings-count-day"></canvas>
@@ -147,36 +159,16 @@
           <canvas id="incbuildings-count-month"></canvas>
         </div>
       </div>
-      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-          <input type="radio" name="incbuildings-count-btn" data-toggle="collapse" data-target="#incbuildings-count-window-day" aria-expanded="false" aria-controls="collapseExample" checked>Сегодня</input>
-        </label>
-        <label class="btn btn-secondary">
-          <input type="radio" name="incbuildings-count-btn" data-toggle="collapse" data-target="#incbuildings-count-window-week" aria-expanded="false" aria-controls="collapseExample">Текущая неделя</input>
-        </label>
-        <label class="btn btn-secondary">
-          <input type="radio" name="incbuildings-count-btn" data-toggle="collapse" data-target="#incbuildings-count-window-month" aria-expanded="false" aria-controls="collapseExample">Текущий месяц</input>
-        </label>
-      </div>
+
     </div>
   </div>
 
   <div class="col-md-12">
     <div class="card widget-dashboard">
+
       <h5>Инциденты по преподавателям</h5>
       <hr>
-      <div id="incteachers-window">
-        <div id="incteachers-window-day" class="collapse show" data-parent="#incteachers-window">
-          <canvas id="incteachers-day"></canvas>
-        </div>
-        <div id="incteachers-window-week" class="collapse" data-parent="#incteachers-window">
-          <canvas id="incteachers-week"></canvas>
-        </div>
-        <div id="incteachers-window-month" class="collapse" data-parent="#incteachers-window">
-          <canvas id="incteachers-month"></canvas>
-        </div>
-      </div>
-      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
         <label class="btn btn-secondary active">
           <input type="radio" name="incteachers-btn" data-toggle="collapse" data-target="#incteachers-window-day" aria-expanded="false" aria-controls="collapseExample" checked>Сегодня</input>
         </label>
@@ -187,6 +179,18 @@
           <input type="radio" name="incteachers-btn" data-toggle="collapse" data-target="#incteachers-window-month" aria-expanded="false" aria-controls="collapseExample">Текущий месяц</input>
         </label>
       </div>
+      <div id="incteachers-window">
+        <div id="incteachers-window-day" class="collapse show" data-parent="#incteachers-window">
+          <canvas id="incteachers-day" height="300"></canvas>
+        </div>
+        <div id="incteachers-window-week" class="collapse" data-parent="#incteachers-window">
+          <canvas id="incteachers-week" height="300"></canvas>
+        </div>
+        <div id="incteachers-window-month" class="collapse" data-parent="#incteachers-window">
+          <canvas id="incteachers-month" height="300"></canvas>
+        </div>
+      </div>
+
     </div>
   </div>
 
