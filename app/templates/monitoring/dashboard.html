@@ -9,6 +9,11 @@
       <h5>Количество инцидентов</h5>
       <hr>
       <div class="" id="incall">
+        <div id="incall-yesterday" class="collapse" data-parent="#incall">
+          <div id="incall-yesterday-count" class="display-4" style="margin: 0 0 20px 0;">
+            Загрузка...
+          </div>
+        </div>
         <div id="incall-day" class="collapse show" data-parent="#incall">
           <div id="incall-day-count" class="display-4" style="margin: 0 0 20px 0;">
             Загрузка...
@@ -26,6 +31,9 @@
         </div>
       </div>
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary">
+          <input type="radio" name="incall" data-toggle="collapse" data-target="#incall-yesterday" aria-expanded="false" aria-controls="collapseExample">Вчера</input>
+        </label>
         <label class="btn btn-secondary active">
           <input type="radio" name="incall" data-toggle="collapse" data-target="#incall-day" aria-expanded="false" aria-controls="collapseExample" checked>Сегодня</input>
         </label>
@@ -128,7 +136,28 @@
     <div class="card widget-dashboard">
       <h5>Типы инцидентов по корпусам</h5>
       <hr>
-      <canvas id="incbuildings-all"></canvas>
+      <div id="incbuildings-count-window">
+        <div id="incbuildings-count-window-day" class="collapse show" data-parent="#incbuildings-count-window">
+          <canvas id="incbuildings-count-day"></canvas>
+        </div>
+        <div id="incbuildings-count-window-week" class="collapse" data-parent="#incbuildings-count-window">
+          <canvas id="incbuildings-count-week"></canvas>
+        </div>
+        <div id="incbuildings-count-window-month" class="collapse" data-parent="#incbuildings-count-window">
+          <canvas id="incbuildings-count-month"></canvas>
+        </div>
+      </div>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="incbuildings-count-btn" data-toggle="collapse" data-target="#incbuildings-count-window-day" aria-expanded="false" aria-controls="collapseExample" checked>Сегодня</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incbuildings-count-btn" data-toggle="collapse" data-target="#incbuildings-count-window-week" aria-expanded="false" aria-controls="collapseExample">Текущая неделя</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incbuildings-count-btn" data-toggle="collapse" data-target="#incbuildings-count-window-month" aria-expanded="false" aria-controls="collapseExample">Текущий месяц</input>
+        </label>
+      </div>
     </div>
   </div>
 
@@ -136,7 +165,29 @@
     <div class="card widget-dashboard">
       <h5>Инциденты по преподавателям</h5>
       <hr>
-      <canvas id="incteachers-all"></canvas>
+
+      <div id="incbuildings-count-window">
+        <div id="incteachers-window-day" class="collapse show" data-parent="#incteachers-window">
+          <canvas id="incteachers-day"></canvas>
+        </div>
+        <div id="incteachers-window-week" class="collapse" data-parent="#incteachers-window">
+          <canvas id="incteachers-week"></canvas>
+        </div>
+        <div id="incteachers-window-month" class="collapse" data-parent="#incteachers-window">
+          <canvas id="incteachers-month"></canvas>
+        </div>
+      </div>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="incteachers-btn" data-toggle="collapse" data-target="#incteachers-window-day" aria-expanded="false" aria-controls="collapseExample" checked>Сегодня</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incteachers-btn" data-toggle="collapse" data-target="#incteachers-window-week" aria-expanded="false" aria-controls="collapseExample">Текущая неделя</input>
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="incteachers-btn" data-toggle="collapse" data-target="#incteachers-window-month" aria-expanded="false" aria-controls="collapseExample">Текущий месяц</input>
+        </label>
+      </div>
     </div>
   </div>
 
@@ -188,6 +239,13 @@
     return { start: date, end: date };
   }
 
+  function getCurrentYesterday(now = new Date()) {
+    const cur = new Date(now);
+    cur.setDate(cur.getDate() - 1);
+    const date = formatDate(cur);
+    return { start: date, end: date };
+  }
+
   // 2) Текущая неделя (weekStartsOn: 0=Sun,1=Mon,...)
   function getCurrentWeek(now = new Date(), weekStartsOn = 0) {
     const cur = new Date(now);
@@ -218,6 +276,13 @@
       .then(response => response.text())
       .then(result => {
         setTextById('incall-day-count', result);
+      } );
+
+    url = "{{ url_for('count_incidents') }}?date_from=" + getCurrentYesterday().start + "&date_to=" + getCurrentYesterday().end + "&status=2";
+    response = fetch(url)
+      .then(response => response.text())
+      .then(result => {
+        setTextById('incall-yesterday-count', result);
       } );
 
     url = "{{ url_for('count_incidents') }}?date_from=" + getCurrentWeek().start + "&date_to=" + getCurrentWeek().end + "&status=2";
@@ -338,51 +403,28 @@
   });
 </script>
 
-<script type="text/javascript">
-  const chartBuildingsAll = document.getElementById('incbuildings-all');
-
-  url = "{{ url_for('get_all_incidents') }}";
-  response = fetch(url).then(response => response.json())
-  .then(result => {
-    console.log(getAnalytics(result));
-    console.log(getAnalytics(result,"status"));
-    let data = getBuildingChartData(result);
-    new Chart(chartBuildingsAll, {
-      type: 'bar',
-      data: {
-        labels: data.labels,
-        datasets: data.datasets,
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-          scales: {
-            x: {
-              stacked: true,
-            },
-            y: {
-              stacked: true
-            }
-          }
-      }
-    });
-  });
-
-</script>
+<!-- 123 -->
 
 <script type="text/javascript">
-    const chartTeachersAll = document.getElementById('incteachers-all');
-    // const chartTeachersDay = document.getElementById('incteachers-day');
-    // const chartTeachersWeek = document.getElementById('incteachers-week');
-    // const chartTeachersMonth = document.getElementById('incteachers-month');
+  const incbuildingsCountChartDay = document.getElementById('incbuildings-count-day');
+  const incbuildingsCountChartWeek = document.getElementById('incbuildings-count-week');
+  const incbuildingsCountChartMonth = document.getElementById('incbuildings-count-month');
 
-    url = "{{ url_for('get_all_incidents') }}";
+  urlToday = "{{ url_for('get_all_incidents') }}?date_from=" + getCurrentDay().start + "&date_to=" + getCurrentDay().end;
+  urlCurrentWeek = "{{ url_for('get_all_incidents') }}?date_from=" + getCurrentWeek().start + "&date_to=" + getCurrentWeek().end;
+  urlCurrentMonth = "{{ url_for('get_all_incidents') }}?date_from=" + getCurrentMonth().start + "&date_to=" + getCurrentMonth().end;
+
+  incbuildingsCountBuild(incbuildingsCountChartDay, urlToday);
+  incbuildingsCountBuild(incbuildingsCountChartWeek, urlCurrentWeek);
+  incbuildingsCountBuild(incbuildingsCountChartMonth, urlCurrentMonth);
+
+  function incbuildingsCountBuild(chart, url) {
     response = fetch(url).then(response => response.json())
     .then(result => {
       console.log(getAnalytics(result));
       console.log(getAnalytics(result,"status"));
-      let data = getTeacherChartData(result);
-      new Chart(chartTeachersAll, {
+      let data = getBuildingChartData(result);
+      new Chart(chart, {
         type: 'bar',
         data: {
           labels: data.labels,
@@ -402,6 +444,51 @@
         }
       });
     });
+  }
+
+</script>
+
+<script type="text/javascript">
+    // const chartTeachersAll = document.getElementById('incteachers-all');
+    const chartTeachersDay = document.getElementById('incteachers-day');
+    const chartTeachersWeek = document.getElementById('incteachers-week');
+    const chartTeachersMonth = document.getElementById('incteachers-month');
+
+    urlToday = "{{ url_for('get_all_incidents') }}?date_from=" + getCurrentDay().start + "&date_to=" + getCurrentDay().end;
+    urlCurrentWeek = "{{ url_for('get_all_incidents') }}?date_from=" + getCurrentWeek().start + "&date_to=" + getCurrentWeek().end;
+    urlCurrentMonth = "{{ url_for('get_all_incidents') }}?date_from=" + getCurrentMonth().start + "&date_to=" + getCurrentMonth().end;
+
+    incteachersChartBuild(chartTeachersDay, urlToday);
+    incteachersChartBuild(chartTeachersWeek, urlCurrentWeek);
+    incteachersChartBuild(chartTeachersMonth, urlCurrentMonth);
+
+    function incteachersChartBuild(chart, url) {
+      response = fetch(url).then(response => response.json())
+      .then(result => {
+        console.log(getAnalytics(result));
+        console.log(getAnalytics(result,"status"));
+        let data = getTeacherChartData(result);
+        new Chart(chart, {
+          type: 'bar',
+          data: {
+            labels: data.labels,
+            datasets: data.datasets,
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+              scales: {
+                x: {
+                  stacked: true,
+                },
+                y: {
+                  stacked: true
+                }
+              }
+          }
+        });
+      });
+    }
 </script>
 
 <script type="text/javascript">
