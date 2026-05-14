@@ -38,7 +38,7 @@ class UserLogin(BaseModel):
 class MediaMTXPayload(BaseModel):
     user: Optional[str] = None
     password: Optional[str] = None
-    token: Optional[str]
+    token: Optional[str] = None
     ip: Optional[str] = None
     action: Optional[Literal["publish", "read", "playback", "api", "metrics", "pprof"]] = None
     path: Optional[str] = None

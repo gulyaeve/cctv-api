@@ -149,7 +149,7 @@ async def logout_user(response: Response, request: Request):
     return response
 
 
-@router.get("/me")
+@router.get("/me", response_model=UserScheme)
 async def user_get_itself(current_user = Depends(get_current_user)) -> UserScheme:
     logger.info(
         "User gets itself info",
@@ -159,7 +159,7 @@ async def user_get_itself(current_user = Depends(get_current_user)) -> UserSchem
     return current_user
     
 
-@router.get("/{id}", dependencies=[Depends(permission_required("superadmin"))])
+@router.get("/{id}", dependencies=[Depends(permission_required("superadmin"))], response_model=Optional[UserScheme])
 async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Optional[UserScheme]:
     logger.info(
         "Superadmin gets user info",
@@ -175,8 +175,10 @@ async def check_token(payload: MediaMTXPayload):
     if payload.query == f"jwt={settings.TOKEN_BEARER}":
         # logger.info(f"{payload.query=} SUCCESS")
         raise HTTPException(status.HTTP_200_OK)
-    if payload.token:
+    elif payload.token:
         # logger.info(f"{payload.token=}")
-        return await validate_token(payload.token)
+        user = await validate_token(payload.token)
+        if user:
+            raise HTTPException(status.HTTP_200_OK)
     else:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
