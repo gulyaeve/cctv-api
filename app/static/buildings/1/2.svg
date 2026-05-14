@@ -4,7 +4,7 @@
    data-name="Слой 2"
    viewBox="0 0 1832.64 242.51"
    version="1.1"
-   sodipodi:docname="2 эт миллионы.svg"
+   sodipodi:docname="2 эт миллионы (2).svg"
    inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -19,12 +19,12 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="90.509668"
-     inkscape:cx="280.80978"
-     inkscape:cy="143.71393"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="1279.1561"
+     inkscape:cy="212.13203"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
-     inkscape:window-x="-8"
+     inkscape:window-x="2552"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="g117" />
@@ -32,20 +32,16 @@
      id="defs1">
     <style
        id="style1">
-       .cls-1 {
-         fill: none;
-       }
+      .cls-1 {
+        fill: #none;
+      }
 
-       .cls-2 {
-         fill: none;
-         stroke: #FFFFFF;
-         stroke-miterlimit: 10;
-         stroke-width: 2px;
-       }
+      .cls-2, .cls-3 {
+        fill: none;
+      }
 
       .cls-3 {
-        fill: none;
-        stroke: #FFFFFF;
+        stroke: #ffffff;
         stroke-miterlimit: 10;
         stroke-width: 2px;
       }
@@ -62,546 +58,631 @@
          y="1"
          width="1830.64"
          height="240.51"
-         id="rect1" />
+         id="rect1"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <g
-         id="g7">
+         id="g7"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="542.68"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect2" />
+           id="rect2"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="537.7"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect3" />
+           id="rect3"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="532.72"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect4" />
+           id="rect4"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="527.74"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect5" />
+           id="rect5"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="522.77"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect6" />
+           id="rect6"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="517.79"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect7" />
+           id="rect7"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g13">
+         id="g13"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="512.81"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect8" />
+           id="rect8"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="507.83"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect9" />
+           id="rect9"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="502.85"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect10" />
+           id="rect10"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="497.87"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect11" />
+           id="rect11"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="492.89"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect12" />
+           id="rect12"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="487.91"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect13" />
+           id="rect13"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g19">
+         id="g19"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="542.68"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect14" />
+           id="rect14"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="537.7"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect15" />
+           id="rect15"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="532.72"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect16" />
+           id="rect16"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="527.74"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect17" />
+           id="rect17"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="522.77"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect18" />
+           id="rect18"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="517.79"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect19" />
+           id="rect19"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g25">
+         id="g25"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="512.81"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect20" />
+           id="rect20"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="507.83"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect21" />
+           id="rect21"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="502.85"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect22" />
+           id="rect22"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="497.87"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect23" />
+           id="rect23"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="492.89"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect24" />
+           id="rect24"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="487.91"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect25" />
+           id="rect25"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g31">
+         id="g31"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="542.68"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect26" />
+           id="rect26"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="537.7"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect27" />
+           id="rect27"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="532.72"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect28" />
+           id="rect28"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="527.74"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect29" />
+           id="rect29"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="522.77"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect30" />
+           id="rect30"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="517.79"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect31" />
+           id="rect31"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g37">
+         id="g37"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="512.81"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect32" />
+           id="rect32"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="507.83"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect33" />
+           id="rect33"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="502.85"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect34" />
+           id="rect34"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="497.87"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect35" />
+           id="rect35"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="492.89"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect36" />
+           id="rect36"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="487.91"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect37" />
+           id="rect37"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g43">
+         id="g43"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="1369.53"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect38" />
+           id="rect38"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1364.55"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect39" />
+           id="rect39"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1359.57"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect40" />
+           id="rect40"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1354.6"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect41" />
+           id="rect41"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1349.62"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect42" />
+           id="rect42"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1344.64"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect43" />
+           id="rect43"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g49">
+         id="g49"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="1339.66"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect44" />
+           id="rect44"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1334.68"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect45" />
+           id="rect45"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1329.7"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect46" />
+           id="rect46"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1324.72"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect47" />
+           id="rect47"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1319.74"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect48" />
+           id="rect48"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1314.77"
            y="12.83"
            width="4.98"
            height="20.21"
-           id="rect49" />
+           id="rect49"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g55">
+         id="g55"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="1369.53"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect50" />
+           id="rect50"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1364.55"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect51" />
+           id="rect51"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1359.57"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect52" />
+           id="rect52"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1354.6"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect53" />
+           id="rect53"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1349.62"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect54" />
+           id="rect54"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1344.64"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect55" />
+           id="rect55"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g61">
+         id="g61"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="1339.66"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect56" />
+           id="rect56"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1334.68"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect57" />
+           id="rect57"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1329.7"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect58" />
+           id="rect58"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1324.72"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect59" />
+           id="rect59"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1319.74"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect60" />
+           id="rect60"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1314.77"
            y="72.55"
            width="4.98"
            height="20.21"
-           id="rect61" />
+           id="rect61"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g67">
+         id="g67"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="1369.53"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect62" />
+           id="rect62"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1364.55"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect63" />
+           id="rect63"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1359.57"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect64" />
+           id="rect64"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1354.6"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect65" />
+           id="rect65"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1349.62"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect66" />
+           id="rect66"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1344.64"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect67" />
+           id="rect67"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g73">
+         id="g73"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <rect
            class="cls-3"
            x="1339.66"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect68" />
+           id="rect68"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1334.68"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect69" />
+           id="rect69"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1329.7"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect70" />
+           id="rect70"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1324.72"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect71" />
+           id="rect71"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1319.74"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect72" />
+           id="rect72"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <rect
            class="cls-3"
            x="1314.77"
            y="37.22"
            width="4.98"
            height="31.15"
-           id="rect73" />
+           id="rect73"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <rect
          class="cls-3"
@@ -609,7 +690,8 @@
          y="1"
          width="458.96"
          height="102.26"
-         id="rect74" />
+         id="rect74"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
          x="1.2341385"
@@ -617,307 +699,298 @@
          width="271.74921"
          height="99.668495"
          id="rect75"
-         ry="0" />
+         ry="0"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="272.89102"
-         y="141.63702"
-         width="275.08426"
-         height="99.876961"
-         id="rect76" />
+         x="272.89133"
+         y="141.57483"
+         width="275.08365"
+         height="99.938835"
+         id="rect76"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="402.41446"
-         y="141.49171"
-         width="239.2144"
-         height="99.951569"
-         id="rect78" />
+         x="402.41379"
+         y="141.61606"
+         width="239.21571"
+         height="99.827881"
+         id="rect78"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
          x="641.53815"
          y="141.53912"
          width="173.02269"
          height="99.981766"
-         id="rect79" />
+         id="rect79"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="1110.51"
-         y="141.55"
-         width="537.7"
-         height="99.96"
-         id="rect80" />
+         x="1173.1426"
+         y="141.49011"
+         width="475.12741"
+         height="100.07979"
+         id="rect80"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="985"
-         y="141.55"
-         width="88.3"
-         height="99.96"
-         transform="translate(2058.3 383.06) rotate(180)"
-         id="rect81" />
-      <rect
-         class="cls-3"
-         x="1073.3"
-         y="141.55"
-         width="37.21"
-         height="99.96"
-         transform="translate(2183.81 383.06) rotate(180)"
-         id="rect82" />
+         x="-1088.2201"
+         y="-241.43008"
+         width="103.14019"
+         height="99.800186"
+         transform="scale(-1)"
+         id="rect81"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
          x="1717"
          y="141.55"
          width="114.64"
          height="99.96"
-         id="rect83" />
+         id="rect83"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="1489.79"
-         y="141.55"
-         width="49.15"
-         height="99.96"
-         id="rect84" />
+         x="1499.6858"
+         y="141.4458"
+         width="39.35841"
+         height="100.1684"
+         id="rect84"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="1648.21"
-         y="141.55"
-         width="68.79"
-         height="99.96"
-         id="rect85" />
-      <rect
-         class="cls-3"
-         x="1440.64"
-         y="141.55"
-         width="49.15"
-         height="99.96"
-         id="rect86" />
-      <rect
-         class="cls-3"
-         x="1391.49"
-         y="141.55"
-         width="49.15"
-         height="99.96"
-         id="rect87" />
-      <rect
-         class="cls-3"
-         x="1342.47"
-         y="141.55"
-         width="49.15"
-         height="99.96"
-         id="rect88" />
-      <rect
-         class="cls-3"
-         x="1160.89"
-         y="141.55"
-         width="149.62"
-         height="99.96"
-         id="rect89" />
+         x="1460.5331"
+         y="141.44304"
+         width="39.113934"
+         height="100.17393"
+         id="rect86"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <polyline
          class="cls-3"
          points="1374.51 1 1555.02 1 1555.02 103.26 1374.51 103.26"
-         id="polyline89" />
+         id="polyline89"
+         transform="matrix(0.91704158,0,0,1.0005789,114.05607,-0.03017853)"
+         style="stroke-width:2.78386742;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="1508.89"
-         y="1"
-         width="46.13"
-         height="102.26"
-         id="rect90" />
+         x="1499.8248"
+         y="0.93481112"
+         width="40.260376"
+         height="102.39038"
+         id="rect90"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="1555.02"
-         y="1"
-         width="46.13"
-         height="102.26"
-         id="rect91" />
+         x="1540.0911"
+         y="1.0710139"
+         width="52.987972"
+         height="102.11797"
+         id="rect91"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="1601.15"
-         y="1"
-         width="46.13"
-         height="102.26"
-         id="rect92" />
+         x="1648.382"
+         y="0.85580206"
+         width="33.690472"
+         height="102.5484"
+         id="rect92"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="1647.28"
-         y="1"
-         width="46.13"
-         height="102.26"
-         id="rect93" />
+         x="1682.4911"
+         y="0.85580212"
+         width="33.690472"
+         height="102.5484"
+         id="rect93"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="1785.66"
-         y="1"
-         width="45.98"
-         height="102.26"
-         id="rect94" />
+         x="1772.5328"
+         y="1.1310871"
+         width="58.976078"
+         height="101.99783"
+         id="rect94"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="1693.4"
-         y="1"
-         width="92.26"
-         height="102.26"
-         id="rect95" />
+         x="1716.5144"
+         y="0.77980781"
+         width="55.930836"
+         height="102.57538"
+         id="rect95"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
-         x="1428.89"
-         y="1"
-         width="40.85"
-         height="102.26"
-         id="rect96" />
+         x="1428.7871"
+         y="0.89705014"
+         width="32.805897"
+         height="102.4659"
+         id="rect96"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
          x="1396.55"
          y="1"
          width="32.34"
          height="102.26"
-         id="rect97" />
+         id="rect97"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
          x="459.96"
          y="1"
          width="87.7"
          height="102.26"
-         id="rect98" />
+         id="rect98"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
-         x1="1693.4"
-         y1="71.85"
-         x2="1785.66"
-         y2="71.85"
-         id="line98" />
+         x1="1716.7346"
+         y1="82.81015"
+         x2="1771.6947"
+         y2="82.81015"
+         id="line98"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="1314.77"
          y1="103.26"
          x2="1314.77"
          y2="1"
-         id="line99" />
-      <line
-         class="cls-3"
-         x1="1220.13"
-         y1="96.62"
-         x2="1220.13"
-         y2="1"
-         id="line100" />
+         id="line99"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="640.3"
          y1="103.26"
          x2="1374.51"
          y2="103.26"
-         id="line101" />
+         id="line101"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="547.66"
          y1="103.26"
          x2="640.3"
          y2="103.26"
-         id="line102" />
-      <line
-         class="cls-3"
-         x1="1220.13"
-         y1="95.04"
-         x2="1220.13"
-         y2="103.85"
-         id="line103" />
+         id="line102"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="640.3"
          y1="103.26"
          x2="640.3"
          y2="1"
-         id="line104" />
+         id="line104"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="765.06"
          y1="103.26"
          x2="765.06"
          y2="1"
-         id="line105" />
+         id="line105"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="810.34"
          y1="103.26"
          x2="810.34"
          y2="1"
-         id="line106" />
+         id="line106"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="985"
          y1="103.26"
          x2="985"
          y2="1"
-         id="line107" />
+         id="line107"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
-         x1="1164.47"
-         y1="103.26"
-         x2="1164.47"
-         y2="1"
-         id="line108" />
+         x1="1172.2482"
+         y1="103.96711"
+         x2="1172.2482"
+         y2="1.7071068"
+         id="line108"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
-         x1="1121.57"
-         y1="103.85"
-         x2="1121.57"
-         y2="1"
-         id="line109" />
+         x1="1130.0552"
+         y1="103.14289"
+         x2="1130.0552"
+         y2="0.29289323"
+         id="line109"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="765.06"
          y1="241.51"
          x2="765.06"
          y2="141.55"
-         id="line110" />
+         id="line110"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="443"
          y1="103.26"
          x2="443"
          y2="1"
-         id="line111" />
+         id="line111"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="402.26"
          y1="103.26"
          x2="402.26"
          y2="1"
-         id="line112" />
+         id="line112"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <line
          class="cls-3"
          x1="443"
          y1="62.87"
          x2="402.26"
          y2="62.87"
-         id="line113" />
+         id="line113"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <rect
          class="cls-3"
          x="183.79"
          y="1"
          width="89.19"
          height="102.26"
-         id="rect113" />
+         id="rect113"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
       <g
-         id="g114">
+         id="g114"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <path
            class="cls-1"
            d="M1443.1,56.18l-2.05-8.08h1.1l.96,4.09c.24,1.01.46,2.02.6,2.79h.02c.13-.8.38-1.76.66-2.81l1.08-4.08h1.09l.98,4.1c.23.96.44,1.92.56,2.77h.02c.17-.89.4-1.79.65-2.79l1.07-4.08h1.07l-2.29,8.08h-1.09l-1.02-4.21c-.25-1.03-.42-1.82-.53-2.64h-.02c-.14.8-.32,1.6-.62,2.64l-1.15,4.21h-1.09Z"
-           id="path113" />
+           id="path113"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <path
            class="cls-1"
            d="M1457.58,55.91c-.38.19-1.15.38-2.13.38-2.28,0-3.99-1.44-3.99-4.09s1.71-4.25,4.22-4.25c1.01,0,1.64.22,1.92.36l-.25.85c-.4-.19-.96-.34-1.63-.34-1.89,0-3.15,1.21-3.15,3.33,0,1.98,1.14,3.25,3.11,3.25.64,0,1.28-.13,1.7-.34l.22.83Z"
-           id="path114" />
+           id="path114"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <g
-         id="g116">
+         id="g116"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
         <path
            class="cls-1"
            d="M416.41,35.98l-2.05-8.08h1.1l.96,4.09c.24,1.01.46,2.02.6,2.79h.02c.13-.8.38-1.76.66-2.81l1.08-4.08h1.09l.98,4.1c.23.96.44,1.92.56,2.77h.02c.17-.89.4-1.79.65-2.79l1.07-4.08h1.07l-2.29,8.08h-1.09l-1.02-4.21c-.25-1.03-.42-1.82-.53-2.64h-.02c-.14.8-.32,1.6-.62,2.64l-1.15,4.21h-1.09Z"
-           id="path115" />
+           id="path115"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
         <path
            class="cls-1"
            d="M430.89,35.72c-.38.19-1.15.38-2.13.38-2.28,0-3.99-1.44-3.99-4.09s1.71-4.25,4.22-4.25c1.01,0,1.64.22,1.92.36l-.25.85c-.4-.19-.96-.34-1.63-.34-1.89,0-3.15,1.21-3.15,3.33,0,1.98,1.14,3.25,3.11,3.25.64,0,1.28-.13,1.7-.34l.22.83Z"
-           id="path116" />
+           id="path116"
+           style="stroke-width:2.66666667;stroke-dasharray:none" />
       </g>
       <rect
          class="cls-2"
@@ -925,7 +998,81 @@
          y="1"
          width="40.75"
          height="61.87"
-         id="rect116" />
+         id="rect116"
+         style="stroke-width:2.66666667;stroke-dasharray:none" />
+      <line
+         class="cls-3"
+         x1="149.56732"
+         y1="141.5771"
+         x2="149.56732"
+         y2="102.7121"
+         id="line113-4"
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+      <line
+         class="cls-3"
+         x1="1756"
+         y1="141.55191"
+         x2="1756"
+         y2="102.53033"
+         id="line109-4"
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+      <rect
+         class="cls-3"
+         x="1593.3632"
+         y="0.83119577"
+         width="54.658207"
+         height="102.43467"
+         id="rect92-2"
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+      <g
+         id="g114-5"
+         transform="translate(-37.3,-0.2)"
+         style="stroke-width:2.66666667;stroke-dasharray:none">
+        <path
+           class="cls-1"
+           d="m 1443.1,56.18 -2.05,-8.08 h 1.1 l 0.96,4.09 c 0.24,1.01 0.46,2.02 0.6,2.79 h 0.02 c 0.13,-0.8 0.38,-1.76 0.66,-2.81 l 1.08,-4.08 h 1.09 l 0.98,4.1 c 0.23,0.96 0.44,1.92 0.56,2.77 h 0.02 c 0.17,-0.89 0.4,-1.79 0.65,-2.79 l 1.07,-4.08 h 1.07 l -2.29,8.08 h -1.09 l -1.02,-4.21 c -0.25,-1.03 -0.42,-1.82 -0.53,-2.64 h -0.02 c -0.14,0.8 -0.32,1.6 -0.62,2.64 l -1.15,4.21 h -1.09 z"
+           id="path113-1"
+           style="fill:#ffffff;stroke-width:2.66666667;stroke-dasharray:none" />
+        <path
+           class="cls-1"
+           d="m 1457.58,55.91 c -0.38,0.19 -1.15,0.38 -2.13,0.38 -2.28,0 -3.99,-1.44 -3.99,-4.09 0,-2.65 1.71,-4.25 4.22,-4.25 1.01,0 1.64,0.22 1.92,0.36 l -0.25,0.85 c -0.4,-0.19 -0.96,-0.34 -1.63,-0.34 -1.89,0 -3.15,1.21 -3.15,3.33 0,1.98 1.14,3.25 3.11,3.25 0.64,0 1.28,-0.13 1.7,-0.34 l 0.22,0.83 z"
+           id="path114-7"
+           style="fill:#ffffff;stroke-width:2.66666667;stroke-dasharray:none" />
+      </g>
+      <rect
+         class="cls-3"
+         x="-1129.767"
+         y="-241.40189"
+         width="41.708992"
+         height="99.843773"
+         transform="scale(-1)"
+         id="rect82-6"
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+      <rect
+         class="cls-3"
+         x="-1172.8739"
+         y="-241.38368"
+         width="43.172573"
+         height="99.807358"
+         transform="scale(-1)"
+         id="rect82-6-2"
+         style="fill:none;stroke:#ffffff;stroke-width:2.66666667;stroke-miterlimit:10;stroke-dasharray:none" />
+      <rect
+         class="cls-3"
+         x="1428.3177"
+         y="141.31779"
+         width="32.836971"
+         height="99.996971"
+         id="rect96-4"
+         style="fill:none;stroke:#ffffff;stroke-width:2.63559;stroke-miterlimit:10;stroke-dasharray:none" />
+      <rect
+         class="cls-3"
+         x="1362.5101"
+         y="141.38885"
+         width="32.836971"
+         height="99.996971"
+         id="rect96-4-2"
+         style="fill:none;stroke:#ffffff;stroke-width:2.63559;stroke-miterlimit:10;stroke-dasharray:none" />
     </g>
   </g>
 </svg>
