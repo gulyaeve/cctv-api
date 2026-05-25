@@ -174,11 +174,11 @@ async def check_token(payload: MediaMTXPayload):
     # logger.info(f"{payload=}")
     if payload.query == f"jwt={settings.TOKEN_BEARER}":
         # logger.info(f"{payload.query=} SUCCESS")
-        return {"datail": "Authorized"}
+        return {"detail": "Authorized"}
     elif payload.token:
         # logger.info(f"{payload.token=}")
         user = await validate_token(payload.token)
         if user:
-            return {"datail": "Authorized"}
+            return {"detail": "Authorized"}
     else:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)

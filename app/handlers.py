@@ -33,13 +33,12 @@ def noperm_handler(request: Request, exc):
 
 def notfound_handler(request: Request, exc):
     logger.warning(msg=f"404 {getattr(exc, 'detail')}", exc_info=True)
-    if "text/html" in request.headers.get("accept"):
+    if "text/html" in request.headers.get("accept", ""):
         return RedirectResponse(
             url=request.url_for("get_404_page"),
             status_code=status.HTTP_303_SEE_OTHER
         )
-    else:
-        return JSONResponse(
-            status_code=getattr(exc, "status_code"),
-            content={"message": getattr(exc, "detail")}
-        )
+    return JSONResponse(
+        status_code=getattr(exc, "status_code"),
+        content={"message": getattr(exc, "detail")}
+    )
