@@ -32,7 +32,7 @@ def noperm_handler(request: Request, exc):
     
 
 def notfound_handler(request: Request, exc):
-    logger.warning(msg=f"404 {getattr(exc, 'detail')}", exc_info=True)
+    logger.warning(msg=f"404 {getattr(exc, 'detail')}", exc_info=True, extra={"url": request.url.path})
     if "text/html" in request.headers.get("accept", ""):
         return RedirectResponse(
             url=request.url_for("get_404_page"),
