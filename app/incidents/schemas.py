@@ -1,6 +1,7 @@
 from datetime import date, datetime
-from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing import List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class IncidentBaseScheme(BaseModel):
@@ -15,18 +16,18 @@ class IncidentFormScheme(IncidentBaseScheme):
     incident_types: str = Field(default="", example="1,2,3")
     # building_id: Optional[int] = None
 
-    @field_validator('cameras_ids')
+    @field_validator("cameras_ids")
     def split_str_to_int_list(cls, value: str) -> list[int]:
         if isinstance(value, str) and value:
-            return [int(x) for x in value.split(',')]
+            return [int(x) for x in value.split(",")]
         return value
-    
+
 
 class IncidentAppendScheme(IncidentBaseScheme):
     cameras_ids: Optional[list[int]] = None
     building_id: Optional[int] = None
     incident_types: Optional[List[int]] = None
-   
+
 
 class IncidentScheme(IncidentBaseScheme):
     id: int
@@ -42,7 +43,7 @@ class IncidentScheme(IncidentBaseScheme):
     subject: Optional[str] = None
     teacher_name: Optional[str] = None
     incident_type_names: Optional[List[str]] = None
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -50,7 +51,10 @@ class IncidentSearch(BaseModel):
     comment: Optional[str] = None
     event: Optional[int] = None
     visor_id: Optional[int] = None
-    status: Optional[int] = Field(None, description="0 - всё хорошо, 1 - ещё не смотрел, 2 - инцидент, 3 - контроль")
+    status: Optional[int] = Field(
+        None,
+        description="0 - всё хорошо, 1 - ещё не смотрел, 2 - инцидент, 3 - контроль",
+    )
     classroom_id: Optional[int] = None
     building_id: Optional[int] = None
     date_from: Optional[date] = None
@@ -59,12 +63,13 @@ class IncidentSearch(BaseModel):
     subject: Optional[str] = None
     teacher_name: Optional[str] = None
     incident_type_id: Optional[int] = None
-   
+
 
 class IncidentFullInfo(BaseModel):
     id: int
     comment: str
     event: int
+    event_type: int
     time_created: datetime
     visor_id: int
     status: int
