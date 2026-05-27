@@ -52,7 +52,7 @@
                     dropdown_item.setAttribute("class", "dropdown-item");
                     dropdown_item.setAttribute(
                         "href",
-                        "{{ url_for('page_get_active_monitoring', event_type=0) }}&building_id=" +
+                        "{{ url_for('page_get_active_monitoring') }}?event_type=0&building_id=" +
                             building["id"],
                     );
                     dropdown_item.textContent = building["name"];
