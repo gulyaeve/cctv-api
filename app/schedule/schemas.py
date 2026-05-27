@@ -37,7 +37,7 @@ class ScheduleAddScheme(BaseModel):
     group_id: int
     timestamp_start: datetime
     timestamp_end: datetime
-    event_type: int
+    event_type: int = 0
 
 
 class ScheduleSearch(BaseModel):
