@@ -6,9 +6,10 @@
 <a class="dropdown-item" href="{{ url_for('page_get_videowall_page') }}"><i class="fa fa-television" aria-hidden="true"></i> VideoWall</a>
 <a class="dropdown-item" href="{{ url_for('page_get_buildings_page') }}"><i class="fa fa-building-o" aria-hidden="true"></i> Учебные корпуса</a>
 <div class="dropdown-divider"></div>
-<a class="dropdown-item" href="{{ url_for('page_get_active_monitoring') }}"><i class="fa fa-video-camera" aria-hidden="true"></i> Активный мониторинг</a>
+<a class="dropdown-item" href="{{ url_for('page_get_active_monitoring, event_type=0') }}"><i class="fa fa-video-camera" aria-hidden="true"></i> Активный мониторинг</a>
 <div id="active-monitoring-buildings-list">
  Загрузка...
+ <a class="dropdown-item" href="{{ url_for('page_get_active_monitoring', event_type=1) }}"><i class="fa fa-video-camera" aria-hidden="true"></i>ГИА</a>
 </div>
 <div class="dropdown-divider"></div>
 <a class="dropdown-item" href="{{ url_for('page_get_schedules_buildings_page') }}"><i class="fa fa-calendar" aria-hidden="true"></i> Расписание</a>
@@ -30,7 +31,7 @@
             for (const building of result) {
               let dropdown_item = document.createElement('a');
               dropdown_item.setAttribute('class','dropdown-item');
-              dropdown_item.setAttribute('href','{{ url_for('page_get_active_monitoring') }}?building_id=' + building['id']);
+              dropdown_item.setAttribute('href','{{ url_for('page_get_active_monitoring') }}?building_id=' + building['id'] + "&event_type=1");
               dropdown_item.textContent = building['name']; // Можно задать содержимое div
               parent.appendChild(dropdown_item);
             };
