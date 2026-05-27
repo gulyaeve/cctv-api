@@ -31,7 +31,7 @@
             for (const building of result) {
               let dropdown_item = document.createElement('a');
               dropdown_item.setAttribute('class','dropdown-item');
-              dropdown_item.setAttribute('href','{{ url_for('page_get_active_monitoring') }}?building_id=' + building['id'] + "&event_type=0");
+              dropdown_item.setAttribute('href',"{{ url_for('page_get_active_monitoring', event_type=0) }}?building_id=" + building['id']);
               dropdown_item.textContent = building['name']; // Можно задать содержимое div
               parent.appendChild(dropdown_item);
             };
