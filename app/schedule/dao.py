@@ -1,17 +1,19 @@
 from datetime import date
-from app.logger import logger
 from typing import Optional
-from sqlalchemy import Date, and_, asc, case, desc, func, null, select, text, cast
+
+from sqlalchemy import Date, and_, asc, case, cast, desc, func, null, select, text
 from sqlalchemy.exc import SQLAlchemyError
+
 from app.buildings.models import BuildingModel
 from app.cameras.models import CameraModel
 from app.classrooms.models import ClassroomModel
+from app.dao.base import BaseDAO
+from app.database import async_session_maker
 from app.groups.models import GroupModel
 from app.incidents.models import IncidentModel
+from app.logger import logger
 from app.schedule.models import ScheduleModel
-from app.dao.base import BaseDAO
 from app.teachers.models import TeacherModel
-from app.database import async_session_maker
 from app.utils.filter_factory import filter_factory
 
 
@@ -24,8 +26,8 @@ class ScheduleDAO(BaseDAO):
             status_case = case(
                 (ScheduleModel.timestamp_start > func.current_timestamp(), 0),
                 (ScheduleModel.timestamp_end < func.current_timestamp(), 2),
-                else_=1
-            ).label('status')
+                else_=1,
+            ).label("status")
             query = (
                 select(
                     ScheduleModel.__table__,
@@ -34,7 +36,7 @@ class ScheduleDAO(BaseDAO):
                     ClassroomModel.name.label("classroom_name"),
                     BuildingModel.id.label("building_id"),
                     BuildingModel.name.label("building_name"),
-                    status_case
+                    status_case,
                 )
                 .select_from(ScheduleModel)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
@@ -58,14 +60,23 @@ class ScheduleDAO(BaseDAO):
 
     @classmethod
     async def find_all(cls, **filter_by):
-        date_from = filter_by.pop("date_from") if filter_by.get("date_from") is not None else None
-        date_to = filter_by.pop("date_to") if filter_by.get("date_to") is not None else None
+        date_from = (
+            filter_by.pop("date_from")
+            if filter_by.get("date_from") is not None
+            else None
+        )
+        date_to = (
+            filter_by.pop("date_to") if filter_by.get("date_to") is not None else None
+        )
 
-        status = filter_by.pop("status") if filter_by.get("status") is not None else None
+        status = (
+            filter_by.pop("status") if filter_by.get("status") is not None else None
+        )
 
         filter_mapping = {
             "subject": ScheduleModel.subject,
             "classroom_id": ScheduleModel.classroom_id,
+            "event_type": ScheduleModel.event_type,
             "building_id": BuildingModel.id,
             "teacher_id": ScheduleModel.teacher_id,
             "group_id": ScheduleModel.group_id,
@@ -74,13 +85,22 @@ class ScheduleDAO(BaseDAO):
 
         if date_from is not None and date_to is not None:
             if date_from == date_to:
-                filter_query = and_(cast(ScheduleModel.timestamp_start, Date) == date_from, *conditions)
+                filter_query = and_(
+                    cast(ScheduleModel.timestamp_start, Date) == date_from, *conditions
+                )
             else:
-                filter_query = and_(ScheduleModel.timestamp_start.between(date_from, date_to), *conditions)
+                filter_query = and_(
+                    ScheduleModel.timestamp_start.between(date_from, date_to),
+                    *conditions,
+                )
         elif date_from is not None and date_to is None:
-            filter_query = and_(cast(ScheduleModel.timestamp_start, Date) >= date_from, *conditions)
+            filter_query = and_(
+                cast(ScheduleModel.timestamp_start, Date) >= date_from, *conditions
+            )
         elif date_from is None and date_to is not None:
-            filter_query = and_(cast(ScheduleModel.timestamp_start, Date) <= date_to, *conditions)
+            filter_query = and_(
+                cast(ScheduleModel.timestamp_start, Date) <= date_to, *conditions
+            )
         else:
             filter_query = and_(*conditions)
 
@@ -88,8 +108,8 @@ class ScheduleDAO(BaseDAO):
             status_case = case(
                 (ScheduleModel.timestamp_start > func.current_timestamp(), 0),
                 (ScheduleModel.timestamp_end < func.current_timestamp(), 2),
-                else_=1
-            ).label('status')
+                else_=1,
+            ).label("status")
             query = (
                 select(
                     ScheduleModel.__table__,
@@ -98,14 +118,18 @@ class ScheduleDAO(BaseDAO):
                     ClassroomModel.name.label("classroom_name"),
                     BuildingModel.id.label("building_id"),
                     BuildingModel.name.label("building_name"),
-                    status_case
+                    status_case,
                 )
                 .select_from(ScheduleModel)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
-                .filter(filter_query if status is None else and_(status_case == status, filter_query))
+                .filter(
+                    filter_query
+                    if status is None
+                    else and_(status_case == status, filter_query)
+                )
                 .order_by(ScheduleModel.id)
             )
             async with async_session_maker() as session:
@@ -122,14 +146,23 @@ class ScheduleDAO(BaseDAO):
 
     @classmethod
     async def find_all_count(cls, **filter_by):
-        date_from = filter_by.pop("date_from") if filter_by.get("date_from") is not None else None
-        date_to = filter_by.pop("date_to") if filter_by.get("date_to") is not None else None
+        date_from = (
+            filter_by.pop("date_from")
+            if filter_by.get("date_from") is not None
+            else None
+        )
+        date_to = (
+            filter_by.pop("date_to") if filter_by.get("date_to") is not None else None
+        )
 
-        status = filter_by.pop("status") if filter_by.get("status") is not None else None
+        status = (
+            filter_by.pop("status") if filter_by.get("status") is not None else None
+        )
 
         filter_mapping = {
             "subject": ScheduleModel.subject,
             "classroom_id": ScheduleModel.classroom_id,
+            "event_type": ScheduleModel.event_type,
             "building_id": BuildingModel.id,
             "teacher_id": ScheduleModel.teacher_id,
             "group_id": ScheduleModel.group_id,
@@ -138,13 +171,22 @@ class ScheduleDAO(BaseDAO):
 
         if date_from is not None and date_to is not None:
             if date_from == date_to:
-                filter_query = and_(cast(ScheduleModel.timestamp_start, Date) == date_from, *conditions)
+                filter_query = and_(
+                    cast(ScheduleModel.timestamp_start, Date) == date_from, *conditions
+                )
             else:
-                filter_query = and_(ScheduleModel.timestamp_start.between(date_from, date_to), *conditions)
+                filter_query = and_(
+                    ScheduleModel.timestamp_start.between(date_from, date_to),
+                    *conditions,
+                )
         elif date_from is not None and date_to is None:
-            filter_query = and_(cast(ScheduleModel.timestamp_start, Date) >= date_from, *conditions)
+            filter_query = and_(
+                cast(ScheduleModel.timestamp_start, Date) >= date_from, *conditions
+            )
         elif date_from is None and date_to is not None:
-            filter_query = and_(cast(ScheduleModel.timestamp_start, Date) <= date_to, *conditions)
+            filter_query = and_(
+                cast(ScheduleModel.timestamp_start, Date) <= date_to, *conditions
+            )
         else:
             filter_query = and_(*conditions)
 
@@ -152,8 +194,8 @@ class ScheduleDAO(BaseDAO):
             status_case = case(
                 (ScheduleModel.timestamp_start > func.current_timestamp(), 0),
                 (ScheduleModel.timestamp_end < func.current_timestamp(), 2),
-                else_=1
-            ).label('status')
+                else_=1,
+            ).label("status")
             query = (
                 select(
                     func.count(ScheduleModel.id),
@@ -163,7 +205,11 @@ class ScheduleDAO(BaseDAO):
                 .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
-                .filter(filter_query if status is None else and_(status_case == status, filter_query))
+                .filter(
+                    filter_query
+                    if status is None
+                    else and_(status_case == status, filter_query)
+                )
             )
             async with async_session_maker() as session:
                 result = await session.execute(query)
@@ -187,13 +233,15 @@ class ScheduleDAO(BaseDAO):
                     CameraModel.rtsp_url.label("camera_rtsp"),
                 )
                 .select_from(ScheduleModel)
-                .join(CameraModel, ScheduleModel.classroom_id == CameraModel.classroom_id)
+                .join(
+                    CameraModel, ScheduleModel.classroom_id == CameraModel.classroom_id
+                )
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .filter(
                     and_(
                         cast(ScheduleModel.timestamp_start, Date) == search_date,
-                        BuildingModel.id == building_id
+                        BuildingModel.id == building_id,
                     )
                 )
                 .order_by(ScheduleModel.id)
@@ -211,7 +259,12 @@ class ScheduleDAO(BaseDAO):
             return None
 
     @classmethod
-    async def get_schedule_for_active_monitoring(cls, visor_id: int, building_id: Optional[int] = None):
+    async def get_schedule_for_active_monitoring(
+        cls,
+        visor_id: int,
+        building_id: Optional[int] = None,
+        event_type: Optional[int] = None,
+    ):
         try:
             # Алиас для инцидентов (для подзапроса)
             incident_subquery = (
@@ -219,57 +272,60 @@ class ScheduleDAO(BaseDAO):
                 .where(IncidentModel.visor_id == visor_id)
                 .distinct(IncidentModel.event)
                 .order_by(IncidentModel.event, IncidentModel.time_created.desc())
-            ).subquery('inc')
+            ).subquery("inc")
 
             current_time = func.current_timestamp()
 
-            if building_id is None:
-                filter_query = and_(
-                    ScheduleModel.timestamp_start <= current_time,
-                    ScheduleModel.timestamp_end >= current_time
-                )
-            else:
-                filter_query = and_(
-                    ScheduleModel.timestamp_start <= current_time,
-                    ScheduleModel.timestamp_end >= current_time,
-                    BuildingModel.id == building_id,
-                )
+            conditions = [
+                ScheduleModel.timestamp_start <= current_time,
+                ScheduleModel.timestamp_end >= current_time,
+            ]
+            if building_id is not None:
+                conditions.append(BuildingModel.id == building_id)
+            if event_type is not None:
+                conditions.append(ScheduleModel.event_type == event_type)
 
             # Incaliased = aliased(IncidentModel, incident_subquery)
 
             query = (
                 select(
-                    ScheduleModel.id.label('current_subject_id'),
-                    ScheduleModel.subject.label('current_subject'),
+                    ScheduleModel.id.label("current_subject_id"),
+                    ScheduleModel.subject.label("current_subject"),
                     ScheduleModel.timestamp_start,
                     ScheduleModel.timestamp_end,
-                    TeacherModel.name.label('current_teacher'),
-                    ClassroomModel.name.label('current_classroom'),
-                    ClassroomModel.id.label('current_classroom_id'),
-                    BuildingModel.name.label('current_building'),
-                    BuildingModel.id.label('building_id'),
-                    GroupModel.name.label('current_group'),
-                    func.coalesce(incident_subquery.c.status, 1).label('last_status_incident'),
-                    incident_subquery.c.time_created.label('time_created_incident'),
+                    TeacherModel.name.label("current_teacher"),
+                    ClassroomModel.name.label("current_classroom"),
+                    ClassroomModel.id.label("current_classroom_id"),
+                    BuildingModel.name.label("current_building"),
+                    BuildingModel.id.label("building_id"),
+                    GroupModel.name.label("current_group"),
+                    func.coalesce(incident_subquery.c.status, 1).label(
+                        "last_status_incident"
+                    ),
+                    incident_subquery.c.time_created.label("time_created_incident"),
                     # логика для cooldown
                     case(
                         (
                             and_(
-                                incident_subquery.c.status.in_([2, 3]), 
-                                current_time >= incident_subquery.c.time_created + text("INTERVAL '3 minutes'")
+                                incident_subquery.c.status.in_([2, 3]),
+                                current_time
+                                >= incident_subquery.c.time_created
+                                + text("INTERVAL '3 minutes'"),
                             ),
-                            1
+                            1,
                         ),
                         (
-                                and_(
-                                incident_subquery.c.status == 0, 
-                                current_time >= incident_subquery.c.time_created + text("INTERVAL '6 minutes'")
+                            and_(
+                                incident_subquery.c.status == 0,
+                                current_time
+                                >= incident_subquery.c.time_created
+                                + text("INTERVAL '6 minutes'"),
                             ),
-                            1
+                            1,
                         ),
                         (incident_subquery.c.status.is_(null()), 1),
                         else_=0,
-                    ).label('cooldown')
+                    ).label("cooldown"),
                 )
                 .select_from(ScheduleModel)
                 .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
@@ -277,22 +333,19 @@ class ScheduleDAO(BaseDAO):
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .outerjoin(
-                    incident_subquery,
-                    ScheduleModel.id == incident_subquery.c.event
+                    incident_subquery, ScheduleModel.id == incident_subquery.c.event
                 )
                 # Конструкция фильтрации по временам
-                .where(
-                    filter_query
-                )
+                .where(and_(*conditions))
                 # Заказ сортировки
                 .order_by(
-                    desc('cooldown'),
-                    desc('last_status_incident'),
-                    asc('time_created_incident')
+                    desc("cooldown"),
+                    desc("last_status_incident"),
+                    asc("time_created_incident"),
                 )
                 .limit(1)
             )
-            
+
             # inc_subquery = (
             #     select(
             #         IncidentModel.event,
@@ -339,14 +392,14 @@ class ScheduleDAO(BaseDAO):
             #                         inc_subquery.c.status == 3,
             #                     inc_subquery.c.status == 2
             #                 ),
-            #                 func.current_timestamp() >= 
+            #                 func.current_timestamp() >=
             #                     # inc_subquery.c.time_created + text("INTERVAL '5 minutes'")
             #                     inc_subquery.c.time_created + text("INTERVAL '3 minutes'")
             #             ),
             #             # Статус 0 и прошло 15 минут
             #             and_(
             #                 inc_subquery.c.status == 0,
-            #                 func.current_timestamp() >= 
+            #                 func.current_timestamp() >=
             #                     # inc_subquery.c.time_created + text("INTERVAL '15 minutes'")
             #                     inc_subquery.c.time_created + text("INTERVAL '6 minutes'")
             #             ),

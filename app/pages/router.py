@@ -1,26 +1,25 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Request, Depends
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
+from app.buildings.dao import BuildingsDAO
 from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings
 from app.cameras.dao import CamerasDAO
-from app.buildings.dao import BuildingsDAO
 from app.cameras.router import get_all_cameras
 from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
 from app.incidents.dao import IncidentsDAO
 from app.incidents.models import IncidentModel
 from app.incidents.router import get_all_incidents
+from app.logger import logger
+from app.pages.buildings import router as buildings_frontend_router
+from app.pages.schedule import router as schedule_frontend_router
 from app.schedule.router import get_active_monitoring
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
-from app.pages.schedule import router as schedule_frontend_router
-from app.pages.buildings import router as buildings_frontend_router
-from app.logger import logger
-
 
 router = APIRouter(
     tags=["Фронтенд"],
@@ -30,73 +29,63 @@ router = APIRouter(
 router.include_router(schedule_frontend_router)
 router.include_router(buildings_frontend_router)
 
-templates = Jinja2Templates(
-    directory="app/templates"
-)
+templates = Jinja2Templates(directory="app/templates")
 
 
 @router.get(
     "/dashboard",
     response_class=HTMLResponse,
-    dependencies=[Depends(permission_required("frontend"))]
+    dependencies=[Depends(permission_required("frontend"))],
 )
 async def page_get_dashboard_page(
     request: Request,
-    buildings: BuildingModel=Depends(get_all_buildings),
-    current_user: UserModel = Depends(get_current_user)
-    ):
-    logger.info(
-        "User open dashboard",
-        extra=current_user,
-        exc_info=True
-    )
+    buildings: BuildingModel = Depends(get_all_buildings),
+    current_user: UserModel = Depends(get_current_user),
+):
+    logger.info("User open dashboard", extra=current_user, exc_info=True)
     return templates.TemplateResponse(
         request=request,
         name="monitoring/dashboard.html",
         context={
             "buildings": buildings,
             "current_user": current_user,
-        }
+        },
     )
 
 
 @router.get(
     "/incidents",
     response_class=HTMLResponse,
-    dependencies=[Depends(permission_required("frontend"))]
+    dependencies=[Depends(permission_required("frontend"))],
 )
 async def page_get_incidents_page(
     request: Request,
-    incidents: List[IncidentModel]=Depends(get_all_incidents),
-    current_user: UserModel = Depends(get_current_user)
-    ):
-    logger.info(
-        "User open incidents",
-        extra=current_user,
-        exc_info=True
-    )
+    incidents: List[IncidentModel] = Depends(get_all_incidents),
+    current_user: UserModel = Depends(get_current_user),
+):
+    logger.info("User open incidents", extra=current_user, exc_info=True)
     return templates.TemplateResponse(
         request=request,
         name="monitoring/incidents.html",
         context={
             "incidents": incidents,
             "current_user": current_user,
-        }
+        },
     )
 
 
 @router.get(
     "/classrooms/{id}/streams",
     response_class=HTMLResponse,
-    dependencies=[Depends(permission_required("frontend"))]
+    dependencies=[Depends(permission_required("frontend"))],
 )
 async def page_get_cameras_view_page(
     id: int,
     request: Request,
     # building: BuildingModel=Depends(get_building),
-    classroom: ClassroomModel=Depends(get_classroom),
-    current_user: UserModel = Depends(get_current_user)
-    ):
+    classroom: ClassroomModel = Depends(get_classroom),
+    current_user: UserModel = Depends(get_current_user),
+):
     cameras = await CamerasDAO.find_all(classroom_id=id)
     building = await BuildingsDAO.find_one_or_none(id=classroom.building_id)
 
@@ -107,7 +96,7 @@ async def page_get_cameras_view_page(
             "building_id": classroom.building_id,
             "classroom_id": classroom.id,
         },
-        exc_info=True
+        exc_info=True,
     )
     return templates.TemplateResponse(
         request=request,
@@ -118,58 +107,55 @@ async def page_get_cameras_view_page(
             "cameras": cameras,
             "classroom": classroom,
             "building": building,
-            "current_user": current_user
-        }
+            "current_user": current_user,
+        },
     )
 
 
 @router.get(
     "/videowall",
     response_class=HTMLResponse,
-    dependencies=[Depends(permission_required("frontend"))]
+    dependencies=[Depends(permission_required("frontend"))],
 )
 async def page_get_videowall_page(
     request: Request,
-    cameras = Depends(get_all_cameras),
-    current_user: UserModel = Depends(get_current_user)
-    ):
-    logger.info(
-        "User open videowall",
-        extra=current_user,
-        exc_info=True
-    )
+    cameras=Depends(get_all_cameras),
+    current_user: UserModel = Depends(get_current_user),
+):
+    logger.info("User open videowall", extra=current_user, exc_info=True)
     return templates.TemplateResponse(
         request=request,
         # name="monitoring/camera_stream.html",
         name="monitoring/videowall.html",
-        context={
-            "request": request,
-            "cameras": cameras,
-            "current_user": current_user
-        }
+        context={"request": request, "cameras": cameras, "current_user": current_user},
     )
+
 
 @router.get(
     "/active_monitoring",
     response_class=HTMLResponse,
-    dependencies=[Depends(permission_required("frontend"))]
+    dependencies=[Depends(permission_required("frontend"))],
 )
 async def page_get_active_monitoring(
     request: Request,
     building_id: Optional[int] = None,
-    monitoring_data = Depends(get_active_monitoring),
-    current_user: UserModel = Depends(get_current_user)
-    ):
+    event_type: Optional[int] = None,
+    monitoring_data=Depends(get_active_monitoring),
+    current_user: UserModel = Depends(get_current_user),
+):
     logger.info(
         "User open active_monitoring",
         extra={
             **current_user,
             "building_id": building_id,
+            "event_type": event_type,
         },
-        exc_info=True
+        exc_info=True,
     )
     if monitoring_data:
-        cameras = await CamerasDAO.find_all(classroom_id=monitoring_data.current_classroom_id)
+        cameras = await CamerasDAO.find_all(
+            classroom_id=monitoring_data.current_classroom_id
+        )
         incidents_data = await IncidentsDAO.get_incidents_info(
             visor_id=current_user.id,
             event_id=monitoring_data.current_subject_id,
@@ -185,8 +171,8 @@ async def page_get_active_monitoring(
                 "cameras": cameras,
                 "incidents_data": incidents_data,
                 "len_cameras": len(cameras),
-                "cameras_ids": ",".join(str(camera.id) for camera in cameras)
-            }
+                "cameras_ids": ",".join(str(camera.id) for camera in cameras),
+            },
         )
     else:
         return templates.TemplateResponse(
@@ -194,7 +180,7 @@ async def page_get_active_monitoring(
             name="monitoring/active_monitoring_wait.html",
             context={
                 "current_user": current_user,
-            }
+            },
         )
 
 

@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from typing import Optional
-from pydantic import BaseModel, Field
+
+from pydantic import BaseModel, Field, field_validator
 
 
 class ScheduleBaseScheme(BaseModel):
@@ -23,6 +24,7 @@ class ScheduleScheme(ScheduleBaseScheme):
     building_id: Optional[int] = None
     building_name: Optional[str] = None
     status: Optional[int] = None
+    event_type: Optional[int] = None
 
     class Config:
         from_attributes = True
@@ -35,11 +37,15 @@ class ScheduleAddScheme(BaseModel):
     group_id: int
     timestamp_start: datetime
     timestamp_end: datetime
+    event_type: int
 
 
 class ScheduleSearch(BaseModel):
     subject: Optional[str] = None
-    status: Optional[int] = Field(None, description="0 - не началось, 1 - в процессе, 2 - завершено")
+    status: Optional[int] = Field(
+        None, description="0 - не началось, 1 - в процессе, 2 - завершено"
+    )
+    event_type: Optional[int] = Field(None, description="0 - занятие, 1 - экзамен")
     classroom_id: Optional[int] = None
     building_id: Optional[int] = None
     teacher_id: Optional[int] = None
@@ -64,3 +70,4 @@ class ScheduleAiTask(ScheduleAiSchema):
 
 class ActiveMonitoringSearch(BaseModel):
     building_id: Optional[int] = None
+    event_type: Optional[int] = None

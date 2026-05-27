@@ -1,7 +1,9 @@
 from typing import List
+
 from sqlalchemy import Column, DateTime, ForeignKey
-from app.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
 
 
 class ScheduleModel(Base):
@@ -9,6 +11,7 @@ class ScheduleModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     subject: Mapped[str]
+    event_type: Mapped[int] = mapped_column(nullable=False, server_default="0")
     classroom_id: Mapped[int] = mapped_column(ForeignKey("classrooms.id"))
     group_id: Mapped[int] = mapped_column(ForeignKey("groups.id"), nullable=True)
     teacher_id: Mapped[int] = mapped_column(ForeignKey("teachers.id"))
@@ -19,7 +22,9 @@ class ScheduleModel(Base):
     teacher = relationship("TeacherModel", back_populates="schedule")
     group = relationship("GroupModel", back_populates="schedule")
     incidents: Mapped[List["IncidentModel"]] = relationship(back_populates="schedule")
-    ai_analysis_schedule = relationship("AiAnalysisScheduleModel", back_populates="schedule")
+    ai_analysis_schedule = relationship(
+        "AiAnalysisScheduleModel", back_populates="schedule"
+    )
 
     def __str__(self) -> str:
         return f"{self.subject} {self.timestamp_start}"

@@ -1,30 +1,45 @@
 from datetime import date
 from random import choice
+from tabnanny import filename_only
 from typing import Annotated, Sequence
+
 from fastapi import APIRouter, Depends, Form, Query, status
 
 from app.broker_utils.schedule_broker import send_ai_job
 from app.cameras.dao import CamerasDAO
-from app.schedule.dao import ScheduleDAO
-from app.schedule.schemas import ActiveMonitoringSearch, ScheduleAddScheme, ScheduleAiSchema, ScheduleAiTask, ScheduleDaily, ScheduleScheme, ScheduleSearch
 from app.exceptions import ObjectMissingException, ScheduleNotQuitException
+from app.schedule.dao import ScheduleDAO
+from app.schedule.schemas import (
+    ActiveMonitoringSearch,
+    ScheduleAddScheme,
+    ScheduleAiSchema,
+    ScheduleAiTask,
+    ScheduleDaily,
+    ScheduleScheme,
+    ScheduleSearch,
+)
+
 # from app.users.auth import auth_bearer_token
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 
-
-
-
 router = APIRouter(
     prefix="/schedule",
     tags=["Расписание"],
-    dependencies=[Depends(permission_required("schedule"))]
+    dependencies=[Depends(permission_required("schedule"))],
 )
 
 
 @router.get("/active_monitoring")
-async def get_active_monitoring(filter_query: Annotated[ActiveMonitoringSearch, Query()], current_user: UserModel = Depends(get_current_user)):
-    schedule_for_monitoring = await ScheduleDAO.get_schedule_for_active_monitoring(visor_id=(current_user.id), building_id=filter_query.building_id)
+async def get_active_monitoring(
+    filter_query: Annotated[ActiveMonitoringSearch, Query()],
+    current_user: UserModel = Depends(get_current_user),
+):
+    schedule_for_monitoring = await ScheduleDAO.get_schedule_for_active_monitoring(
+        visor_id=(current_user.id),
+        building_id=filter_query.building_id,
+        event_type=filter_query.event_type,
+    )
     return schedule_for_monitoring
 
 
@@ -78,9 +93,7 @@ async def create_ai_task(
     else:
         camera = query_params.camera_id
     data_to_analysis = ScheduleAiTask(
-        camera_id=camera,
-        id=schedule.id,
-        date=schedule.timestamp_start.date()
+        camera_id=camera, id=schedule.id, date=schedule.timestamp_start.date()
     )
     # return data_to_analysis
     await send_ai_job(data_to_analysis)
@@ -90,15 +103,13 @@ async def create_ai_task(
     "",
     response_model=ScheduleScheme,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(permission_required("schedule_create"))]
+    dependencies=[Depends(permission_required("schedule_create"))],
 )
 async def add_schedule(data: ScheduleAddScheme):
     """
     Add schedule
     """
-    new_object = await ScheduleDAO.add(
-        **data.model_dump()
-    )
+    new_object = await ScheduleDAO.add(**data.model_dump())
     if new_object is None:
         raise ObjectMissingException
     else:
@@ -108,16 +119,18 @@ async def add_schedule(data: ScheduleAddScheme):
 @router.post(
     "/bulk",
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(permission_required("schedule_create"))]
+    dependencies=[Depends(permission_required("schedule_create"))],
 )
-async def bulk_add_schedules(items: Sequence[ScheduleAddScheme]) -> Sequence[ScheduleScheme]:
+async def bulk_add_schedules(
+    items: Sequence[ScheduleAddScheme],
+) -> Sequence[ScheduleScheme]:
     return await ScheduleDAO.add_bulk([item.model_dump() for item in items])
 
 
 @router.delete(
     "/{id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    dependencies=[Depends(permission_required("schedule_delete"))]
+    dependencies=[Depends(permission_required("schedule_delete"))],
 )
 async def del_schedule(id: int):
     existing_object = await ScheduleDAO.find_one_or_none(id=id)
@@ -130,7 +143,7 @@ async def del_schedule(id: int):
 @router.put(
     "/{id}",
     response_model=ScheduleScheme,
-    dependencies=[Depends(permission_required("schedule_create"))]
+    dependencies=[Depends(permission_required("schedule_create"))],
 )
 async def update_schedule(id: int, data: ScheduleAddScheme):
 
@@ -150,8 +163,11 @@ router_daily = APIRouter(
 
 # TODO: remove after test
 # @router_daily.get("", response_model=Sequence[ScheduleDaily], dependencies=[Depends(auth_bearer_token)])
-@router_daily.get("", response_model=Sequence[ScheduleDaily], dependencies=[Depends(get_current_user)])
+@router_daily.get(
+    "", response_model=Sequence[ScheduleDaily], dependencies=[Depends(get_current_user)]
+)
 async def find_daily_schedule(date: date, building_id: int = 1):
     return await ScheduleDAO.find_by_date(date, building_id)
+
 
 # router.include_router(router2)
