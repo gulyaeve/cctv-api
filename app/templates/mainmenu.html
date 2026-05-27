@@ -1,43 +1,18 @@
 {% extends "base.html" %} {% block mainmenu %}
 
-<a class="dropdown-item" href="{{ url_for('page_get_dashboard_page') }}"
-    ><i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard</a
->
-<a class="dropdown-item" href="{{ url_for('page_get_videowall_page') }}"
-    ><i class="fa fa-television" aria-hidden="true"></i> VideoWall</a
->
-<a class="dropdown-item" href="{{ url_for('page_get_buildings_page') }}"
-    ><i class="fa fa-building-o" aria-hidden="true"></i> Учебные корпуса</a
->
+<a class="dropdown-item" href="{{ url_for('page_get_dashboard_page') }}"><i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard</a>
+<a class="dropdown-item" href="{{ url_for('page_get_videowall_page') }}"><i class="fa fa-television" aria-hidden="true"></i> VideoWall</a>
+<a class="dropdown-item" href="{{ url_for('page_get_buildings_page') }}"><i class="fa fa-building-o" aria-hidden="true"></i> Учебные корпуса</a>
 <div class="dropdown-divider"></div>
-<a
-    class="dropdown-item"
-    href="{{ url_for('page_get_active_monitoring') }}?event_type=0"
-    ><i class="fa fa-avideo-camera" aria-hidden="true"></i> Активный
-    мониторинг</a
->
+<a class="dropdown-item" href="{{ url_for('page_get_active_monitoring') }}?event_type=0" ><i class="fa fa-avideo-camera" aria-hidden="true"></i> Активный мониторинг</a>
 <div id="active-monitoring-buildings-list">
     Загрузка...
-    <a
-        class="dropdown-item"
-        href="{{ url_for('page_get_active_monitoring') }}?event_type=1"
-        ><i class="fa fa-video-camera" aria-hidden="true"></i>ГИА</a
-    >
 </div>
-<a
-    class="dropdown-item"
-    href="{{ url_for('page_get_active_monitoring') }}?event_type=1"
-    ><i class="fa fa-video-camera" aria-hidden="true"></i>ГИА</a
->
+<a class="dropdown-item" href="{{ url_for('page_get_active_monitoring') }}?event_type=1"
+    ><i class="fa fa-video-camera" aria-hidden="true"></i>ГИА</a>
 <div class="dropdown-divider"></div>
-<a
-    class="dropdown-item"
-    href="{{ url_for('page_get_schedules_buildings_page') }}"
-    ><i class="fa fa-calendar" aria-hidden="true"></i> Расписание</a
->
-<a class="dropdown-item" href="{{ url_for('page_get_incidents_page') }}"
-    ><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Инциденты</a
->
+<a class="dropdown-item" href="{{ url_for('page_get_schedules_buildings_page') }}"><i class="fa fa-calendar" aria-hidden="true"></i> Расписание</a>
+<a class="dropdown-item" href="{{ url_for('page_get_incidents_page') }}"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Инциденты</a>
 
 <script type="text/javascript">
     window.addEventListener("load", () => {
@@ -55,11 +30,7 @@
                 for (const building of result) {
                     let dropdown_item = document.createElement("a");
                     dropdown_item.setAttribute("class", "dropdown-item");
-                    dropdown_item.setAttribute(
-                        "href",
-                        "{{ url_for('page_get_active_monitoring') }}?event_type=0&building_id=" +
-                            building["id"],
-                    );
+                    dropdown_item.setAttribute("href",  "{{ url_for('page_get_active_monitoring') }}?event_type=0&building_id=" + building["id"]);
                     dropdown_item.textContent = building["name"];
                     parent.appendChild(dropdown_item);
                 }
