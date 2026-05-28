@@ -4,7 +4,6 @@ from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table, fun
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-from app.utils import keycloak_client
 
 user_roles = Table(
     "user_roles",

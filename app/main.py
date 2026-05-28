@@ -169,6 +169,17 @@ def redirect_to_login_page(request: Request):
     return RedirectResponse(start_page)
 
 
+@app.get("/sso", response_class=RedirectResponse)
+def redirect_to_sso_auth(request: Request):
+    return RedirectResponse(
+        f"{settings.auth_url}"
+        f"?client_id={settings.KEYCLOAK_CLIENT_ID}"
+        f"&response_type=code"
+        f"&scope=openid"
+        f"&redirect_uri={settings.redirect_uri}"
+    )
+
+
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time()
