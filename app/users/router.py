@@ -313,7 +313,7 @@ async def check_token(payload: MediaMTXPayload):
         # logger.info(f"{payload.query=} SUCCESS")
         return {"detail": "Authorized"}
     elif payload.token is not None or payload.token:
-        # logger.info(f"{payload.token=}")
+        logger.info(f"{payload.token=}")
         if payload.token.startswith("jwt"):
             token = payload.token.split(" ")[-1]
             user = await validate_token(token)
