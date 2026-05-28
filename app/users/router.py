@@ -186,15 +186,18 @@ async def login_callback(
             raise HTTPException(status_code=401, detail="ID пользователя не найден")
 
         # Проверка существования пользователя, создание нового при необходимости
-
         user = await UsersDAO.find_one_or_none(keycloak_uuid=user_id)
         if not user and isinstance(user_info, dict):
-            await UsersDAO.add(
-                email=user_info.get("email"),
-                username=user_info.get("preferred_username"),
-                full_name=user_info.get("name"),
-                keycloak_uuid=user_info.get("sub")
-            )
+            user_by_email = await UsersDAO.find_one_or_none(email=user_info.get("email"))
+            if user_by_email is not None:
+                await UsersDAO.update(user_by_email.id, keycloak_uuid=user_id)
+            else:
+                await UsersDAO.add(
+                    email=user_info.get("email"),
+                    username=user_info.get("preferred_username"),
+                    full_name=user_info.get("name"),
+                    keycloak_uuid=user_info.get("sub")
+                )
 
         # Установка cookie с токенами и редирект
         response = RedirectResponse(request.url_for("page_get_dashboard_page"))
@@ -225,7 +228,7 @@ async def login_callback(
             path="/",
             max_age=token_data.get("expires_in", 3600),
         )
-        logger.info(f"User {user_id} logged in successfully")
+        logger.info(f"User {user} with {user_id} logged in successfully")
         return response
 
     except Exception as e:
