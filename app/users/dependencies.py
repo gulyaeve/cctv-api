@@ -95,7 +95,6 @@ async def validate_keycloak_token(keycloak_token: str):
     headers = {"Authorization": f"Bearer {keycloak_token}"}
     async with AsyncClient() as client:
         response = await client.get(settings.userinfo_url, headers=headers)
-        print(response.json())
         if response.status_code != 200:
             raise HTTPException(status.HTTP_401_UNAUTHORIZED)
         user_info = response.json()
