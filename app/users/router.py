@@ -313,16 +313,13 @@ async def check_token(payload: MediaMTXPayload):
         # logger.info(f"{payload.query=} SUCCESS")
         return {"detail": "Authorized"}
     elif payload.token is not None or payload.token:
-        logger.info(f"{payload.token=}")
-        if payload.token.startswith("jwt"):
-            token = payload.token.split(" ")[-1]
-            user = await validate_token(token)
-            if user is not None:
+        try:
+            user_jwt = await validate_token(payload.token)
+            if user_jwt is not None:
                 return {"detail": "Authorized"}
-        if payload.token.startswith("sso"):
-            token = payload.token.split(" ")[-1]
-            user = await validate_keycloak_token(token)
-            if user is not None:
+        except HTTPException:
+            user_keycloak = await validate_keycloak_token(payload.token)
+            if user_keycloak is not None:
                 return {"detail": "Authorized"}
 
     else:
