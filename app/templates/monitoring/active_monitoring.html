@@ -17,8 +17,7 @@
 
           return cookieValue || null;
       }
-      const access_token = getCookie('jwt_access_token');
-      // console.log(token);
+      const access_token = `jwt ${getCookie('jwt_access_token')}` || `sso ${getCookie('access_token')}`;
   </script>
 
   <script>

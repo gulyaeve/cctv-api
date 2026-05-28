@@ -1,23 +1,47 @@
 from datetime import datetime, timedelta, timezone
 from secrets import token_urlsafe
+from typing import Annotated, Optional, Sequence
 from urllib.parse import urlencode
-from app.logger import logger
-from typing import Optional, Sequence, Annotated
-from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request, Response, status
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    Form,
+    HTTPException,
+    Query,
+    Request,
+    Response,
+    status,
+)
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
+
 # from fastapi_login import LoginManager
 from pydantic import EmailStr, SecretStr
 
+from app.config import settings
+from app.exceptions import (
+    IncorrectEmailOrPassword,
+    PasswordNotValidate,
+    PasswordsDontMatchValidation,
+    UserExistException,
+    UserNotPresent,
+)
+from app.logger import logger
+from app.users.auth import auth_user, create_token, get_password_hash, verify_password
+from app.users.dao import UsersDAO
+from app.users.dependencies import (
+    get_current_user,
+    get_keycloak_client,
+    permission_required,
+    validate_keycloak_token,
+    validate_token,
+)
 
-from app.users.auth import auth_user, get_password_hash, create_token, verify_password
-from app.users.dependencies import get_current_user, get_keycloak_client, permission_required, validate_token
 # from app.users.models import UserModel
 from app.users.schemas import MediaMTXPayload, UserScheme, UserSearch
-from app.users.dao import UsersDAO
-from app.exceptions import IncorrectEmailOrPassword, PasswordNotValidate, PasswordsDontMatchValidation, UserExistException, UserNotPresent
-from app.config import settings
 from app.utils.keycloak_client import KeycloakClient
+
 # from fastapi_cache.decorator import cache
 
 
@@ -42,17 +66,12 @@ router = APIRouter(
 
 @router.get("", dependencies=[Depends(permission_required("superadmin"))])
 async def get_all_users(
-        filter_query: Annotated[UserSearch, Query()],
-        current_user = Depends(get_current_user)
+    filter_query: Annotated[UserSearch, Query()], current_user=Depends(get_current_user)
 ) -> Sequence[UserScheme]:
     """
     Get all users
     """
-    logger.info(
-        "Superadmin gets users list",
-        extra=current_user,
-        exc_info=True
-    )
+    logger.info("Superadmin gets users list", extra=current_user, exc_info=True)
     filter_model = filter_query.model_dump(exclude_unset=True, exclude_defaults=True)
     return await UsersDAO.find_all(**filter_model)
 
@@ -63,19 +82,15 @@ async def register_user(
     request: Request,
     password: Annotated[str, Form()],
     username: Annotated[str, Form()],
-    ):
+):
     existing_user = await UsersDAO.find_one_or_none(email=email)
     if existing_user:
         raise UserExistException
     await UsersDAO.add(
-        email=email,
-        hashed_password=get_password_hash(password),
-        username=username
+        email=email, hashed_password=get_password_hash(password), username=username
     )
     logger.info(
-        "User registered and saved to db",
-        extra={"email": email},
-        exc_info=True
+        "User registered and saved to db", extra={"email": email}, exc_info=True
     )
     start_page = request.url_for("page_get_dashboard_page")
     response = RedirectResponse(start_page, status_code=status.HTTP_302_FOUND)
@@ -87,25 +102,21 @@ async def register_user(
     status_code=201,
     dependencies=[Depends(permission_required("superadmin"))],
 )
-async def generate_bearer_token(
-    current_user = Depends(get_current_user)
-):
-    logger.info(
-        "User creates bearer token",
-        extra=current_user,
-        exc_info=True
-    )
+async def generate_bearer_token(current_user=Depends(get_current_user)):
+    logger.info("User creates bearer token", extra=current_user, exc_info=True)
     bearer_token = token_urlsafe(32)
     await UsersDAO.update(current_user.id, bearer_token=bearer_token)
     return bearer_token
 
 
-@router.post("/change_password", status_code=status.HTTP_200_OK, response_model=UserScheme)
+@router.post(
+    "/change_password", status_code=status.HTTP_200_OK, response_model=UserScheme
+)
 async def change_password(
     old_password: Annotated[SecretStr, Form()],
     new_password_1: Annotated[SecretStr, Form(min_length=8)],
     new_password_2: Annotated[SecretStr, Form(min_length=8)],
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
 ):
     if new_password_1 != new_password_2:
         raise PasswordsDontMatchValidation
@@ -114,15 +125,14 @@ async def change_password(
     user = await UsersDAO.find_one_or_none(id=current_user.id)
     if not verify_password(old_password.get_secret_value(), user.hashed_password):
         raise IncorrectEmailOrPassword
-    return await UsersDAO.update_password(current_user.id, get_password_hash(new_password_1.get_secret_value()))
-    
+    return await UsersDAO.update_password(
+        current_user.id, get_password_hash(new_password_1.get_secret_value())
+    )
 
 
 @router.post("/login")
 async def login_user(
-    response: Response,
-    request: Request,
-    data: OAuth2PasswordRequestForm = Depends()
+    response: Response, request: Request, data: OAuth2PasswordRequestForm = Depends()
 ):
     user = await auth_user(data.username, data.password)
     if not user:
@@ -134,13 +144,10 @@ async def login_user(
         key="jwt_access_token",
         value=access_token,
         httponly=False,
-        expires=datetime.now(timezone.utc) + timedelta(hours=settings.TOKEN_TTL_MINUTES)
-        )
-    logger.info(
-        "User logged in",
-        extra={"email": user.email},
-        exc_info=True
+        expires=datetime.now(timezone.utc)
+        + timedelta(hours=settings.TOKEN_TTL_MINUTES),
     )
+    logger.info("User logged in", extra={"email": user.email}, exc_info=True)
     return response
 
 
@@ -188,7 +195,9 @@ async def login_callback(
         # Проверка существования пользователя, создание нового при необходимости
         user = await UsersDAO.find_one_or_none(keycloak_uuid=user_id)
         if not user and isinstance(user_info, dict):
-            user_by_email = await UsersDAO.find_one_or_none(email=user_info.get("email"))
+            user_by_email = await UsersDAO.find_one_or_none(
+                email=user_info.get("email")
+            )
             if user_by_email is not None:
                 await UsersDAO.update(user_by_email.id, keycloak_uuid=user_id)
             else:
@@ -196,7 +205,7 @@ async def login_callback(
                     email=user_info.get("email"),
                     username=user_info.get("preferred_username"),
                     full_name=user_info.get("name"),
-                    keycloak_uuid=user_info.get("sub")
+                    keycloak_uuid=user_info.get("sub"),
                 )
 
         # Установка cookie с токенами и редирект
@@ -239,7 +248,9 @@ async def login_callback(
 @router.post("/logout")
 async def logout_user(response: Response, request: Request):
     if request.cookies.get("jwt_access_token") is not None:
-        response = RedirectResponse(request.url_for("page_get_login"), status_code=status.HTTP_303_SEE_OTHER)
+        response = RedirectResponse(
+            request.url_for("page_get_login"), status_code=status.HTTP_303_SEE_OTHER
+        )
         response.delete_cookie("jwt_access_token")
         return response
     if request.cookies.get("access_token") is not None:
@@ -278,22 +289,20 @@ async def logout_user(response: Response, request: Request):
 
 
 @router.get("/me", response_model=UserScheme)
-async def user_get_itself(current_user = Depends(get_current_user)) -> UserScheme:
-    logger.info(
-        "User gets itself info",
-        extra=current_user,
-        exc_info=True
-    )
+async def user_get_itself(current_user=Depends(get_current_user)) -> UserScheme:
+    logger.info("User gets itself info", extra=current_user, exc_info=True)
     return current_user
-    
 
-@router.get("/{id}", dependencies=[Depends(permission_required("superadmin"))], response_model=Optional[UserScheme])
-async def get_user_info(id: int, current_user = Depends(get_current_user)) -> Optional[UserScheme]:
-    logger.info(
-        "Superadmin gets user info",
-        extra=current_user,
-        exc_info=True
-    )
+
+@router.get(
+    "/{id}",
+    dependencies=[Depends(permission_required("superadmin"))],
+    response_model=Optional[UserScheme],
+)
+async def get_user_info(
+    id: int, current_user=Depends(get_current_user)
+) -> Optional[UserScheme]:
+    logger.info("Superadmin gets user info", extra=current_user, exc_info=True)
     return await UsersDAO.find_one_or_none(id=id)
 
 
@@ -303,10 +312,18 @@ async def check_token(payload: MediaMTXPayload):
     if payload.query == f"jwt={settings.TOKEN_BEARER}":
         # logger.info(f"{payload.query=} SUCCESS")
         return {"detail": "Authorized"}
-    elif payload.token:
+    elif payload.token is not None or payload.token:
         # logger.info(f"{payload.token=}")
-        user = await validate_token(payload.token)
-        if user:
-            return {"detail": "Authorized"}
+        if payload.token.startswith("jwt"):
+            token = payload.token.split(" ")[-1]
+            user = await validate_token(token)
+            if user is not None:
+                return {"detail": "Authorized"}
+        if payload.token.startswith("sso"):
+            token = payload.token.split(" ")[-1]
+            user = await validate_keycloak_token(token)
+            if user is not None:
+                return {"detail": "Authorized"}
+
     else:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)

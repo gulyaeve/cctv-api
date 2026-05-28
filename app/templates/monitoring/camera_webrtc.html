@@ -1,40 +1,54 @@
-{% extends "mainmenu.html" %}
-
-{% block title %}{{ building.name }}. Кабинет {{ classroom.name }} {% endblock %}
-{% block breadcrubs %}
+{% extends "mainmenu.html" %} {% block title %}{{ building.name }}. Кабинет {{
+classroom.name }} {% endblock %} {% block breadcrubs %}
 <nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{url_for('page_get_buildings_page') }}">Учебные корпуса</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('page_get_building_classrooms_map_page', id=building.id) }}">{{ building.name }}. Карта</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ building.name }}. Кабинет {{ classroom.name }}</li>
-  </ol>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{url_for('page_get_buildings_page') }}"
+                >Учебные корпуса</a
+            >
+        </li>
+        <li class="breadcrumb-item">
+            <a
+                href="{{ url_for('page_get_building_classrooms_map_page', id=building.id) }}"
+                >{{ building.name }}. Карта</a
+            >
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            {{ building.name }}. Кабинет {{ classroom.name }}
+        </li>
+    </ol>
 </nav>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <script defer src="{{ url_for('static', path='js/reader.js') }}"></script>
 <script>
     function getCookie(name) {
-    const cookieValue = document.cookie
-            .split('; ')
+        const cookieValue = document.cookie
+            .split("; ")
             .find((row) => row.startsWith(`${name}=`))
-            ?.split('=')[1]; // The optional chaining operator (?) is used here
+            ?.split("=")[1]; // The optional chaining operator (?) is used here
 
         return cookieValue || null;
     }
-    const access_token = getCookie('jwt_access_token');
+    const access_token =
+        `jwt ${getCookie("jwt_access_token")}` ||
+        `sso ${getCookie("access_token")}`;
     // console.log(token);
 </script>
 
-<div class="flex justify-center mb-5 text-3xl">
-    Камеры {{ classroom.name }}
-</div>
+<div class="flex justify-center mb-5 text-3xl">Камеры {{ classroom.name }}</div>
 <div class="container">
     <div class="row">
         {% for camera in cameras %}
-            <div class="col">
-                <video id="camera_{{ camera.id }}" controls muted autoplay width="640" height="480"></video>
-                <script>
+        <div class="col">
+            <video
+                id="camera_{{ camera.id }}"
+                controls
+                muted
+                autoplay
+                width="640"
+                height="480"
+            ></video>
+            <script>
                 let reader_{{ camera.id }} = null;
 
                 window.addEventListener("load", () => {
@@ -61,8 +75,8 @@
                     reader.close();
                     }
                 });
-                </script>
-            </div>
+            </script>
+        </div>
         {% endfor %}
     </div>
 </div>

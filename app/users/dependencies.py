@@ -1,15 +1,20 @@
-
 from typing import Callable, Optional
+
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials
-from jose import jwt, JWTError
-from app.exceptions import OperationNotPermited, TokenMissing, TokenIncorrect, UserNotPresent
+from jose import JWTError, jwt
+
 from app.config import settings
+from app.exceptions import (
+    OperationNotPermited,
+    TokenIncorrect,
+    TokenMissing,
+    UserNotPresent,
+)
+from app.users.auth import get_bearer_token, known_tokens
 from app.users.dao import PermissionDAO, RolesDAO, UsersDAO
 from app.users.models import UserModel
-from app.users.auth import get_bearer_token, known_tokens
 from app.utils.keycloak_client import KeycloakClient
-
 
 # oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
 
@@ -22,17 +27,17 @@ def get_keycloak_token(request: Request):
     return request.cookies.get("access_token")
 
 
-#Получаем KeycloakClient из app.state
+# Получаем KeycloakClient из app.state
 def get_keycloak_client(request: Request) -> KeycloakClient:
     return request.app.state.keycloak_client
 
-    
+
 async def get_current_user(
-        jwt_token: Optional[str] = Depends(get_token),
-        keycloak_token: Optional[str] = Depends(get_keycloak_token),
-        bearer_auth: Optional[HTTPAuthorizationCredentials] = Depends(get_bearer_token),
-        keycloak: Optional[KeycloakClient] = Depends(get_keycloak_client),
-    ):
+    jwt_token: Optional[str] = Depends(get_token),
+    keycloak_token: Optional[str] = Depends(get_keycloak_token),
+    bearer_auth: Optional[HTTPAuthorizationCredentials] = Depends(get_bearer_token),
+    keycloak: Optional[KeycloakClient] = Depends(get_keycloak_client),
+):
     if jwt_token is not None:
         try:
             payload = jwt.decode(
@@ -52,7 +57,6 @@ async def get_current_user(
         return user
     if keycloak_token is not None and keycloak is not None:
         user_info = await keycloak.get_user_info(keycloak_token)
-        print(user_info)
         user = await UsersDAO.find_one_or_none(keycloak_uuid=user_info.get("sub"))
         if not user:
             raise UserNotPresent
@@ -65,7 +69,6 @@ async def get_current_user(
         if bearer_token in known_tokens:
             return await UsersDAO.find_one_or_none(id=1)
     raise TokenMissing
-
 
 
 async def validate_token(token: str):
@@ -87,21 +90,36 @@ async def validate_token(token: str):
     return user
 
 
+async def validate_keycloak_token(
+    keycloak_token: str, keycloak: KeycloakClient = Depends(get_keycloak_client)
+):
+    user_info = await keycloak.get_user_info(keycloak_token)
+    user = await UsersDAO.find_one_or_none(keycloak_uuid=user_info.get("sub"))
+    if not user:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
+    return user
+
+
 async def get_fake_user():
     return await UsersDAO.find_one_or_none(id=1)
 
 
 def permission_required(permission: str) -> Callable:
     async def permission_checker(current_user: UserModel = Depends(get_current_user)):
-        check_superadmin_role = await RolesDAO.check_user_role(current_user.id, "superadmin")
+        check_superadmin_role = await RolesDAO.check_user_role(
+            current_user.id, "superadmin"
+        )
         if check_superadmin_role:
             return True
 
-        check_permission = await PermissionDAO.check_user_permissions(current_user.id, permission)
+        check_permission = await PermissionDAO.check_user_permissions(
+            current_user.id, permission
+        )
         if not check_permission:
             raise OperationNotPermited
         else:
             return check_permission
+
     return permission_checker
 
 
@@ -120,6 +138,7 @@ def role_required(role: str) -> Callable:
             raise OperationNotPermited
         else:
             return check_role
+
     return role_checker
 
 

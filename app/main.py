@@ -2,10 +2,6 @@ from contextlib import asynccontextmanager
 from time import time
 
 import httpx
-from app.utils.keycloak_client import KeycloakClient
-from app.utils.verify_subnet import SubnetAccessMiddleware
-from app.version import version
-from app.logger import logger
 from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse
@@ -13,41 +9,50 @@ from fastapi.staticfiles import StaticFiles
 from prometheus_fastapi_instrumentator import Instrumentator
 from sqladmin import Admin
 
+from app.active_monitoring.router import router as active_monitoring_router
+from app.admin.auth import authentication_backend
 from app.admin.views import (
     BuildingsAdmin,
     CamerasAdmin,
-    ClassroomTypeAdmin,
     ClassroomsAdmin,
+    ClassroomTypeAdmin,
     GroupsAdmin,
     IncidentAnswerAdmin,
-    IncidentTypeAdmin,
     IncidentsAdmin,
+    IncidentTypeAdmin,
     PermissionsAdmin,
     RolesAdmin,
     ScheduleAdmin,
     TeachersAdmin,
     UsersAdmin,
 )
-from app.admin.auth import authentication_backend
+from app.ai_analysis.router import router as ai_analysis_router
+from app.analytics.router import router as analytics_router
 from app.broker_utils.broker_init import declare_exchange_and_queue
 from app.buildings.router import router as buildings_router
 from app.cameras.router import router as cameras_router
 from app.classrooms.router import router as classrooms_router
-
+from app.config import settings
 from app.database import engine
-from app.exceptions import IncorrectEmailOrPassword, OperationNotPermited, TokenMissing, TokenIncorrect, UserNotPresent
+from app.exceptions import (
+    IncorrectEmailOrPassword,
+    OperationNotPermited,
+    TokenIncorrect,
+    TokenMissing,
+    UserNotPresent,
+)
 from app.groups.router import router as groups_router
+from app.handlers import noauth_handler, noperm_handler, notfound_handler
 from app.incidents.router import router as incidents_router
+from app.logger import logger
 from app.pages.router import router as pages_router
 from app.schedule.router import router as schedule_router
 from app.schedule.router import router_daily as schedule_router_daily
 from app.teachers.router import router as teachers_router
-from app.handlers import noauth_handler, noperm_handler, notfound_handler
 from app.users.router import router as users_router
-from app.active_monitoring.router import router as active_monitoring_router
-from app.analytics.router import router as analytics_router
-from app.ai_analysis.router import router as ai_analysis_router
-from app.config import settings
+from app.utils.keycloak_client import KeycloakClient
+from app.utils.verify_subnet import SubnetAccessMiddleware
+from app.version import version
 
 api = APIRouter(
     prefix="/api",
@@ -68,7 +73,7 @@ api.include_router(ai_analysis_router)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Before startup
- 
+
     # Create exchange and queue in RabbitMQ
     if settings.rabbitmq_url:
         await declare_exchange_and_queue()
@@ -76,14 +81,7 @@ async def lifespan(app: FastAPI):
 
     http_client = httpx.AsyncClient()
     app.state.keycloak_client = KeycloakClient(http_client)
-    logger.info(
-        f"Configured keycloak auth: "
-        f"{settings.auth_url}"
-        f"?client_id={settings.KEYCLOAK_CLIENT_ID}"
-        f"&response_type=code"
-        f"&scope=openid"
-        f"&redirect_uri={settings.redirect_uri}"
-    )
+    logger.info(f"Configured keycloak auth: {settings.sso_url}")
 
     logger.info(f"Started app {app.title} v{app.version}")
 
@@ -120,10 +118,7 @@ app.add_exception_handler(401, noauth_handler)
 @app.get("/download-cert")
 async def download_cert():
     file_path = "/src/app/static/files/cctv.itmoscow.crt"
-    return FileResponse(
-        path=file_path, 
-        filename="cctv.itmoscow.crt"
-    )
+    return FileResponse(path=file_path, filename="cctv.itmoscow.crt")
 
 
 # CORS
@@ -171,13 +166,7 @@ def redirect_to_login_page(request: Request):
 
 @app.get("/sso", response_class=RedirectResponse)
 def redirect_to_sso_auth(request: Request):
-    return RedirectResponse(
-        f"{settings.auth_url}"
-        f"?client_id={settings.KEYCLOAK_CLIENT_ID}"
-        f"&response_type=code"
-        f"&scope=openid"
-        f"&redirect_uri={settings.redirect_uri}"
-    )
+    return RedirectResponse(f"{settings.sso_url}")
 
 
 @app.middleware("http")
@@ -186,7 +175,7 @@ async def add_process_time_header(request: Request, call_next):
     response = await call_next(request)
     process_time = time() - start_time
     response.headers["X-Process-Time"] = str(process_time)
-    
+
     # При подключении Prometheus + Grafana подобный лог не требуется
     # logger.info("Request handling time", extra={
     #     "process_time": round(process_time, 4)
@@ -197,8 +186,10 @@ async def add_process_time_header(request: Request, call_next):
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     # Log the full error details for internal debugging
-    logger.error(msg=f"Unhandled error: {exc}", extra={"request": request}, exc_info=True)
-    
+    logger.error(
+        msg=f"Unhandled error: {exc}", extra={"request": request}, exc_info=True
+    )
+
     # # Return a safe, generic message to the user
     # return JSONResponse(
     #     status_code=500,

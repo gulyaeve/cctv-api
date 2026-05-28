@@ -2,13 +2,11 @@
 
 from ipaddress import ip_network
 from typing import Optional
+from urllib.parse import quote, urljoin
 
 from faststream.rabbit import RabbitBroker
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from urllib.parse import quote, urljoin
-
-
 
 
 class Settings(BaseSettings):
@@ -30,7 +28,9 @@ class Settings(BaseSettings):
 
     @property
     def secured_paths(self):
-        return [urljoin(f"{self.ROOT_PATH}/", path) for path in self.SECURED_PATHS] + [urljoin("/", path) for path in self.SECURED_PATHS]
+        return [urljoin(f"{self.ROOT_PATH}/", path) for path in self.SECURED_PATHS] + [
+            urljoin("/", path) for path in self.SECURED_PATHS
+        ]
 
     POSTGRES_HOST: str
     POSTGRES_PORT: int
@@ -44,7 +44,7 @@ class Settings(BaseSettings):
         database = f"{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
         return f"postgresql+asyncpg://{user}@{database}"
-    
+
     # TEST_DB_HOST: str
     # TEST_DB_PORT: int
     # TEST_DB_USER: str
@@ -76,9 +76,10 @@ class Settings(BaseSettings):
     def rabbitmq_url(self) -> str | None:
         if self.RABBITMQ_HOST:
             return (
-                f"amqp://{self.RABBITMQ_DEFAULT_USER}:{quote(self.RABBITMQ_DEFAULT_PASS)}@" f"{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}"
+                f"amqp://{self.RABBITMQ_DEFAULT_USER}:{quote(self.RABBITMQ_DEFAULT_PASS)}@"
+                f"{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}"
             )
-    
+
     QUEUE_NAME: str = "cctv_scr_save"
     QUEUE_NAME_TG: str = "cctv_tg"
     QUEUE_NAME_MAX: str = "cctv_max"
@@ -110,9 +111,7 @@ class Settings(BaseSettings):
 
     @property
     def auth_url(self) -> str:
-        return (
-            f"{self.KEYCLOAK_BASE_URL}/realms/{self.KEYCLOAK_REALM}/protocol/openid-connect/auth"
-        )
+        return f"{self.KEYCLOAK_BASE_URL}/realms/{self.KEYCLOAK_REALM}/protocol/openid-connect/auth"
 
     @property
     def logout_url(self) -> str:
@@ -125,6 +124,10 @@ class Settings(BaseSettings):
     @property
     def redirect_uri(self) -> str:
         return f"{self.DOMAIN}{self.ROOT_PATH}/api/users/login/callback"
+
+    @property
+    def sso_url(self) -> str:
+        return f"{self.auth_url}?client_id={self.KEYCLOAK_CLIENT_ID}&response_type=code&scope=openid&redirect_uri={self.redirect_uri}"
 
 
 settings = Settings()

@@ -1,97 +1,118 @@
-
-{% extends "mainmenu.html" %}
-
-{% block container %}-fluid{% endblock %}
-
-{% block content %}
+{% extends "mainmenu.html" %} {% block container %}-fluid{% endblock %} {% block
+content %}
 <div class="slide_container">
-  <nav id="menu">
-    <div class="container-sm">
-      <form class="" action="{{ url_for('page_get_videowall_page') }}" method="get" enctype="multipart/form-data">
-      <div class="row">
-        <div class="form-group mr-5">
-          <label for="buildings-list">Корпус</label>
-          <input type="text" id="building-id" name="building_id" class="d-none" disabled>
-          <select class="form-control" id="building_id">
-            <option value="0">Все корпуса</option>
-          </select>
-        </div>
-        <div class="form-group mr-5">
-          <label for="type-list">Тип камеры</label>
-          <input type="text" id="types-id" name="classroom_type_id" class="d-none" disabled>
-          <select class="form-control" id="classroom_type_id" >
-            <option value="0">Все типы</option>
-          </select>
-        </div>
-        <div class="form-group mr-5">
-          <label for="timeout-list">Таймаут</label>
+    <nav id="menu">
+        <div class="container-sm">
+            <form
+                class=""
+                action="{{ url_for('page_get_videowall_page') }}"
+                method="get"
+                enctype="multipart/form-data"
+            >
+                <div class="row">
+                    <div class="form-group mr-5">
+                        <label for="buildings-list">Корпус</label>
+                        <input
+                            type="text"
+                            id="building-id"
+                            name="building_id"
+                            class="d-none"
+                            disabled
+                        />
+                        <select class="form-control" id="building_id">
+                            <option value="0">Все корпуса</option>
+                        </select>
+                    </div>
+                    <div class="form-group mr-5">
+                        <label for="type-list">Тип камеры</label>
+                        <input
+                            type="text"
+                            id="types-id"
+                            name="classroom_type_id"
+                            class="d-none"
+                            disabled
+                        />
+                        <select class="form-control" id="classroom_type_id">
+                            <option value="0">Все типы</option>
+                        </select>
+                    </div>
+                    <div class="form-group mr-5">
+                        <label for="timeout-list">Таймаут</label>
 
-          <select class="form-control" id="timeout" name="timeout">
-            <option value="20000">20 сек</option>
-            <option value="30000">30 сек</option>
-            <option value="40000">40 сек</option>
-            <option value="50000">50 сек</option>
-            <option value="60000">60 сек</option>
-          </select>
+                        <select
+                            class="form-control"
+                            id="timeout"
+                            name="timeout"
+                        >
+                            <option value="20000">20 сек</option>
+                            <option value="30000">30 сек</option>
+                            <option value="40000">40 сек</option>
+                            <option value="50000">50 сек</option>
+                            <option value="60000">60 сек</option>
+                        </select>
+                    </div>
+                    <div class="form-group mr-5" style="display: flex">
+                        <button
+                            class="btn btn-primary"
+                            type="submit"
+                            style="margin: auto"
+                        >
+                            Сформировать
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="form-group mr-5" style="display: flex;">
-          <button class="btn btn-primary" type="submit" style="margin: auto;">Сформировать</button>
-        </div>
-      </div>
-      </form>
-    </div>
-  </nav>
-  <div id="btn"><span></span></div>
+    </nav>
+    <div id="btn"><span></span></div>
 </div>
 <div class="row videowall-monitoring">
-  <div class="col-4 p-0 video-monitoring" style="">
-    <video id="camera0" controls muted autoplay ></video>
-  </div>
-  <div class="col-4 p-0 video-monitoring">
-    <video id="camera1" controls muted autoplay ></video>
-  </div>
-  <div class="col-4 p-0 video-monitoring">
-    <video id="camera2" controls muted autoplay ></video>
-  </div>
-  <div class="col-4 p-0 video-monitoring">
-    <video id="camera3" controls muted autoplay ></video>
-  </div>
-  <div class="col-4 p-0 video-monitoring">
-    <video id="camera4" controls muted autoplay ></video>
-  </div>
-  <div class="col-4 p-0 video-monitoring">
-    <video id="camera5" controls muted autoplay ></video>
-  </div>
-  <div class="col-4 p-0 video-monitoring">
-    <video id="camera6" controls muted autoplay ></video>
-  </div>
-  <div class="col-4 p-0 video-monitoring">
-    <video id="camera7" controls muted autoplay ></video>
-  </div>
-  <div class="col-4 p-0 video-monitoring">
-    <video id="camera8" controls muted autoplay ></video>
-  </div>
+    <div class="col-4 p-0 video-monitoring" style="">
+        <video id="camera0" controls muted autoplay></video>
+    </div>
+    <div class="col-4 p-0 video-monitoring">
+        <video id="camera1" controls muted autoplay></video>
+    </div>
+    <div class="col-4 p-0 video-monitoring">
+        <video id="camera2" controls muted autoplay></video>
+    </div>
+    <div class="col-4 p-0 video-monitoring">
+        <video id="camera3" controls muted autoplay></video>
+    </div>
+    <div class="col-4 p-0 video-monitoring">
+        <video id="camera4" controls muted autoplay></video>
+    </div>
+    <div class="col-4 p-0 video-monitoring">
+        <video id="camera5" controls muted autoplay></video>
+    </div>
+    <div class="col-4 p-0 video-monitoring">
+        <video id="camera6" controls muted autoplay></video>
+    </div>
+    <div class="col-4 p-0 video-monitoring">
+        <video id="camera7" controls muted autoplay></video>
+    </div>
+    <div class="col-4 p-0 video-monitoring">
+        <video id="camera8" controls muted autoplay></video>
+    </div>
 </div>
 
-{% endblock %}
+{% endblock %} {% block scripts %}
 
-{% block scripts %}
+<script defer src="{{ url_for('static', path='js/reader.js') }}"></script>
+<script>
+    function getCookie(name) {
+        const cookieValue = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith(`${name}=`))
+            ?.split("=")[1]; // The optional chaining operator (?) is used here
 
-  <script defer src="{{ url_for('static', path='js/reader.js') }}"></script>
-  <script>
-      function getCookie(name) {
-      const cookieValue = document.cookie
-              .split('; ')
-              .find((row) => row.startsWith(`${name}=`))
-              ?.split('=')[1]; // The optional chaining operator (?) is used here
-
-          return cookieValue || null;
-      }
-      const access_token = getCookie('jwt_access_token');
-
-  </script>
-  <script type="text/javascript">
-
+        return cookieValue || null;
+    }
+    const access_token =
+        `jwt ${getCookie("jwt_access_token")}` ||
+        `sso ${getCookie("access_token")}`;
+</script>
+<script type="text/javascript">
     let dataCameras = [];
     let dataCamerasLength = [];
     let reader = null;
@@ -99,172 +120,183 @@
     let params_send = "";
 
     let params = new URLSearchParams(document.location.search);
-    let timeout = params.get('timeout');
+    let timeout = params.get("timeout");
     if (timeout == null) {
-      timeout = 20000;
+        timeout = 20000;
     }
-    let current_buildings_id = params.get('building_id');
-    let current_classroom_type_id = params.get('classroom_type_id');
+    let current_buildings_id = params.get("building_id");
+    let current_classroom_type_id = params.get("classroom_type_id");
 
-    window.addEventListener('load', () => {
-
-      let url = "{{ url_for('get_data_for_videowall') }}?";
-      if (current_buildings_id != null && current_classroom_type_id != null){
-        params_send = new URLSearchParams({ building_id: current_buildings_id, classroom_type_id: current_classroom_type_id });
-      } else if (current_classroom_type_id != null){
-        params_send = new URLSearchParams({ classroom_type_id: current_classroom_type_id });
-      } else if (current_buildings_id != null) {
-        params_send = new URLSearchParams({ building_id: current_buildings_id});
-      }
-      console.log(`${url}${params_send}`);
-      let response = fetch(`${url}${params_send}`)
-        .then(response => response.json())
-        .then(result => {
-          dataCameras = result;
-          dataCamerasLength = dataCameras.length;
-          cameraConnect(dataCameras[cunckCount], timeout);
-        } );
-      let timer = setInterval(() => cameraConnect(dataCameras[cunckCount]), timeout);
+    window.addEventListener("load", () => {
+        let url = "{{ url_for('get_data_for_videowall') }}?";
+        if (current_buildings_id != null && current_classroom_type_id != null) {
+            params_send = new URLSearchParams({
+                building_id: current_buildings_id,
+                classroom_type_id: current_classroom_type_id,
+            });
+        } else if (current_classroom_type_id != null) {
+            params_send = new URLSearchParams({
+                classroom_type_id: current_classroom_type_id,
+            });
+        } else if (current_buildings_id != null) {
+            params_send = new URLSearchParams({
+                building_id: current_buildings_id,
+            });
+        }
+        console.log(`${url}${params_send}`);
+        let response = fetch(`${url}${params_send}`)
+            .then((response) => response.json())
+            .then((result) => {
+                dataCameras = result;
+                dataCamerasLength = dataCameras.length;
+                cameraConnect(dataCameras[cunckCount], timeout);
+            });
+        let timer = setInterval(
+            () => cameraConnect(dataCameras[cunckCount]),
+            timeout,
+        );
     });
 
     function cameraConnect(dataCameras, timeout) {
-        reader
+        reader;
 
         for (let i = 0; i < dataCameras.length; i++) {
-          reader = new MediaMTXWebRTCReader({
-          // url: "https://media.cctv.itmoscow/" + dataCameras[i]["id"] + "_p/whep",
-          url: "https://{{ request.base_url.hostname }}/media/" + dataCameras[i]["id"] + "_p/whep",
-          token: access_token,
-          onError: (err) => {
-              console.error(err);
-          },
-          onTrack: (evt) => {
-              document.getElementById("camera" + i).srcObject = evt.streams[0];
-          },
-          onDataChannel: (evt) => {
-              evt.channel.binaryType = "arraybuffer";
-              evt.channel.onmessage = (evt) => {
-              console.log("data channel message", evt.data);
-              };
-          },
-          });
+            reader = new MediaMTXWebRTCReader({
+                // url: "https://media.cctv.itmoscow/" + dataCameras[i]["id"] + "_p/whep",
+                url:
+                    "https://{{ request.base_url.hostname }}/media/" +
+                    dataCameras[i]["id"] +
+                    "_p/whep",
+                token: access_token,
+                onError: (err) => {
+                    console.error(err);
+                },
+                onTrack: (evt) => {
+                    document.getElementById("camera" + i).srcObject =
+                        evt.streams[0];
+                },
+                onDataChannel: (evt) => {
+                    evt.channel.binaryType = "arraybuffer";
+                    evt.channel.onmessage = (evt) => {
+                        console.log("data channel message", evt.data);
+                    };
+                },
+            });
         }
         cunckCount++;
         if (cunckCount >= dataCamerasLength) {
-          // console.log('dataCamerasLength = ' + dataCamerasLength)
-          cunckCount = 0;
+            // console.log('dataCamerasLength = ' + dataCamerasLength)
+            cunckCount = 0;
         }
         setTimeout(() => reader.close(), timeout);
-
-    };
+    }
 
     window.addEventListener("beforeunload", () => {
         if (reader !== null) {
-          reader.close();
+            reader.close();
         }
     });
-  </script>
-  <script>
-    $(function() {
-      var openBtn = $('#btn'),
-      slideMenu = $('#menu'),
-      layer = document.getElementById("blackout");
-      openBtn.on("click", function() {
-        if (slideMenu.is(':hidden')) {
-            $(layer).addClass('layer');
-            openBtn.slideDown(300);
-            slideMenu.slideDown(300);
-            $("html,body").css("overflow","hidden");
-        } else {
-          slideMenu.slideUp(300);
-          openBtn.slideDown(300);
-          $(layer).removeClass("layer");
-          $("html,body").css("overflow","auto");
-        }
-      });
+</script>
+<script>
+    $(function () {
+        var openBtn = $("#btn"),
+            slideMenu = $("#menu"),
+            layer = document.getElementById("blackout");
+        openBtn.on("click", function () {
+            if (slideMenu.is(":hidden")) {
+                $(layer).addClass("layer");
+                openBtn.slideDown(300);
+                slideMenu.slideDown(300);
+                $("html,body").css("overflow", "hidden");
+            } else {
+                slideMenu.slideUp(300);
+                openBtn.slideDown(300);
+                $(layer).removeClass("layer");
+                $("html,body").css("overflow", "auto");
+            }
+        });
     });
     function closeMenu() {
-      var openBtn = $('#btn'), slideMenu = $('#menu'), layer = document.getElementById("blackout");
-      slideMenu.slideUp(300);
-      openBtn.slideDown(300);
-      $(layer).removeClass("layer");
-      $("html,body").css("overflow","auto");
-    };
-  </script>
+        var openBtn = $("#btn"),
+            slideMenu = $("#menu"),
+            layer = document.getElementById("blackout");
+        slideMenu.slideUp(300);
+        openBtn.slideDown(300);
+        $(layer).removeClass("layer");
+        $("html,body").css("overflow", "auto");
+    }
+</script>
 
-  <script type="text/javascript">
-    window.addEventListener('DOMContentLoaded', () => {
-      let url_buildings = "{{ url_for('get_all_buildings') }}";
-      let url_types = "{{ url_for('get_all_classroom_types') }}";
+<script type="text/javascript">
+    window.addEventListener("DOMContentLoaded", () => {
+        let url_buildings = "{{ url_for('get_all_buildings') }}";
+        let url_types = "{{ url_for('get_all_classroom_types') }}";
 
-      let params = new URLSearchParams(document.location.search);
-      let current_buildings_id = params.get('building_id');
-      let current_classroom_type_id = params.get('classroom_type_id');
-      let current_timeout = params.get('timeout');
+        let params = new URLSearchParams(document.location.search);
+        let current_buildings_id = params.get("building_id");
+        let current_classroom_type_id = params.get("classroom_type_id");
+        let current_timeout = params.get("timeout");
 
-      const t1 = document.getElementById('classroom_type_id');
-      const t2 = document.getElementById('types-id');
-      const b1 = document.getElementById('building_id');
-      const b2 = document.getElementById('building-id');
+        const t1 = document.getElementById("classroom_type_id");
+        const t2 = document.getElementById("types-id");
+        const b1 = document.getElementById("building_id");
+        const b2 = document.getElementById("building-id");
 
-      function sync(i1, i2) {
-        if (i1.value === '0') {
-          i2.disabled = true;
-          i2.value = '';
-        } else {
-          i2.disabled = false;
-          i2.value = i1.value;
+        function sync(i1, i2) {
+            if (i1.value === "0") {
+                i2.disabled = true;
+                i2.value = "";
+            } else {
+                i2.disabled = false;
+                i2.value = i1.value;
+            }
         }
 
-      }
-
-      let buildings_list = fetch(url_buildings)
-            .then(response => response.json())
-            .then(result => {
-              let parent = document.querySelector('#building_id');
-              for (const building of result) {
-                let dropdown_item = document.createElement('option');
-                if (building['id'] == current_buildings_id) {
-                  dropdown_item.setAttribute('selected', 'selected');
+        let buildings_list = fetch(url_buildings)
+            .then((response) => response.json())
+            .then((result) => {
+                let parent = document.querySelector("#building_id");
+                for (const building of result) {
+                    let dropdown_item = document.createElement("option");
+                    if (building["id"] == current_buildings_id) {
+                        dropdown_item.setAttribute("selected", "selected");
+                    }
+                    dropdown_item.setAttribute("value", building["id"]);
+                    dropdown_item.textContent = building["name"];
+                    parent.appendChild(dropdown_item);
                 }
-                dropdown_item.setAttribute('value',building['id']);
-                dropdown_item.textContent = building['name'];
-                parent.appendChild(dropdown_item);
-              };
-              sync(b1, b2);
-              b1.addEventListener('change', () => sync(b1, b2));
+                sync(b1, b2);
+                b1.addEventListener("change", () => sync(b1, b2));
             });
-      let types_list = fetch(url_types)
-            .then(response => response.json())
-            .then(result => {
-              let parent = document.querySelector('#classroom_type_id');
-              for (const type of result) {
-                let dropdown_item = document.createElement('option');
-                if (type['id'] == current_classroom_type_id) {
-                  dropdown_item.setAttribute('selected', 'selected');
+        let types_list = fetch(url_types)
+            .then((response) => response.json())
+            .then((result) => {
+                let parent = document.querySelector("#classroom_type_id");
+                for (const type of result) {
+                    let dropdown_item = document.createElement("option");
+                    if (type["id"] == current_classroom_type_id) {
+                        dropdown_item.setAttribute("selected", "selected");
+                    }
+                    dropdown_item.setAttribute("value", type["id"]);
+                    dropdown_item.textContent = type["name"];
+                    parent.appendChild(dropdown_item);
                 }
-                dropdown_item.setAttribute('value',type['id']);
-                dropdown_item.textContent = type['name'];
-                parent.appendChild(dropdown_item);
-              };
-              sync(t1, t2);
-              t1.addEventListener('change', () => sync(t1, t2));
+                sync(t1, t2);
+                t1.addEventListener("change", () => sync(t1, t2));
             });
 
-      document.querySelectorAll('select[id]').forEach(sel => {
-        const val = params.get(sel.id);
-        if (val == null) return;
-        if ([...sel.options].some(o => o.value === val)) {
-          sel.value = val;
-        } else {
-          const opt = [...sel.options].find(o => o.text === val);
-          if (opt) sel.value = opt.value;
-        }
-        sel.dispatchEvent(new Event('change', { bubbles: true }));
-      });
-
+        document.querySelectorAll("select[id]").forEach((sel) => {
+            const val = params.get(sel.id);
+            if (val == null) return;
+            if ([...sel.options].some((o) => o.value === val)) {
+                sel.value = val;
+            } else {
+                const opt = [...sel.options].find((o) => o.text === val);
+                if (opt) sel.value = opt.value;
+            }
+            sel.dispatchEvent(new Event("change", { bubbles: true }));
+        });
     });
-
-  </script>
+</script>
 
 {% endblock %}
