@@ -199,9 +199,9 @@ async def login_callback(
                 email=user_info.get("email")
             )
             if user_by_email is not None:
-                await UsersDAO.update(user_by_email.id, keycloak_uuid=user_id)
+                user = await UsersDAO.update(user_by_email.id, keycloak_uuid=user_id)
             else:
-                await UsersDAO.add(
+                user = await UsersDAO.add(
                     email=user_info.get("email"),
                     username=user_info.get("preferred_username"),
                     full_name=user_info.get("name"),
@@ -236,6 +236,14 @@ async def login_callback(
             samesite="lax",
             path="/",
             max_age=token_data.get("expires_in", 3600),
+        )
+        jwt_token = create_token({"sub": str(user.id)})
+        response.set_cookie(
+            key="jwt_access_token",
+            value=jwt_token,
+            httponly=False,
+            expires=datetime.now(timezone.utc)
+            + timedelta(hours=settings.TOKEN_TTL_MINUTES),
         )
         logger.info(f"User {user} with {user_id} logged in successfully")
         return response
@@ -285,6 +293,7 @@ async def logout_user(response: Response, request: Request):
             samesite="lax",
             path="/",
         )
+        response.delete_cookie("jwt_access_token")
         return response
 
 
@@ -313,14 +322,9 @@ async def check_token(payload: MediaMTXPayload):
         # logger.info(f"{payload.query=} SUCCESS")
         return {"detail": "Authorized"}
     elif payload.token is not None or payload.token:
-        try:
-            user_jwt = await validate_token(payload.token)
-            if user_jwt is not None:
-                return {"detail": "Authorized"}
-        except HTTPException:
-            user_keycloak = await validate_keycloak_token(payload.token)
-            if user_keycloak is not None:
-                return {"detail": "Authorized"}
+        user_jwt = await validate_token(payload.token)
+        if user_jwt is not None:
+            return {"detail": "Authorized"}
 
     else:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
