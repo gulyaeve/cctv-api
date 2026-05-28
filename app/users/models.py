@@ -4,6 +4,7 @@ from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table, fun
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+from app.utils import keycloak_client
 
 user_roles = Table(
     "user_roles",
@@ -29,10 +30,11 @@ class UserModel(Base):
     full_name = Column(String)
     email = Column(String, nullable=False, unique=True)
     # phone = Column(String, nullable=True, unique=True)
-    hashed_password = Column(String)
+    hashed_password = Column(String, nullable=True)
     time_created: Mapped[datetime] = mapped_column(server_default=func.now())
     last_login = Column(DateTime, nullable=True, default=None)
     bearer_token = Column(String, nullable=True)
+    keycloak_uuid = Column(String, nullable=True)
 
     roles = relationship("Role", secondary=user_roles, back_populates="users")
     incidents = relationship("IncidentModel", back_populates="visor")

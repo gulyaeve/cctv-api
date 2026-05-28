@@ -2,6 +2,7 @@ from fastapi import status
 from starlette.requests import Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from app.logger import logger
+from app.config import settings
 
 
 
@@ -11,6 +12,13 @@ def noauth_handler(request: Request, exc):
             url=request.url_for("page_get_login"),
             status_code=status.HTTP_303_SEE_OTHER
         )
+        # return RedirectResponse(
+        #     f"{settings.auth_url}"
+        #     f"?client_id={settings.KEYCLOAK_CLIENT_ID}"
+        #     f"&response_type=code"
+        #     f"&scope=openid"
+        #     f"&redirect_uri={settings.redirect_uri}"
+        # )
     else:
         return JSONResponse(
             status_code=getattr(exc, "status_code"),

@@ -122,9 +122,9 @@ class Settings(BaseSettings):
     def userinfo_url(self) -> str:
         return f"{self.KEYCLOAK_BASE_URL}/realms/{self.KEYCLOAK_REALM}/protocol/openid-connect/userinfo"
 
-    # @property
-    # def redirect_uri(self) -> str:
-    #     return f"{self.BASE_URL}/api/login/callback"
+    @property
+    def redirect_uri(self) -> str:
+        return f"{self.DOMAIN}{self.ROOT_PATH}/api/users/login/callback"
 
 
 settings = Settings()

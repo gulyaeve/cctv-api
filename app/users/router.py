@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from secrets import token_urlsafe
+from urllib.parse import urlencode
 from app.logger import logger
 from typing import Optional, Sequence, Annotated
 from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request, Response, status
@@ -10,12 +11,13 @@ from pydantic import EmailStr, SecretStr
 
 
 from app.users.auth import auth_user, get_password_hash, create_token, verify_password
-from app.users.dependencies import get_current_user, permission_required, validate_token
+from app.users.dependencies import get_current_user, get_keycloak_client, permission_required, validate_token
 # from app.users.models import UserModel
 from app.users.schemas import MediaMTXPayload, UserScheme, UserSearch
 from app.users.dao import UsersDAO
 from app.exceptions import IncorrectEmailOrPassword, PasswordNotValidate, PasswordsDontMatchValidation, UserExistException, UserNotPresent
 from app.config import settings
+from app.utils.keycloak_client import KeycloakClient
 # from fastapi_cache.decorator import cache
 
 
@@ -129,7 +131,7 @@ async def login_user(
     start_page = request.url_for("page_get_dashboard_page")
     response = RedirectResponse(start_page, status_code=status.HTTP_302_FOUND)
     response.set_cookie(
-        key="access_token",
+        key="jwt_access_token",
         value=access_token,
         httponly=False,
         expires=datetime.now(timezone.utc) + timedelta(hours=settings.TOKEN_TTL_MINUTES)
@@ -142,11 +144,134 @@ async def login_user(
     return response
 
 
+# @router.get("/login/callback", include_in_schema=False)
+@router.get("/login/callback")
+async def login_callback(
+    request: Request,
+    code: str | None = None,
+    error: str | None = None,
+    error_description: str | None = None,
+    keycloak: KeycloakClient = Depends(get_keycloak_client),
+) -> RedirectResponse:
+    """
+    Обрабатывает callback после авторизации в Keycloak.
+    Получает токен, информацию о пользователе, сохраняет пользователя в БД (если нужно)
+    и устанавливает cookie с токенами. Обрабатывает ошибки от Keycloak.
+    """
+    if error:
+        logger.error(f"Keycloak error: {error}, description: {error_description}")
+        raise HTTPException(status_code=401, detail="Authorization code is required")
+
+    if not code:
+        raise HTTPException(status_code=401, detail="Authorization code is required")
+
+    try:
+        # Получение токенов от Keycloak
+        token_data = await keycloak.get_tokens(code)
+        access_token = token_data.get("access_token")
+        refresh_token = token_data.get("refresh_token")
+        id_token = token_data.get("id_token")
+
+        if not access_token:
+            raise HTTPException(status_code=401, detail="Токен доступа не найден")
+        if not refresh_token:
+            raise HTTPException(status_code=401, detail="Refresh token не найден")
+        if not id_token:
+            raise HTTPException(status_code=401, detail="ID token не найден")
+
+        # Получение информации о пользователе
+        user_info = await keycloak.get_user_info(access_token)
+        user_id = user_info.get("sub")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="ID пользователя не найден")
+
+        # Проверка существования пользователя, создание нового при необходимости
+
+        user = await UsersDAO.find_one_or_none(keycloak_uuid=user_id)
+        if not user and isinstance(user_info, dict):
+            await UsersDAO.add(
+                email=user_info.get("email"),
+                username=user_info.get("preferred_username"),
+                full_name=user_info.get("name"),
+                keycloak_uuid=user_info.get("sub")
+            )
+
+        # Установка cookie с токенами и редирект
+        response = RedirectResponse(request.url_for("page_get_dashboard_page"))
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            path="/",
+            max_age=token_data.get("expires_in", 3600),
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            path="/",
+            max_age=token_data.get("refresh_expires_in", 2592000),
+        )
+        response.set_cookie(
+            key="id_token",
+            value=id_token,
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            path="/",
+            max_age=token_data.get("expires_in", 3600),
+        )
+        logger.info(f"User {user_id} logged in successfully")
+        return response
+
+    except Exception as e:
+        logger.error(f"Ошибка обработки callback'а логина: {str(e)}")
+        raise HTTPException(status_code=401, detail="Ошибка авторизации")
+
+
 @router.post("/logout")
 async def logout_user(response: Response, request: Request):
-    response = RedirectResponse(request.url_for("page_get_login"), status_code=status.HTTP_303_SEE_OTHER)
-    response.delete_cookie("access_token")
-    return response
+    if request.cookies.get("jwt_access_token") is not None:
+        response = RedirectResponse(request.url_for("page_get_login"), status_code=status.HTTP_303_SEE_OTHER)
+        response.delete_cookie("jwt_access_token")
+        return response
+    if request.cookies.get("access_token") is not None:
+        id_token = request.cookies.get("id_token")
+        params = {
+            "client_id": settings.KEYCLOAK_CLIENT_ID,
+            "post_logout_redirect_uri": settings.DOMAIN,
+        }
+        if id_token:
+            params["id_token_hint"] = id_token
+
+        keycloak_logout_url = f"{settings.logout_url}?{urlencode(params)}"
+        response = RedirectResponse(url=keycloak_logout_url)
+        response.delete_cookie(
+            key="access_token",
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            path="/",
+        )
+        response.delete_cookie(
+            key="id_token",
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            path="/",
+        )
+        response.delete_cookie(
+            key="refresh_token",
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            path="/",
+        )
+        return response
 
 
 @router.get("/me", response_model=UserScheme)

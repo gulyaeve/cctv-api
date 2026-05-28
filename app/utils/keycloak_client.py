@@ -12,7 +12,7 @@ class KeycloakClient:
         data = {
             "grant_type": "authorization_code",
             "code": code,
-            # "redirect_uri": settings.redirect_uri,
+            "redirect_uri": settings.redirect_uri,
             "client_id": settings.KEYCLOAK_CLIENT_ID,
             "client_secret": settings.KEYCLOAK_CLIENT_SECRET,
         }
