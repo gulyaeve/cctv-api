@@ -213,7 +213,7 @@ async def login_callback(
         response.set_cookie(
             key="access_token",
             value=access_token,
-            httponly=True,
+            httponly=False,
             secure=True,
             samesite="lax",
             path="/",
@@ -266,7 +266,7 @@ async def logout_user(response: Response, request: Request):
         response = RedirectResponse(url=keycloak_logout_url)
         response.delete_cookie(
             key="access_token",
-            httponly=True,
+            httponly=False,
             secure=True,
             samesite="lax",
             path="/",
