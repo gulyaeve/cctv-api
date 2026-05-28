@@ -2,6 +2,7 @@ from typing import Callable, Optional
 
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials
+from httpx import AsyncClient
 from jose import JWTError, jwt
 
 from app.config import settings
@@ -90,14 +91,15 @@ async def validate_token(token: str):
     return user
 
 
-async def validate_keycloak_token(
-    keycloak_token: str, keycloak: KeycloakClient = Depends(get_keycloak_client)
-):
-    user_info = await keycloak.get_user_info(keycloak_token)
-    user = await UsersDAO.find_one_or_none(keycloak_uuid=user_info.get("sub"))
-    if not user:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
-    return user
+async def validate_keycloak_token(keycloak_token: str):
+    headers = {"Authorization": f"Bearer {keycloak_token}"}
+    async with AsyncClient() as client:
+        response = await client.get(settings.userinfo_url, headers=headers)
+        user_info = response.json()
+        user = await UsersDAO.find_one_or_none(keycloak_uuid=user_info.get("sub"))
+        if not user:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED)
+        return user
 
 
 async def get_fake_user():
