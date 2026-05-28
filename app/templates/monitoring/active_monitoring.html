@@ -218,7 +218,7 @@
                   <button class="control-panel-btn btn-inc-alert" type="button" name="button">Инцидент</button>
                 </div>
                 <div class="control-panel-details st-inc-alright d-none">
-                  <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
+                  <form method="post" action="{{ url_for('create_incident', building_id=building_id | default('all'), event_type=event_type | default('all')) }}" enctype="multipart/form-data">
                   <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">
                   <input class="d-none" type="text" name="status" class="d-none" value="0">
                   <input name="cameras_ids" type="text" class="cameras_ids_control d-none" value='{{ cameras_ids }}'>
@@ -242,7 +242,7 @@
                   </form>
                 </div>
                 <div class="control-panel-details st-inc-control d-none">
-                  <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
+                  <form method="post" action="{{ url_for('create_incident', building_id=building_id | default('all'), event_type=event_type | default('all')) }}" enctype="multipart/form-data">
                   <div class="row">
                     <input type="text" name="cameras_ids" class="cameras_ids_control d-none">
                     <input type="text" name="type_ids" class="type_ids_control d-none">
@@ -303,7 +303,7 @@
                   </form>
                 </div>
                 <div class="control-panel-details st-inc-alert d-none">
-                  <form method="post" action="{{ url_for('create_incident') if building_id is none else url_for('create_incident_for_building', building_id=building_id) }}" enctype="multipart/form-data">
+                  <form method="post" action="{{ url_for('create_incident', building_id=building_id | default('all'), event_type=event_type | default('all')) }}" enctype="multipart/form-data">
                   <input type="text" name="cameras_ids" class="cameras_ids_inc d-none">
                   <input type="text" name="type_ids" class="type_ids_inc d-none">
                   <input class="d-none" type="text" name="event" class="d-none" value="{{ monitoring_data.current_subject_id }}">

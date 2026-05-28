@@ -166,6 +166,7 @@ async def page_get_active_monitoring(
             context={
                 "request": request,
                 "building_id": building_id,
+                "event_type": event_type,
                 "monitoring_data": monitoring_data,
                 "current_user": current_user,
                 "cameras": cameras,

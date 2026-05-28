@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated, Literal, Optional
 from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import RedirectResponse
 
@@ -15,7 +15,7 @@ router = APIRouter(
 
 
 @router.post(
-    "/create_incident",
+    "/create_incident/{building_id}/{event_type}",
     dependencies=[
         Depends(permission_required("incident_create"))
     ],
@@ -24,38 +24,31 @@ async def create_incident(
     request: Request,
     query_params: Annotated[IncidentFormScheme, Form()],
     current_user = Depends(get_current_user),
+    building_id: int | Literal["all", "None"] | None = "all",
+    event_type: int | Literal["all", "None"] | None = "all",
     ):
     await add_incident(query_params)
     logger.info(
         "Created incident",
-        extra=current_user,
-        exc_info=True
-    )
-    return RedirectResponse(request.url_for("page_get_active_monitoring"), status_code=status.HTTP_303_SEE_OTHER)
-    
-
-@router.post(
-    "/create_incident/{building_id}",
-    dependencies=[
-        Depends(permission_required("incident_create"))
-    ],
-)
-async def create_incident_for_building(
-    request: Request,
-    query_params: Annotated[IncidentFormScheme, Form()],
-    current_user = Depends(get_current_user),
-    building_id: Optional[int] = None,
-    ):
-    await add_incident(query_params)
-    logger.info(
-        "Created incident for building",
         extra={
             **current_user,
             "building_id": building_id,
+            "event_type": event_type,
         },
         exc_info=True
     )
-    if building_id is not None:
-        return RedirectResponse(request.url_for("page_get_active_monitoring").include_query_params(building_id=building_id), status_code=status.HTTP_303_SEE_OTHER)
-    else:
-        return RedirectResponse(request.url_for("page_get_active_monitoring"), status_code=status.HTTP_303_SEE_OTHER)
+    if building_id == "all" or building_id == "None":
+        building_id = None
+    if event_type == "all":
+        event_type = None
+
+    params = {
+        "building_id": building_id,
+        "event_type": event_type
+    }
+
+    return RedirectResponse(
+        request.url_for("page_get_active_monitoring")
+        .include_query_params(**{k: v for k, v in params.items() if v is not None}),
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
