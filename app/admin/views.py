@@ -29,6 +29,7 @@ class UsersAdmin(ModelView, model=UserModel):
         UserModel.time_created,
         UserModel.last_login,
         UserModel.roles,
+        UserModel.keycloak_uuid,
     ]
     form_excluded_columns = [UserModel.hashed_password]
     column_details_exclude_list = [UserModel.hashed_password]

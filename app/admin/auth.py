@@ -34,7 +34,7 @@ class AdminAuth(AuthenticationBackend):
         return True
 
     async def authenticate(self, request: Request) -> bool:
-        token = request.cookies.get("access_token")
+        token = request.cookies.get("jwt_access_token")
 
         if not token:
             return RedirectResponse(request.url_for("page_get_login"), status_code=302)
