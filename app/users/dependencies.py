@@ -8,20 +8,32 @@ from app.config import settings
 from app.users.dao import PermissionDAO, RolesDAO, UsersDAO
 from app.users.models import UserModel
 from app.users.auth import get_bearer_token, known_tokens
+from app.utils.keycloak_client import KeycloakClient
 
 
 # oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
 
 
 def get_token(request: Request):
+    return request.cookies.get("jwt_access_token")
+
+
+def get_keycloak_token(request: Request):
     return request.cookies.get("access_token")
+
+
+#Получаем KeycloakClient из app.state
+def get_keycloak_client(request: Request) -> KeycloakClient:
+    return request.app.state.keycloak_client
 
     
 async def get_current_user(
         jwt_token: Optional[str] = Depends(get_token),
-        bearer_auth: Optional[HTTPAuthorizationCredentials] = Depends(get_bearer_token)
+        keycloak_token: Optional[str] = Depends(get_keycloak_token),
+        bearer_auth: Optional[HTTPAuthorizationCredentials] = Depends(get_bearer_token),
+        keycloak: Optional[KeycloakClient] = Depends(get_keycloak_client),
     ):
-    if jwt_token:
+    if jwt_token is not None:
         try:
             payload = jwt.decode(
                 jwt_token,
@@ -33,12 +45,19 @@ async def get_current_user(
         user_id: int = int(payload.get("sub"))
         if not user_id:
             raise UserNotPresent
-        # user = await UsersDAO.find_one_or_none(id=user_id)
+        user = await UsersDAO.find_one_or_none(id=user_id)
         user = await UsersDAO.get_user(user_id)
         if not user:
             raise UserNotPresent
         return user
-    if bearer_auth:
+    if keycloak_token is not None and keycloak is not None:
+        user_info = await keycloak.get_user_info(keycloak_token)
+        print(user_info)
+        user = await UsersDAO.find_one_or_none(keycloak_uuid=user_info.get("sub"))
+        if not user:
+            raise UserNotPresent
+        return user
+    if bearer_auth is not None:
         bearer_token = bearer_auth.credentials
         user = await UsersDAO.find_one_or_none(bearer_token=bearer_token)
         if user:

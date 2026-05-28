@@ -1,5 +1,8 @@
 from contextlib import asynccontextmanager
 from time import time
+
+import httpx
+from app.utils.keycloak_client import KeycloakClient
 from app.utils.verify_subnet import SubnetAccessMiddleware
 from app.version import version
 from app.logger import logger
@@ -71,6 +74,17 @@ async def lifespan(app: FastAPI):
         await declare_exchange_and_queue()
         logger.info("RabbitMQ data ready")
 
+    http_client = httpx.AsyncClient()
+    app.state.keycloak_client = KeycloakClient(http_client)
+    logger.info(
+        f"Configured keycloak auth: "
+        f"{settings.auth_url}"
+        f"?client_id={settings.KEYCLOAK_CLIENT_ID}"
+        f"&response_type=code"
+        f"&scope=openid"
+        f"&redirect_uri={settings.redirect_uri}"
+    )
+
     logger.info(f"Started app {app.title} v{app.version}")
 
     yield
@@ -100,6 +114,7 @@ app.add_exception_handler(IncorrectEmailOrPassword, noauth_handler)
 app.add_exception_handler(TokenIncorrect, noauth_handler)
 app.add_exception_handler(TokenMissing, noauth_handler)
 app.add_exception_handler(UserNotPresent, noauth_handler)
+app.add_exception_handler(401, noauth_handler)
 
 
 @app.get("/download-cert")
@@ -152,6 +167,17 @@ admin.add_view(IncidentAnswerAdmin)
 def redirect_to_login_page(request: Request):
     start_page = request.url_for("page_get_dashboard_page")
     return RedirectResponse(start_page)
+
+
+@app.get("/sso", response_class=RedirectResponse)
+def redirect_to_sso_auth(request: Request):
+    return RedirectResponse(
+        f"{settings.auth_url}"
+        f"?client_id={settings.KEYCLOAK_CLIENT_ID}"
+        f"&response_type=code"
+        f"&scope=openid"
+        f"&redirect_uri={settings.redirect_uri}"
+    )
 
 
 @app.middleware("http")

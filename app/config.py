@@ -12,6 +12,8 @@ from urllib.parse import quote, urljoin
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
     TZ: str = "Europe/Moscow"
     # MODE: Literal["DEV", "TEST", "PROD"]
     DOMAIN: str
@@ -97,7 +99,33 @@ class Settings(BaseSettings):
 
     TOKEN_BEARER: str = "Admin123"
 
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    KEYCLOAK_BASE_URL: Optional[str] = None
+    KEYCLOAK_REALM: Optional[str] = None
+    KEYCLOAK_CLIENT_ID: Optional[str] = None
+    KEYCLOAK_CLIENT_SECRET: Optional[str] = None
+
+    @property
+    def token_url(self) -> str:
+        return f"{self.KEYCLOAK_BASE_URL}/realms/{self.KEYCLOAK_REALM}/protocol/openid-connect/token"
+
+    @property
+    def auth_url(self) -> str:
+        return (
+            f"{self.KEYCLOAK_BASE_URL}/realms/{self.KEYCLOAK_REALM}/protocol/openid-connect/auth"
+        )
+
+    @property
+    def logout_url(self) -> str:
+        return f"{self.KEYCLOAK_BASE_URL}/realms/{self.KEYCLOAK_REALM}/protocol/openid-connect/logout"
+
+    @property
+    def userinfo_url(self) -> str:
+        return f"{self.KEYCLOAK_BASE_URL}/realms/{self.KEYCLOAK_REALM}/protocol/openid-connect/userinfo"
+
+    @property
+    def redirect_uri(self) -> str:
+        return f"{self.DOMAIN}{self.ROOT_PATH}/api/users/login/callback"
+
 
 settings = Settings()
 
