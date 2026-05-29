@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 from typing import Literal, Optional
 from datetime import datetime
 
@@ -29,10 +29,20 @@ class UserReg(BaseModel):
     email: EmailStr
     password: str
 
+    @field_validator('email', mode='after')
+    @classmethod
+    def convert_to_lowercase(cls, v: EmailStr) -> EmailStr:
+        return v.lower()
+
 
 class UserLogin(BaseModel):
     username: EmailStr
     password: str
+
+    @field_validator('username', mode='after')
+    @classmethod
+    def convert_to_lowercase(cls, v: EmailStr) -> EmailStr:
+        return v.lower()
 
 
 class MediaMTXPayload(BaseModel):
