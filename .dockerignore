@@ -9,4 +9,5 @@ build/
 dist/
 wheels/
 *.egg-info
- .vscode/
+.vscode/
+screenshots_bank/

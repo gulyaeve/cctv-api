@@ -68,7 +68,8 @@ services:
       context: .
       # dockerfile: Dockerfile-prod
     volumes:
-      - /home/user/screenshots:/src/app/static/screenshots
+      # - /home/user/screenshots:/src/app/static/screenshots
+      - /home/user/screenshots:/src/app/screenshots_bank
     container_name: cctv_backend
     env_file:
       - .env

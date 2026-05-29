@@ -42,6 +42,7 @@ from app.exceptions import (
     UserNotPresent,
 )
 from app.groups.router import router as groups_router
+from app.screenshots.router import router as screenshots_router
 from app.handlers import noauth_handler, noperm_handler, notfound_handler
 from app.incidents.router import router as incidents_router
 from app.logger import logger
@@ -68,6 +69,7 @@ api.include_router(groups_router)
 api.include_router(incidents_router)
 api.include_router(analytics_router)
 api.include_router(ai_analysis_router)
+api.include_router(screenshots_router)
 
 
 @asynccontextmanager
