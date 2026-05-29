@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, String, Table, func
+from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, String, Table, TypeDecorator, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -21,13 +21,21 @@ role_permissions = Table(
 )
 
 
+class LowerCaseString(TypeDecorator):
+    """Приводит строку к нижнему регистру перед отправкой в БД"""
+    impl = String
+
+    def process_bind_param(self, value, dialect):
+        return value.lower() if value else None
+
+
 class UserModel(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, nullable=False, index=True)
     full_name = Column(String)
-    email = Column(String, nullable=False, unique=True)
+    email = Column(LowerCaseString, nullable=False, unique=True)
     # phone = Column(String, nullable=True, unique=True)
     hashed_password = Column(String, nullable=True)
     time_created: Mapped[datetime] = mapped_column(server_default=func.now())
