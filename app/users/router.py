@@ -177,7 +177,13 @@ async def login_callback(
 
         # Проверка существования пользователя, создание нового при необходимости
         user = await UsersDAO.find_one_or_none(keycloak_uuid=user_id)
-        if not user and isinstance(user_info, dict):
+        if user is not None and isinstance(user_info, dict):
+            user = await UsersDAO.update(
+                user.id,
+                username=user_info.get("preferred_username"),
+                full_name=user_info.get("name"),
+            )
+        if user is None and isinstance(user_info, dict):
             user_by_email = await UsersDAO.find_one_or_none(
                 email=user_info.get("email")
             )
