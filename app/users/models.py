@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table, func
+from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, String, Table, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -37,6 +37,11 @@ class UserModel(Base):
 
     roles = relationship("Role", secondary=user_roles, back_populates="users")
     incidents = relationship("IncidentModel", back_populates="visor")
+
+     # Functional index creating lower(email) in the database
+    __table_args__ = (
+        Index("ix_user_email_lower", func.lower(email)),
+    )
 
     def __str__(self) -> str:
         return f"{self.username}"
