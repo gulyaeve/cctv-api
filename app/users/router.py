@@ -182,7 +182,12 @@ async def login_callback(
                 email=user_info.get("email")
             )
             if user_by_email is not None:
-                user = await UsersDAO.update(user_by_email.id, keycloak_uuid=user_id)
+                user = await UsersDAO.update(
+                    user_by_email.id,
+                    keycloak_uuid=user_id,
+                    username=user_info.get("preferred_username"),
+                    full_name=user_info.get("name"),
+                )
             else:
                 user = await UsersDAO.add(
                     email=user_info.get("email"),

@@ -2,7 +2,6 @@ from typing import Callable, Optional
 
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials
-from httpx import AsyncClient
 from jose import JWTError, jwt
 
 from app.config import settings
