@@ -23,7 +23,7 @@ async def serve_screenshots(file_path: str, user = Depends(get_current_user)):
     
 
 @router.get("")
-async def get_screenshot_by_ids(incident_id: int, event_id: int, camera_id: int):
+async def get_screenshot_by_ids(incident_id: int, event_id: int, camera_id: int, user = Depends(get_current_user)):
     file = find_screenshot(incident_id, event_id, camera_id)
     if file is not None:
         return await serve_screenshots(file)
