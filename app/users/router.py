@@ -16,7 +16,6 @@ from fastapi import (
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-# from fastapi_login import LoginManager
 from pydantic import EmailStr, SecretStr
 
 from app.config import settings
@@ -34,11 +33,9 @@ from app.users.dependencies import (
     get_current_user,
     get_keycloak_client,
     permission_required,
-    validate_keycloak_token,
     validate_token,
 )
 
-# from app.users.models import UserModel
 from app.users.schemas import MediaMTXPayload, UserScheme, UserSearch
 from app.utils.keycloak_client import KeycloakClient
 
@@ -49,19 +46,6 @@ router = APIRouter(
     prefix="/users",
     tags=["Users"],
 )
-
-# manager = LoginManager(
-#     settings.SECRET_KEY,
-#     token_url=f"{router.prefix}/login",
-#     not_authenticated_exception=NotAuthenticatedException,
-#     use_cookie=True
-#     )
-
-
-# @manager.user_loader()
-# async def load_user(email: str):
-#     user: UserModel = await UsersDAO.find_one_or_none(email=email)
-#     return user
 
 
 @router.get("", dependencies=[Depends(permission_required("superadmin"))])
@@ -151,7 +135,6 @@ async def login_user(
     return response
 
 
-# @router.get("/login/callback", include_in_schema=False)
 @router.get("/login/callback")
 async def login_callback(
     request: Request,

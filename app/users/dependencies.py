@@ -91,21 +91,8 @@ async def validate_token(token: str):
     return user
 
 
-async def validate_keycloak_token(keycloak_token: str):
-    headers = {"Authorization": f"Bearer {keycloak_token}"}
-    async with AsyncClient() as client:
-        response = await client.get(settings.userinfo_url, headers=headers)
-        if response.status_code != 200:
-            raise HTTPException(status.HTTP_401_UNAUTHORIZED)
-        user_info = response.json()
-        user = await UsersDAO.find_one_or_none(keycloak_uuid=user_info.get("sub"))
-        if not user:
-            raise HTTPException(status.HTTP_401_UNAUTHORIZED)
-        return user
-
-
-async def get_fake_user():
-    return await UsersDAO.find_one_or_none(id=1)
+# async def get_fake_user():
+#     return await UsersDAO.find_one_or_none(id=1)
 
 
 def permission_required(permission: str) -> Callable:
