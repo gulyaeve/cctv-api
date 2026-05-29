@@ -3,18 +3,19 @@ from os import path
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 
-from app.users.dependencies import get_current_user
+from app.users.dependencies import permission_required
 from app.utils.find_image import find_screenshot
 
 
 router = APIRouter(
     prefix="/screenshots",
     tags=["Screenshots"],
+    dependencies=[Depends(permission_required("incidents"))]
 )
 
 
 @router.get("/{file_path:path}")
-async def serve_screenshots(file_path: str, user = Depends(get_current_user)):
+async def serve_screenshots(file_path: str):
     image_path = path.normpath(path.join("screenshots_bank", file_path))
     if path.isfile(image_path):
         return FileResponse(image_path)
@@ -23,7 +24,7 @@ async def serve_screenshots(file_path: str, user = Depends(get_current_user)):
     
 
 @router.get("")
-async def get_screenshot_by_ids(incident_id: int, event_id: int, camera_id: int, user = Depends(get_current_user)):
+async def get_screenshot_by_ids(incident_id: int, event_id: int, camera_id: int):
     file = find_screenshot(incident_id, event_id, camera_id)
     if file is not None:
         return await serve_screenshots(file)
