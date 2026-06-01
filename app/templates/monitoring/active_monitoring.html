@@ -216,7 +216,7 @@
                   <b>{{ "Экзамен" if event_type == 1 else "Занятие" }}:</b><br>
                   {{ monitoring_data.current_subject }}<br>
                   <b>Время {{ "экзамена" if event_type == 1 else "занятия" }}:</b> {{ monitoring_data.timestamp_start.strftime('%H:%M') }} - {{ monitoring_data.timestamp_end.strftime('%H:%M') }}<br>
-                  <b>{{ "Эксперт" if event_type == 1 else "Преподаватель" }}:</b><br>
+                  <b>{{ "Тех.эксперт" if event_type == 1 else "Преподаватель" }}:</b><br>
                   {{ monitoring_data.current_teacher }}<br>
                   <b>Группа:</b><br>
                   {{ monitoring_data.current_group }}<br>
