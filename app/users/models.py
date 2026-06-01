@@ -46,11 +46,6 @@ class UserModel(Base):
     roles = relationship("Role", secondary=user_roles, back_populates="users")
     incidents = relationship("IncidentModel", back_populates="visor")
 
-     # Functional index creating lower(email) in the database
-    __table_args__ = (
-        Index("ix_user_email_lower", func.lower(email)),
-    )
-
     def __str__(self) -> str:
         return f"{self.username}"
 
