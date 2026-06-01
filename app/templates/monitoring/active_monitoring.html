@@ -134,6 +134,20 @@
 
 {% block content %}
 
+{# Добавление списков для чекбоксов типов инцидентов #}
+{% set incident_types_store = namespace(good_types_list=[], control_types_list=[], incident_types_list=[]) %}
+
+{% for incident_type in incident_types %}
+  {% if incident_type.status_binding in [4] %}
+    {% set incident_types_store.good_types_list = incident_types_store.good_types_list + [incident_type] %}
+  {% endif %}
+  {% if incident_type.status_binding in [1, 2] %}
+    {% set incident_types_store.control_types_list = incident_types_store.control_types_list + [incident_type] %}
+  {% endif %}
+  {% if incident_type.status_binding in [1, 3] %}
+    {% set incident_types_store.incident_types_list = incident_types_store.incident_types_list + [incident_type] %}
+  {% endif %}
+{% endfor %}
 
       <!--Section: Content-->
       <div class="row m-0">
@@ -223,27 +237,28 @@
                   <input name="cameras_ids" type="text" class="cameras_ids_control d-none" value='{{ cameras_ids }}'>
                   <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                   <div class="row">
-                    <!-- <div class="col-6">
+                  {% if incident_types_store.good_types_list %}
+                    <div class="col-6">
                       <fieldset>
                         <legend>Тип инцидента</legend>
-                        {% for incident_type in incident_types %}
-                          {% if incident_type.status_binding in [4] %}
+                          {% for incident_type in incident_types_store.good_types_list %}
                             <div class="form-check">
                               <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
                               <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
                             </div>
-                          {% endif %}
-                        {% endfor %}
+                          {% endfor %}
                       </fieldset>
                     </div>
                     <div class="col-6">
                       <legend>Комментарий:</legend>
                       <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
-                    </div> -->
+                    </div>
+                  {% else %}
                     <div class="col-12">
                       <legend>Комментарий:</legend>
                       <textarea class="control-panel-details-textarea" name="comment" rows="6"></textarea>
                     </div>
+                  {% endif %}
                     <div class="col-12">
                       <button class="btn btn-primary btn-block mt-2" type="submit" name="button">Отправить информацию</button>
                     </div>
@@ -268,23 +283,28 @@
                       {% endfor %}
                       </fieldset>
                     </div>
-                    <div class="col-6">
-                      <fieldset>
-                        <legend>Тип инцидента</legend>
-                        {% for incident_type in incident_types %}
-                          {% if incident_type.status_binding in [1, 2] %}
-                            <div class="form-check">
-                              <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
-                              <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
-                            </div>
-                          {% endif %}
-                        {% endfor %}
-                      </fieldset>
-                    </div>
-                    <div class="col-6">
+                    {% if incident_types_store.control_types_list %}
+                      <div class="col-6">
+                        <fieldset>
+                          <legend>Тип инцидента</legend>
+                            {% for incident_type in incident_types_store.control_types_list %}
+                              <div class="form-check">
+                                <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
+                                <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
+                              </div>
+                            {% endfor %}
+                        </fieldset>
+                      </div>
+                      <div class="col-6">
+                        <legend>Комментарий:</legend>
+                        <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
+                      </div>
+                    {% else %}
+                    <div class="col-12">
                       <legend>Комментарий:</legend>
-                      <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
+                      <textarea class="control-panel-details-textarea" name="comment" rows="6"></textarea>
                     </div>
+                  {% endif %}
                     <div class="col-12">
                       <button class="btn btn-primary btn-block mt-2" type="submit" name="button">Отправить информацию</button>
                     </div>
@@ -309,23 +329,28 @@
                       {% endfor %}
                       </fieldset>
                     </div>
-                    <div class="col-6">
-                      <fieldset>
-                        <legend>Тип инцидента</legend>
-                        {% for incident_type in incident_types %}
-                          {% if incident_type.status_binding in [1, 3] %}
-                            <div class="form-check">
-                              <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
-                              <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
-                            </div>
-                          {% endif %}
-                        {% endfor %}
-                      </fieldset>
-                    </div>
-                    <div class="col-6">
+                    {% if incident_types_store.incident_types_list %}
+                      <div class="col-6">
+                        <fieldset>
+                          <legend>Тип инцидента</legend>
+                            {% for incident_type in incident_types_store.incident_types_list %}
+                              <div class="form-check">
+                                <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
+                                <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
+                              </div>
+                            {% endfor %}
+                        </fieldset>
+                      </div>
+                      <div class="col-6">
+                        <legend>Комментарий:</legend>
+                        <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
+                      </div>
+                    {% else %}
+                    <div class="col-12">
                       <legend>Комментарий:</legend>
-                      <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
+                      <textarea class="control-panel-details-textarea" name="comment" rows="6"></textarea>
                     </div>
+                  {% endif %}
                     <div class="col-12">
                       <button class="btn btn-primary btn-block mt-2" type="submit" name="button">Отправить информацию</button>
                     </div>
