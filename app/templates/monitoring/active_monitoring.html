@@ -224,11 +224,21 @@
                   <input class="d-none" type="text" name="visor_id" class="d-none" value="{{ current_user.id }}">
                   <div class="row">
                     <!-- <div class="col-6">
-                      <legend>Быстрый ввод</legend>
-                      <button class="control-panel-btn" type="button" name="comment" value="Студент(ы) спит(ят)">Студент(ы) спит(ят)</button>
-                      <button class="control-panel-btn" type="button" name="comment" value="Преподаватель отсутствует">Преподаватель отсутствует</button>
-                      <button class="control-panel-btn" type="button" name="comment" value="Преподаватель спит">Преподаватель спит</button>
-                      <button class="control-panel-btn" type="button" name="comment" value="Студенты бездельничают">Студенты бездельничают</button>
+                      <fieldset>
+                        <legend>Тип инцидента</legend>
+                        {% for incident_type in incident_types %}
+                          {% if incident_type.status_binding in [4] %}
+                            <div class="form-check">
+                              <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
+                              <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
+                            </div>
+                          {% endif %}
+                        {% endfor %}
+                      </fieldset>
+                    </div>
+                    <div class="col-6">
+                      <legend>Комментарий:</legend>
+                      <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
                     </div> -->
                     <div class="col-12">
                       <legend>Комментарий:</legend>
@@ -261,34 +271,14 @@
                     <div class="col-6">
                       <fieldset>
                         <legend>Тип инцидента</legend>
-                        <div class="form-check">
-                          <input id="type-control-1" type="checkbox" name="comment" value="Студент(ы) спит(ят)" class="form-check-input">
-                          <label for="type-control-1" class="form-check-label">Студент(ы) спит(ят)</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-control-2" type="checkbox" name="comment" value="Преподаватель отсутствует" class="form-check-input">
-                          <label for="type-control-2" class="form-check-label">Преподаватель отсутствует</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-control-3" type="checkbox" name="comment" value="Преподаватель спит" class="form-check-input">
-                          <label for="type-control-3" class="form-check-label">Преподаватель спит</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-control-4" type="checkbox" name="comment" value="Студенты бездельничают" class="form-check-input">
-                          <label for="type-control-4" class="form-check-label">Студенты бездельничают</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-control-5" type="checkbox" name="comment" value="Студенты в телефонах" class="form-check-input">
-                          <label for="type-control-5" class="form-check-label">Студенты в телефонах</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-control-6" type="checkbox" name="comment" value="Группа отсутствует" class="form-check-input">
-                          <label for="type-control-6" class="form-check-label">Группа отсутствует</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-control-7" type="checkbox" name="comment" value="Ошибка в расписании" class="form-check-input">
-                          <label for="type-control-7" class="form-check-label">Ошибка в расписании</label>
-                        </div>
+                        {% for incident_type in incident_types %}
+                          {% if incident_type.status_binding in [1, 2] %}
+                            <div class="form-check">
+                              <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
+                              <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
+                            </div>
+                          {% endif %}
+                        {% endfor %}
                       </fieldset>
                     </div>
                     <div class="col-6">
@@ -322,34 +312,14 @@
                     <div class="col-6">
                       <fieldset>
                         <legend>Тип инцидента</legend>
-                        <div class="form-check">
-                          <input id="type-inc-1" type="checkbox" name="comment" value="Студент(ы) спит(ят)" class="form-check-input">
-                          <label for="type-inc-1" class="form-check-label">Студент(ы) спит(ят)</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-inc-2" type="checkbox" name="comment" value="Преподаватель отсутствует" class="form-check-input">
-                          <label for="type-inc-2" class="form-check-label">Преподаватель отсутствует</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-inc-3" type="checkbox" name="comment" value="Преподаватель спит" class="form-check-input">
-                          <label for="type-inc-3" class="form-check-label">Преподаватель спит</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-inc-4" type="checkbox" name="comment" value="Студенты бездельничают" class="form-check-input">
-                          <label for="type-inc-4" class="form-check-label">Студенты бездельничают</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-inc-5" type="checkbox" name="comment" value="Студенты в телефонах" class="form-check-input">
-                          <label for="type-inc-5" class="form-check-label">Студенты в телефонах</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-inc-6" type="checkbox" name="comment" value="Группа отсутствует" class="form-check-input">
-                          <label for="type-inc-6" class="form-check-label">Группа отсутствует</label>
-                        </div>
-                        <div class="form-check">
-                          <input id="type-inc-7" type="checkbox" name="comment" value="Камера не работает" class="form-check-input">
-                          <label for="type-inc-7" class="form-check-label">Камера не работает</label>
-                        </div>
+                        {% for incident_type in incident_types %}
+                          {% if incident_type.status_binding in [1, 3] %}
+                            <div class="form-check">
+                              <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
+                              <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
+                            </div>
+                          {% endif %}
+                        {% endfor %}
                       </fieldset>
                     </div>
                     <div class="col-6">

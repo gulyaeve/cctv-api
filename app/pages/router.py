@@ -14,6 +14,7 @@ from app.classrooms.router import get_classroom
 from app.incidents.dao import IncidentsDAO
 from app.incidents.models import IncidentModel
 from app.incidents.router import get_all_incidents
+from app.incidents.type.router import get_all_incident_types
 from app.logger import logger
 from app.pages.buildings import router as buildings_frontend_router
 from app.pages.schedule import router as schedule_frontend_router
@@ -141,6 +142,7 @@ async def page_get_active_monitoring(
     building_id: Optional[int] = None,
     event_type: Optional[int] = None,
     monitoring_data=Depends(get_active_monitoring),
+    incident_types=Depends(get_all_incident_types),
     current_user: UserModel = Depends(get_current_user),
 ):
     logger.info(
@@ -169,6 +171,7 @@ async def page_get_active_monitoring(
                 "event_type": event_type,
                 "monitoring_data": monitoring_data,
                 "current_user": current_user,
+                "incident_types": incident_types,
                 "cameras": cameras,
                 "incidents_data": incidents_data,
                 "len_cameras": len(cameras),
