@@ -243,8 +243,8 @@
                         <legend>Тип инцидента</legend>
                           {% for incident_type in incident_types_store.good_types_list %}
                             <div class="form-check">
-                              <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
-                              <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
+                              <input id="type-control-{{ incident_type.id }}" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
+                              <label for="type-control-{{ incident_type.id }}" class="form-check-label">{{ incident_type.name }}</label>
                             </div>
                           {% endfor %}
                       </fieldset>
@@ -289,8 +289,8 @@
                           <legend>Тип инцидента</legend>
                             {% for incident_type in incident_types_store.control_types_list %}
                               <div class="form-check">
-                                <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
-                                <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
+                                <input id="type-control-{{ incident_type.id }}" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
+                                <label for="type-control-{{ incident_type.id }}" class="form-check-label">{{ incident_type.name }}</label>
                               </div>
                             {% endfor %}
                         </fieldset>
@@ -335,8 +335,8 @@
                           <legend>Тип инцидента</legend>
                             {% for incident_type in incident_types_store.incident_types_list %}
                               <div class="form-check">
-                                <input id="type-control-1" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
-                                <label for="type-control-1" class="form-check-label">{{ incident_type.name }}</label>
+                                <input id="type-control-{{ incident_type.id }}" type="checkbox" name="comment" value="{{ incident_type.name }}" class="form-check-input">
+                                <label for="type-control-{{ incident_type.id }}" class="form-check-label">{{ incident_type.name }}</label>
                               </div>
                             {% endfor %}
                         </fieldset>
