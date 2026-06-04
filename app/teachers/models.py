@@ -11,6 +11,7 @@ class TeacherModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
 
+    groups: Mapped[List["GroupModel"]] = relationship(back_populates="teacher")
     schedule: Mapped[List["ScheduleModel"]] = relationship(back_populates="teacher")
     
     def __str__(self) -> str:

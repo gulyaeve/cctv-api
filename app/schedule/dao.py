@@ -3,6 +3,7 @@ from typing import Optional
 
 from sqlalchemy import Date, and_, asc, case, cast, desc, func, null, select, text
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import aliased
 
 from app.buildings.models import BuildingModel
 from app.cameras.models import CameraModel
@@ -286,6 +287,7 @@ class ScheduleDAO(BaseDAO):
                 conditions.append(ScheduleModel.event_type == event_type)
 
             # Incaliased = aliased(IncidentModel, incident_subquery)
+            Curator = aliased(TeacherModel, name="curator")
 
             query = (
                 select(
@@ -298,6 +300,7 @@ class ScheduleDAO(BaseDAO):
                     ClassroomModel.id.label("current_classroom_id"),
                     BuildingModel.name.label("current_building"),
                     BuildingModel.id.label("building_id"),
+                    Curator.name.label("curator"),
                     GroupModel.name.label("current_group"),
                     func.coalesce(incident_subquery.c.status, 1).label(
                         "last_status_incident"
@@ -332,6 +335,7 @@ class ScheduleDAO(BaseDAO):
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
+                .outerjoin(Curator, GroupModel.teacher_id == Curator.id)
                 .outerjoin(
                     incident_subquery, ScheduleModel.id == incident_subquery.c.event
                 )

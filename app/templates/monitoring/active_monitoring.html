@@ -220,6 +220,10 @@
                   {{ monitoring_data.current_teacher }}<br>
                   <b>Группа:</b><br>
                   {{ monitoring_data.current_group }}<br>
+                  {% if monitoring_data.curator %}
+                    <b>Куратор группы:</b><br>
+                    {{ monitoring_data.curator }}<br>
+                  {% endif %}
                 </div>
               </div>
             </div>

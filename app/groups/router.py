@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Sequence, Annotated
 from fastapi import APIRouter, Depends, Query, status
 
-from app.groups.schemas import GroupScheme, GroupSearch, GroupBaseScheme, GroupUpdateScheme
+from app.groups.schemas import GroupScheme, GroupSearch, GroupAddScheme, GroupUpdateScheme
 from app.groups.dao import GroupsDAO
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
@@ -46,21 +46,16 @@ async def get_schedule_for_group(id: int, timestamp: datetime = datetime.now()):
 
 @router.post(
     "",
-    response_model=GroupScheme,
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(permission_required("group_create"))]
 )
-async def add_group(data: GroupBaseScheme):
+async def add_group(data: GroupAddScheme):
     """
     Add group
     """
-    new_object = await GroupsDAO.add(
+    await GroupsDAO.add(
         **data.model_dump()
     )
-    if new_object is None:
-        raise ObjectMissingException
-    else:
-        return new_object
 
 
 @router.post(
@@ -68,8 +63,8 @@ async def add_group(data: GroupBaseScheme):
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(permission_required("group_create"))]
 )
-async def bulk_add_groups(items: Sequence[GroupBaseScheme]) -> Sequence[GroupScheme]:
-    return await GroupsDAO.add_bulk([item.model_dump() for item in items])
+async def bulk_add_groups(items: Sequence[GroupAddScheme]):
+    await GroupsDAO.add_bulk([item.model_dump() for item in items])
 
 
 @router.delete(
@@ -90,17 +85,12 @@ async def del_group(id: int):
 
 @router.patch(
     "/{id}",
-    response_model=GroupScheme,
+    status_code=status.HTTP_202_ACCEPTED,
     dependencies=[Depends(permission_required("group_create"))]
 )
 async def update_groups(id: int, data: GroupUpdateScheme):
     """
     update group
     """
-    existing_object = await GroupsDAO.find_one_or_none(id=id)
-    if existing_object is None:
-        raise ObjectMissingException
-    else:
-        updated_object = await GroupsDAO.update(id, **data.model_dump(exclude_unset=True))
-        return updated_object
+    await GroupsDAO.update(id, **data.model_dump(exclude_unset=True))
     
