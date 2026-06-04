@@ -1,6 +1,5 @@
 from datetime import date
 from random import choice
-from tabnanny import filename_only
 from typing import Annotated, Sequence
 
 from fastapi import APIRouter, Depends, Form, Query, status
@@ -17,6 +16,7 @@ from app.schedule.schemas import (
     ScheduleDaily,
     ScheduleScheme,
     ScheduleSearch,
+    ScheduleUpdateScheme,
 )
 
 # from app.users.auth import auth_bearer_token
@@ -145,7 +145,7 @@ async def del_schedule(id: int):
     response_model=ScheduleScheme,
     dependencies=[Depends(permission_required("schedule_create"))],
 )
-async def update_schedule(id: int, data: ScheduleAddScheme):
+async def update_schedule(id: int, data: ScheduleUpdateScheme):
 
     existing_object = await ScheduleDAO.find_one_or_none(id=id)
     if existing_object is None:
