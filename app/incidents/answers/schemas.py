@@ -18,6 +18,12 @@ class IncidentAnswerAddScheme(BaseModel):
     comment: str
     author: str
     incident_id: int
+
+
+class IncidentAnswerUpdateScheme(BaseModel):
+    comment: Optional[str] = None
+    author: Optional[str] = None
+    incident_id: Optional[int] = None
    
 
 class IncidentAnswerSearch(BaseModel):

@@ -2,7 +2,7 @@ from typing import Sequence
 from fastapi import APIRouter, Depends, status
 
 from app.classrooms.type.dao import ClassroomTypeDAO
-from app.classrooms.type.schemas import ClassroomTypeAddScheme, ClassroomTypeScheme
+from app.classrooms.type.schemas import ClassroomTypeAddScheme, ClassroomTypeScheme, ClassroomTypeUpdateScheme
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
 
@@ -82,7 +82,7 @@ async def del_classroom_type(id: int):
     response_model=ClassroomTypeScheme,
     dependencies=[Depends(permission_required("classroom_create"))]
 )
-async def update_classroom_type(id: int, data: ClassroomTypeAddScheme):
+async def update_classroom_type(id: int, data: ClassroomTypeUpdateScheme):
     """
     update classroom type
     """

@@ -17,6 +17,12 @@ class IncidentTypeAddScheme(BaseModel):
     name: str
     status_binding: Optional[int] = None
     event_type: int = 0
+
+
+class IncidentTypeUpdateScheme(BaseModel):
+    name: Optional[str] = None
+    status_binding: Optional[int] = None
+    event_type: Optional[int] = None
    
 
 class IncidentTypeSearch(BaseModel):

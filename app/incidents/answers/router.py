@@ -2,7 +2,7 @@ from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, Query, status
 
 from app.incidents.answers.dao import IncidentAnswerDAO
-from app.incidents.answers.schemas import IncidentAnswerAddScheme, IncidentAnswerScheme, IncidentAnswerSearch
+from app.incidents.answers.schemas import IncidentAnswerAddScheme, IncidentAnswerScheme, IncidentAnswerSearch, IncidentAnswerUpdateScheme
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
 
@@ -82,7 +82,7 @@ async def del_incident_answer(id: int):
     response_model=IncidentAnswerScheme,
     dependencies=[Depends(permission_required("incident_create"))]
 )
-async def update_incident_answer(id: int, data: IncidentAnswerAddScheme):
+async def update_incident_answer(id: int, data: IncidentAnswerUpdateScheme):
     """
     update incident answer
     """

@@ -2,7 +2,7 @@ from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, Query, status
 
 from app.buildings.dao import BuildingsDAO
-from app.buildings.schemas import BuildingAddScheme, BuildingScheme, BuildingSearch
+from app.buildings.schemas import BuildingAddScheme, BuildingScheme, BuildingSearch, BuildingUpdateScheme
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
 
@@ -79,7 +79,7 @@ async def del_buildings(id: int):
     response_model=BuildingScheme,
     dependencies=[Depends(permission_required("building_create"))]
 )
-async def update_building(id: int, building: BuildingAddScheme):
+async def update_building(id: int, building: BuildingUpdateScheme):
     """
     update building
     

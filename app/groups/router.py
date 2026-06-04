@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Sequence, Annotated
 from fastapi import APIRouter, Depends, Query, status
 
-from app.groups.schemas import GroupScheme, GroupSearch, GroupBaseScheme
+from app.groups.schemas import GroupScheme, GroupSearch, GroupBaseScheme, GroupUpdateScheme
 from app.groups.dao import GroupsDAO
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
@@ -93,7 +93,7 @@ async def del_group(id: int):
     response_model=GroupScheme,
     dependencies=[Depends(permission_required("group_create"))]
 )
-async def update_groups(id: int, data: GroupBaseScheme):
+async def update_groups(id: int, data: GroupUpdateScheme):
     """
     update group
     """

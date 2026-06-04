@@ -15,6 +15,11 @@ class ClassroomTypeScheme(BaseModel):
 class ClassroomTypeAddScheme(BaseModel):
     name: str
     map_color: Optional[str] = None
+
+
+class ClassroomTypeUpdateScheme(BaseModel):
+    name: Optional[str] = None
+    map_color: Optional[str] = None
    
 
 class ClassroomTypeSearch(BaseModel):

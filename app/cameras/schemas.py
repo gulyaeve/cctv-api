@@ -56,6 +56,18 @@ class CameraAddScheme(BaseModel):
     # camera_type: Optional[int] = Field(None, description="1 - учебная аудитория, 2 - охранные, 3 - другое")
 
 
+class CameraUpdateScheme(BaseModel):
+    classroom_id: Optional[int] = None
+    camera_ip: Optional[str] = None
+    reg_ip: Optional[str] = None
+    view: Optional[str] = None
+    rtsp_url: Optional[str] = None
+    rtsp_url_preview: Optional[str] = None
+    pos_x: Optional[int] = None
+    pos_y: Optional[int] = None
+    polygon_map: Optional[str] = None
+
+
 class CameraSearch(BaseModel):
     classroom_id: Optional[int] = None
     classroom_type_id: Optional[int] = None

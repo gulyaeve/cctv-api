@@ -1,7 +1,7 @@
 from typing import Sequence, Annotated
 from fastapi import APIRouter, Depends, Query, status
 
-from app.teachers.schemas import TeacherScheme, TeacherSearch, TeacherBaseScheme
+from app.teachers.schemas import TeacherScheme, TeacherSearch, TeacherBaseScheme, TeacherUpdateScheme
 from app.teachers.dao import TeachersDAO
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
@@ -83,7 +83,7 @@ async def del_teacher(id: int):
     response_model=TeacherScheme,
     dependencies=[Depends(permission_required("teacher_create"))]
 )
-async def update_teacher(id: int, data: TeacherBaseScheme):
+async def update_teacher(id: int, data: TeacherUpdateScheme):
     """
     update teacher
     """

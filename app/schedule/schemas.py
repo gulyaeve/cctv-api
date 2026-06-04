@@ -40,6 +40,16 @@ class ScheduleAddScheme(BaseModel):
     event_type: int = 0
 
 
+class ScheduleUpdateScheme(BaseModel):
+    subject: Optional[str] = None
+    classroom_id: Optional[int] = None
+    teacher_id: Optional[int] = None
+    group_id: Optional[int] = None
+    timestamp_start: Optional[datetime] = None
+    timestamp_end: Optional[datetime] = None
+    event_type: Optional[int] = None
+
+
 class ScheduleSearch(BaseModel):
     subject: Optional[str] = None
     status: Optional[int] = Field(

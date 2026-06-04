@@ -4,6 +4,10 @@ from typing import Optional
 
 class TeacherBaseScheme(BaseModel):
     name: str
+
+
+class TeacherUpdateScheme(BaseModel):
+    name: Optional[str] = None
    
 
 class TeacherScheme(TeacherBaseScheme):

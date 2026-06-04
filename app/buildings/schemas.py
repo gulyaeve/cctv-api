@@ -22,6 +22,12 @@ class BuildingAddScheme(BaseModel):
     number_of_floors: Optional[int] = None
 
 
+class BuildingUpdateScheme(BaseModel):
+    name: Optional[str] = None
+    location: Optional[str] = None
+    number_of_floors: Optional[int] = None
+
+
 class BuildingSearch(BaseModel):
     name: str = ""
     location: Optional[str] = ""

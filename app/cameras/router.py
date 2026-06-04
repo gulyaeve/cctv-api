@@ -2,7 +2,7 @@ from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, Query, status
 
 from app.cameras.dao import CamerasDAO
-from app.cameras.schemas import CameraAddScheme, CameraFilter, CameraInVideoWallScheme, CameraScheme, CameraSearch
+from app.cameras.schemas import CameraAddScheme, CameraFilter, CameraInVideoWallScheme, CameraScheme, CameraSearch, CameraUpdateScheme
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
 
@@ -108,7 +108,7 @@ async def del_camera(id: int):
     response_model=CameraScheme,
     dependencies=[Depends(permission_required("camera_create"))]
 )
-async def update_camera(id: int, data: CameraAddScheme):
+async def update_camera(id: int, data: CameraUpdateScheme):
     """
     update camera
     """

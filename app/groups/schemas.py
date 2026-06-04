@@ -6,6 +6,10 @@ class GroupBaseScheme(BaseModel):
     name: str
    
 
+class GroupUpdateScheme(BaseModel):
+    name: Optional[str] = None
+
+
 class GroupScheme(GroupBaseScheme):
     id: int
 
