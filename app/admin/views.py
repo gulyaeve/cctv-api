@@ -178,6 +178,7 @@ class IncidentTypeAdmin(ModelView, model=IncidentTypeModel):
         IncidentTypeModel.id,
         IncidentTypeModel.name,
         IncidentTypeModel.status_binding,
+        IncidentTypeModel.event_type,
     ]
 
 class IncidentAnswerAdmin(ModelView, model=IncidentAnswerModel):
