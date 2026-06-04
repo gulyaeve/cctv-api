@@ -103,7 +103,7 @@ async def del_camera(id: int):
         return await CamerasDAO.delete(id=id)
 
 
-@router.put(
+@router.patch(
     "/{id}",
     response_model=CameraScheme,
     dependencies=[Depends(permission_required("camera_create"))]
@@ -116,6 +116,6 @@ async def update_camera(id: int, data: CameraAddScheme):
     if existing_object is None:
         raise ObjectMissingException
     else:
-        updated_object = await CamerasDAO.update(id, **data.model_dump())
+        updated_object = await CamerasDAO.update(id, **data.model_dump(exclude_unset=True))
         return updated_object
     

@@ -78,24 +78,7 @@ async def del_classroom(id: int):
         raise ObjectMissingException
     else:
         return await ClassroomsDAO.delete(id=id)
-
-
-@router.put(
-    "/{id}",
-    response_model=ClassroomScheme,
-    dependencies=[Depends(permission_required("classroom_create"))]
-)
-async def update_classroom(id: int, data: ClassroomAddScheme):
-    """
-    update classroom
-    """
-    existing_object = await ClassroomsDAO.find_one_or_none(id=id)
-    if existing_object is None:
-        raise ObjectMissingException
-    else:
-        updated_object = await ClassroomsDAO.update(id, **data.model_dump())
-        return updated_object
-    
+ 
 
 @router.patch(
     "/{id}",

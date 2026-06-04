@@ -124,10 +124,10 @@ async def del_incident(id: int):
         return await IncidentsDAO.delete(id=id)
 
 
-@router.put(
+@router.patch(
     "/{id}",
     response_model=IncidentScheme,
-    dependencies=[Depends(permission_required("incident_create"))]
+    dependencies=[Depends(permission_required("incident_delete"))]
 )
 async def update_incident(id: int, data: IncidentAppendScheme):
     """
@@ -137,6 +137,6 @@ async def update_incident(id: int, data: IncidentAppendScheme):
     if existing_object is None:
         raise ObjectMissingException
     else:
-        updated_object = await IncidentsDAO.update(id, **data.model_dump())
+        updated_object = await IncidentsDAO.update(id, **data.model_dump(exclude_unset=True))
         return updated_object
     

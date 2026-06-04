@@ -78,7 +78,7 @@ async def del_teacher(id: int):
         return await TeachersDAO.delete(id=id)
 
 
-@router.put(
+@router.patch(
     "/{id}",
     response_model=TeacherScheme,
     dependencies=[Depends(permission_required("teacher_create"))]
@@ -91,6 +91,6 @@ async def update_teacher(id: int, data: TeacherBaseScheme):
     if existing_object is None:
         raise ObjectMissingException
     else:
-        updated_object = await TeachersDAO.update(id, **data.model_dump())
+        updated_object = await TeachersDAO.update(id, **data.model_dump(exclude_unset=True))
         return updated_object
     

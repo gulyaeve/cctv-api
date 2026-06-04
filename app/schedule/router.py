@@ -140,7 +140,7 @@ async def del_schedule(id: int):
         return await ScheduleDAO.delete(id=id)
 
 
-@router.put(
+@router.patch(
     "/{id}",
     response_model=ScheduleScheme,
     dependencies=[Depends(permission_required("schedule_create"))],
@@ -151,7 +151,7 @@ async def update_schedule(id: int, data: ScheduleAddScheme):
     if existing_object is None:
         raise ObjectMissingException
     else:
-        updated_object = await ScheduleDAO.update(id, **data.model_dump())
+        updated_object = await ScheduleDAO.update(id, **data.model_dump(exclude_unset=True))
         return updated_object
 
 

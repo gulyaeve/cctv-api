@@ -88,7 +88,7 @@ async def del_group(id: int):
         return await GroupsDAO.delete(id=id)
 
 
-@router.put(
+@router.patch(
     "/{id}",
     response_model=GroupScheme,
     dependencies=[Depends(permission_required("group_create"))]
@@ -101,6 +101,6 @@ async def update_groups(id: int, data: GroupBaseScheme):
     if existing_object is None:
         raise ObjectMissingException
     else:
-        updated_object = await GroupsDAO.update(id, **data.model_dump())
+        updated_object = await GroupsDAO.update(id, **data.model_dump(exclude_unset=True))
         return updated_object
     

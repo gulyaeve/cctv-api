@@ -74,7 +74,7 @@ async def del_buildings(id: int):
         return await BuildingsDAO.delete(id=id)
 
 
-@router.put(
+@router.patch(
     "/{id}",
     response_model=BuildingScheme,
     dependencies=[Depends(permission_required("building_create"))]
@@ -92,6 +92,6 @@ async def update_building(id: int, building: BuildingAddScheme):
     if not existing_building:
         raise ObjectMissingException
     else:
-        updated_building = await BuildingsDAO.update(id, **building.model_dump())
+        updated_building = await BuildingsDAO.update(id, **building.model_dump(exclude_unset=True))
         return updated_building
     
