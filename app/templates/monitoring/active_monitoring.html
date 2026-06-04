@@ -249,16 +249,11 @@
                           {% endfor %}
                       </fieldset>
                     </div>
-                    <div class="col-6">
+                  {% endif %}
+                    <div class="col-{{ '6' if incident_types_store.good_types_list else '12' }}">
                       <legend>Комментарий:</legend>
                       <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
                     </div>
-                  {% else %}
-                    <div class="col-12">
-                      <legend>Комментарий:</legend>
-                      <textarea class="control-panel-details-textarea" name="comment" rows="6"></textarea>
-                    </div>
-                  {% endif %}
                     <div class="col-12">
                       <button class="btn btn-primary btn-block mt-2" type="submit" name="button">Отправить информацию</button>
                     </div>
@@ -295,16 +290,11 @@
                             {% endfor %}
                         </fieldset>
                       </div>
-                      <div class="col-6">
-                        <legend>Комментарий:</legend>
-                        <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
-                      </div>
-                    {% else %}
-                    <div class="col-12">
-                      <legend>Комментарий:</legend>
-                      <textarea class="control-panel-details-textarea" name="comment" rows="6"></textarea>
-                    </div>
                   {% endif %}
+                    <div class="col-{{ '6' if incident_types_store.control_types_list else '12' }}">
+                      <legend>Комментарий:</legend>
+                      <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
+                    </div>
                     <div class="col-12">
                       <button class="btn btn-primary btn-block mt-2" type="submit" name="button">Отправить информацию</button>
                     </div>
@@ -341,16 +331,11 @@
                             {% endfor %}
                         </fieldset>
                       </div>
-                      <div class="col-6">
-                        <legend>Комментарий:</legend>
-                        <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
-                      </div>
-                    {% else %}
-                    <div class="col-12">
-                      <legend>Комментарий:</legend>
-                      <textarea class="control-panel-details-textarea" name="comment" rows="6"></textarea>
-                    </div>
                   {% endif %}
+                    <div class="col-{{ '6' if incident_types_store.incident_types_list else '12' }}">
+                      <legend>Комментарий:</legend>
+                      <textarea class="control-panel-details-textarea" name="comment" rows="5"></textarea>
+                    </div>
                     <div class="col-12">
                       <button class="btn btn-primary btn-block mt-2" type="submit" name="button">Отправить информацию</button>
                     </div>
