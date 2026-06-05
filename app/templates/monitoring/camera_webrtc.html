@@ -32,7 +32,7 @@
 
 <div class="row">
     {% for camera in cameras %}
-    <div class="col-6 mt-1 mb-1 video-monitoring">
+    <div class="col-6 video-monitoring">
         <video id="camera_{{ camera.id }}" controls muted autoplay></video>
         <script>
             let reader_{{ camera.id }} = null;
