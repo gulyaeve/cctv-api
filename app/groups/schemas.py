@@ -7,12 +7,14 @@ from app.teachers.schemas import TeacherScheme
 class GroupAddScheme(BaseModel):
     name: str
     teacher_id: Optional[int] = None
+    group_size: Optional[int] = None
     # teacher: Optional[TeacherScheme] = None
     
 
 class GroupUpdateScheme(BaseModel):
     name: Optional[str] = None
     teacher_id: Optional[int] = None
+    group_size: Optional[int] = None
 
 
 class GroupScheme(BaseModel):
@@ -20,6 +22,7 @@ class GroupScheme(BaseModel):
     name: str
     # teacher_id: Optional[int] = None
     teacher: Optional[TeacherScheme] = None
+    group_size: Optional[int] = None
 
     class Config:
         from_attributes = True
@@ -28,4 +31,5 @@ class GroupScheme(BaseModel):
 class GroupSearch(BaseModel):
     name: Optional[str] = None
     teacher_id: Optional[int] = None
+    # group_size: Optional[int] = None
     

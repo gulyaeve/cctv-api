@@ -153,6 +153,7 @@ class GroupsAdmin(ModelView, model=GroupModel):
     column_list = [
         GroupModel.id,
         GroupModel.name,
+        GroupModel.group_size,
     ]
 
 

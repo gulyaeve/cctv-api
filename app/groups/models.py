@@ -1,4 +1,5 @@
 from typing import List
+from click import group
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 
@@ -10,6 +11,7 @@ class GroupModel(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
+    group_size = Column(Integer, nullable=True, index=True)
     teacher_id: Mapped[int] = mapped_column(ForeignKey("teachers.id"), nullable=True)
 
     schedule: Mapped[List["ScheduleModel"]] = relationship(back_populates="group")

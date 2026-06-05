@@ -224,6 +224,10 @@
                     <b>Куратор группы:</b><br>
                     {{ monitoring_data.curator }}<br>
                   {% endif %}
+                  {% if monitoring_data.group_size %}
+                    <b>Количество студентов в группе:</b><br>
+                    {{ monitoring_data.group_size }}<br>
+                  {% endif %}
                 </div>
               </div>
             </div>

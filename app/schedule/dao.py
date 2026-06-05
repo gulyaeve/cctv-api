@@ -302,6 +302,7 @@ class ScheduleDAO(BaseDAO):
                     BuildingModel.id.label("building_id"),
                     Curator.name.label("curator"),
                     GroupModel.name.label("current_group"),
+                    GroupModel.group_size.label("group_size"),
                     func.coalesce(incident_subquery.c.status, 1).label(
                         "last_status_incident"
                     ),

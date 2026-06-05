@@ -80,6 +80,7 @@ class IncidentFullInfo(BaseModel):
     cameras_screenshots: Optional[list[str]] = None
     current_teacher: str
     current_group: str
+    group_size: Optional[int] = None
     current_schedule: str
     current_classroom: str
     current_visor: Optional[str] = None

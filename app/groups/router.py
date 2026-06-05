@@ -85,7 +85,7 @@ async def del_group(id: int):
 
 @router.patch(
     "/{id}",
-    status_code=status.HTTP_202_ACCEPTED,
+    status_code=status.HTTP_200_OK,
     dependencies=[Depends(permission_required("group_create"))]
 )
 async def update_groups(id: int, data: GroupUpdateScheme):
