@@ -1,5 +1,4 @@
 from typing import List
-from click import group
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 
