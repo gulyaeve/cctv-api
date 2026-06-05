@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import and_, insert, select, update
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 
 from app.dao.base import BaseDAO
 from app.exceptions import ObjectMissingException
