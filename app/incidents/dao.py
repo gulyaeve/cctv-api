@@ -1,6 +1,7 @@
 from sqlalchemy import ARRAY, Date, String, and_, cast, desc, distinct, func, select
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import aliased
 
 from app.buildings.models import BuildingModel
 from app.classrooms.models import ClassroomModel
@@ -60,6 +61,7 @@ class IncidentsDAO(BaseDAO):
         date_from = filter_by.pop("date_from") if filter_by.get("date_from") else None
         date_to = filter_by.pop("date_to") if filter_by.get("date_to") else None
 
+        Curator = aliased(TeacherModel, name="curator")
         filter_mapping = {
             "comment": IncidentModel.comment,
             "event": IncidentModel.event,
@@ -71,6 +73,8 @@ class IncidentsDAO(BaseDAO):
             "subject": ScheduleModel.subject,
             "teacher_name": TeacherModel.name,
             "incident_type_id": IncidentTypeModel.id,
+            "curator_id": Curator.id,
+            "group_id": GroupModel.id,
         }
         conditions = filter_factory(filter_mapping, filter_by)
 
@@ -109,12 +113,14 @@ class IncidentsDAO(BaseDAO):
                     IncidentModel.__table__,
                     ClassroomModel.id.label("classroom_id"),
                     ClassroomModel.name.label("classroom_name"),
+                    GroupModel.name.label("current_group"),
                     BuildingModel.id.label("building_id"),
                     BuildingModel.name.label("building_name"),
                     UserModel.full_name.label("visor_name"),
                     ScheduleModel.teacher_id.label("teacher_id"),
                     ScheduleModel.subject.label("subject"),
                     TeacherModel.name.label("teacher_name"),
+                    Curator.name.label("curator"),
                     func.coalesce(
                         func.array_agg(distinct(IncidentTypeModel.name)).filter(
                             IncidentTypeModel.name.is_not(None)
@@ -124,10 +130,12 @@ class IncidentsDAO(BaseDAO):
                     # func.coalesce(answers_agg_subquery.c.answers_list, func.cast([], JSONB)).label("incident_answers")
                 )
                 .join(ScheduleModel, IncidentModel.event == ScheduleModel.id)
+                .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
                 .join(UserModel, IncidentModel.visor_id == UserModel.id)
+                .outerjoin(Curator, GroupModel.teacher_id == Curator.id)
                 .outerjoin(IncidentModel.incident_types)
                 # .outerjoin(answers_agg_subquery, IncidentModel.id == answers_agg_subquery.c.incident_id)
                 .filter(filter_query)
@@ -142,6 +150,8 @@ class IncidentsDAO(BaseDAO):
                     UserModel.full_name,
                     BuildingModel.id,
                     BuildingModel.name,
+                    Curator.name,
+                    GroupModel.name,
                     # answers_agg_subquery.c.answers_list
                 )
             )
@@ -161,6 +171,8 @@ class IncidentsDAO(BaseDAO):
     async def find_all_count(cls, **filter_by):
         date_from = filter_by.pop("date_from") if filter_by.get("date_from") else None
         date_to = filter_by.pop("date_to") if filter_by.get("date_to") else None
+        
+        Curator = aliased(TeacherModel, name="curator")
 
         filter_mapping = {
             "comment": IncidentModel.comment,
@@ -172,6 +184,8 @@ class IncidentsDAO(BaseDAO):
             "teacher_id": TeacherModel.id,
             "subject": ScheduleModel.subject,
             "teacher_name": TeacherModel.name,
+            "curator_id": Curator.id,
+            "group_id": GroupModel.id,
         }
         conditions = filter_factory(filter_mapping, filter_by)
 
@@ -205,6 +219,8 @@ class IncidentsDAO(BaseDAO):
                 .join(TeacherModel, ScheduleModel.teacher_id == TeacherModel.id)
                 .join(ClassroomModel, ScheduleModel.classroom_id == ClassroomModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
+                .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
+                .outerjoin(Curator, GroupModel.teacher_id == Curator.id)
                 .filter(filter_query)
             )
             async with async_session_maker() as session:
@@ -269,6 +285,8 @@ class IncidentsDAO(BaseDAO):
                 .subquery()
             )
 
+            Curator = aliased(TeacherModel, name="curator")
+
             query = (
                 select(
                     IncidentModel.__table__,
@@ -281,6 +299,7 @@ class IncidentsDAO(BaseDAO):
                     UserModel.full_name.label("current_visor"),
                     BuildingModel.id.label("building_id"),
                     BuildingModel.name.label("current_building"),
+                    Curator.name.label("curator"),
                     func.coalesce(
                         func.array_agg(IncidentTypeModel.name).filter(
                             IncidentTypeModel.name.is_not(None)
@@ -297,6 +316,7 @@ class IncidentsDAO(BaseDAO):
                 .join(GroupModel, ScheduleModel.group_id == GroupModel.id)
                 .join(UserModel, IncidentModel.visor_id == UserModel.id)
                 .join(BuildingModel, ClassroomModel.building_id == BuildingModel.id)
+                .outerjoin(Curator, GroupModel.teacher_id == Curator.id)
                 .outerjoin(IncidentModel.incident_types)
                 .outerjoin(
                     answers_agg_subquery,
@@ -307,6 +327,7 @@ class IncidentsDAO(BaseDAO):
                     IncidentModel.id,
                     TeacherModel.name,
                     GroupModel.name,
+                    Curator.name,
                     ScheduleModel.subject,
                     ScheduleModel.event_type,
                     ClassroomModel.id,

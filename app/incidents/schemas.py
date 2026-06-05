@@ -42,6 +42,7 @@ class IncidentScheme(IncidentBaseScheme):
     teacher_id: Optional[int] = None
     subject: Optional[str] = None
     teacher_name: Optional[str] = None
+    curator: Optional[str] = None
     incident_type_names: Optional[List[str]] = None
 
     model_config = ConfigDict(from_attributes=True)
@@ -63,6 +64,8 @@ class IncidentSearch(BaseModel):
     subject: Optional[str] = None
     teacher_name: Optional[str] = None
     incident_type_id: Optional[int] = None
+    curator_id: Optional[int] = None
+    group_id: Optional[int] = None
 
 
 class IncidentFullInfo(BaseModel):
@@ -80,6 +83,7 @@ class IncidentFullInfo(BaseModel):
     current_schedule: str
     current_classroom: str
     current_visor: Optional[str] = None
+    curator: Optional[str] = None
     current_building: str
     incident_type_names: Optional[List[str]] = None
     incident_answers: Optional[List] = Field(default_factory=list)
