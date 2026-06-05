@@ -2,7 +2,12 @@ from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, Query, status
 
 from app.classrooms.dao import ClassroomsDAO
-from app.classrooms.schemas import ClassroomAddScheme, ClassroomScheme, ClassroomSearch, ClassroomUpdateScheme
+from app.classrooms.schemas import (
+    ClassroomAddScheme,
+    ClassroomScheme,
+    ClassroomSearch,
+    ClassroomUpdateScheme,
+)
 from app.exceptions import ObjectMissingException
 from app.users.dependencies import permission_required
 from app.classrooms.type.router import router as classroom_type_router
@@ -11,10 +16,9 @@ from app.classrooms.type.router import router as classroom_type_router
 router = APIRouter(
     prefix="/classrooms",
     tags=["Кабинеты"],
-    dependencies=[Depends(permission_required("classrooms"))]
+    dependencies=[Depends(permission_required("classrooms"))],
 )
 router.include_router(classroom_type_router)
-
 
 
 @router.get("", response_model=Sequence[ClassroomScheme])
@@ -40,34 +44,30 @@ async def get_classroom(id: int):
     "",
     response_model=ClassroomScheme,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(permission_required("classroom_create"))]
+    dependencies=[Depends(permission_required("classroom_create"))],
 )
 async def add_classroom(data: ClassroomAddScheme):
     """
     Add classroom
     """
-    new_object = await ClassroomsDAO.add(
-        **data.model_dump()
-    )
-    if new_object is None:
-        raise ObjectMissingException
-    else:
-        return new_object
+    await ClassroomsDAO.add(**data.model_dump())
 
 
 @router.post(
     "/bulk",
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(permission_required("classroom_create"))]
+    dependencies=[Depends(permission_required("classroom_create"))],
 )
-async def bulk_add_classrooms(items: Sequence[ClassroomAddScheme]) -> Sequence[ClassroomScheme]:
-    return await ClassroomsDAO.add_bulk([item.model_dump() for item in items])
+async def bulk_add_classrooms(
+    items: Sequence[ClassroomAddScheme],
+):
+    await ClassroomsDAO.add_bulk([item.model_dump() for item in items])
 
 
 @router.delete(
     "/{id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    dependencies=[Depends(permission_required("classroom_delete"))]
+    dependencies=[Depends(permission_required("classroom_delete"))],
 )
 async def del_classroom(id: int):
     """
@@ -78,21 +78,15 @@ async def del_classroom(id: int):
         raise ObjectMissingException
     else:
         return await ClassroomsDAO.delete(id=id)
- 
+
 
 @router.patch(
     "/{id}",
     response_model=ClassroomScheme,
-    dependencies=[Depends(permission_required("classroom_create"))]
+    dependencies=[Depends(permission_required("classroom_create"))],
 )
 async def patch_classroom(id: int, data: ClassroomUpdateScheme):
     """
     patch classroom
     """
-    existing_object = await ClassroomsDAO.find_one_or_none(id=id)
-    if existing_object is None:
-        raise ObjectMissingException
-    else:
-        updated_object = await ClassroomsDAO.update(id, **data.model_dump(exclude_unset=True))
-        return updated_object
-    
+    await ClassroomsDAO.update(id, **data.model_dump(exclude_unset=True))

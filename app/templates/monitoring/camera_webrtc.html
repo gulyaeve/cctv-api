@@ -3,15 +3,11 @@ classroom.name }} {% endblock %} {% block breadcrubs %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
-            <a href="{{url_for('page_get_buildings_page') }}"
-                >Учебные корпуса</a
-            >
+            <a href="{{url_for('page_get_buildings_page') }}">Учебные корпуса</a>
         </li>
         <li class="breadcrumb-item">
-            <a
-                href="{{ url_for('page_get_building_classrooms_map_page', id=building.id) }}"
-                >{{ building.name }}. Карта</a
-            >
+            <a href="{{ url_for('page_get_building_classrooms_map_page', id=building.id) }}">{{ building.name }}.
+                Карта</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
             {{ building.name }}. Кабинет {{ classroom.name }}
@@ -34,50 +30,43 @@ classroom.name }} {% endblock %} {% block breadcrubs %}
 </script>
 
 <div class="flex justify-center mb-5 text-3xl">Камеры {{ classroom.name }}</div>
-<div class="container">
-    <div class="row">
-        {% for camera in cameras %}
-        <div class="col">
-            <video
-                id="camera_{{ camera.id }}"
-                controls
-                muted
-                autoplay
-                width="640"
-                height="480"
-            ></video>
-            <script>
-                let reader_{{ camera.id }} = null;
 
-                window.addEventListener("load", () => {
-                    reader_{{ camera.id }} = new MediaMTXWebRTCReader({
-                    url: "https://{{ request.base_url.hostname }}/media/{{ camera.id }}/whep",
-                    token: access_token, // fill if needed
-                    onError: (err) => {
-                        console.error(err);
-                    },
-                    onTrack: (evt) => {
-                        document.getElementById("camera_{{ camera.id }}").srcObject = evt.streams[0];
-                    },
-                    onDataChannel: (evt) => {
-                        evt.channel.binaryType = "arraybuffer";
-                        evt.channel.onmessage = (evt) => {
+<div class="row">
+    {% for camera in cameras %}
+    <div class="col-4 p-0 video-monitoring">
+        <video id="camera_{{ camera.id }}" controls muted autoplay></video>
+        <script>
+            let reader_{{ camera.id }} = null;
+
+            window.addEventListener("load", () => {
+                reader_{ { camera.id } } = new MediaMTXWebRTCReader({
+                url: "https://{{ request.base_url.hostname }}/media/{{ camera.id }}/whep",
+                token: access_token, // fill if needed
+                onError: (err) => {
+                    console.error(err);
+                },
+                onTrack: (evt) => {
+                    document.getElementById("camera_{{ camera.id }}").srcObject = evt.streams[0];
+                },
+                onDataChannel: (evt) => {
+                    evt.channel.binaryType = "arraybuffer";
+                    evt.channel.onmessage = (evt) => {
                         console.log("data channel message", evt.data);
-                        };
-                    },
-                    });
-                });
+                    };
+                },
+            });
+            });
 
-                window.addEventListener("beforeunload", () => {
-                    if (reader !== null) {
+            window.addEventListener("beforeunload", () => {
+                if (reader !== null) {
                     reader.close();
-                    }
-                });
-            </script>
-        </div>
-        {% endfor %}
+                }
+            });
+        </script>
     </div>
+    {% endfor %}
 </div>
+
 <!--
 <div class="flex justify-center mb-5 text-3xl">
     Камеры {{ classroom.name }}
