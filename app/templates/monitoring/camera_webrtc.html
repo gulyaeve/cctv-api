@@ -1,9 +1,8 @@
-{% extends "mainmenu.html" %} {% block title %}{{ building.name }}. Кабинет {{
-classroom.name }} {% endblock %} {% block breadcrubs %}
+{% extends "mainmenu.html" %} {% block title %}{{ building.name }}. Кабинет {{classroom.name }} {% endblock %} {% block breadcrubs %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
-            <a href="{{url_for('page_get_buildings_page') }}">Учебные корпуса</a>
+            <a href="{{ url_for('page_get_buildings_page') }}">Учебные корпуса</a>
         </li>
         <li class="breadcrumb-item">
             <a href="{{ url_for('page_get_building_classrooms_map_page', id=building.id) }}">{{ building.name }}.
@@ -39,7 +38,7 @@ classroom.name }} {% endblock %} {% block breadcrubs %}
             let reader_{{ camera.id }} = null;
 
             window.addEventListener("load", () => {
-                reader_{ { camera.id } } = new MediaMTXWebRTCReader({
+                reader_{{ camera.id }} = new MediaMTXWebRTCReader({
                 url: "https://{{ request.base_url.hostname }}/media/{{ camera.id }}/whep",
                 token: access_token, // fill if needed
                 onError: (err) => {
