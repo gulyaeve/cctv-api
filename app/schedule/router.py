@@ -3,6 +3,7 @@ from random import choice
 from typing import Annotated, Sequence
 
 from fastapi import APIRouter, Depends, Form, Query, status
+from fastapi_cache.decorator import cache
 
 from app.broker_utils.schedule_broker import send_ai_job
 from app.cameras.dao import CamerasDAO
@@ -44,7 +45,7 @@ async def get_active_monitoring(
 
 
 @router.get("", response_model=Sequence[ScheduleScheme])
-# @cache(expire=60)
+@cache(expire=60)
 async def get_all_schedules(filter_query: Annotated[ScheduleSearch, Query()]):
     """
     Get all schedules

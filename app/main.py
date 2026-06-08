@@ -6,6 +6,9 @@ from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from redis import asyncio as aioredis
 from prometheus_fastapi_instrumentator import Instrumentator
 from sqladmin import Admin
 
@@ -51,6 +54,7 @@ from app.schedule.router import router as schedule_router
 from app.schedule.router import router_daily as schedule_router_daily
 from app.teachers.router import router as teachers_router
 from app.users.router import router as users_router
+from app.utils.cache_coder import PickleCoder
 from app.utils.keycloak_client import KeycloakClient
 from app.utils.verify_subnet import SubnetAccessMiddleware
 from app.version import version
@@ -76,6 +80,11 @@ api.include_router(screenshots_router)
 async def lifespan(app: FastAPI):
     # Before startup
 
+    # Create cache
+    # redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}", encoding="utf8", decode_responses=True)
+    redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}")
+    FastAPICache.init(RedisBackend(redis), prefix="cache", coder=PickleCoder)
+    
     # Create exchange and queue in RabbitMQ
     if settings.rabbitmq_url:
         await declare_exchange_and_queue()

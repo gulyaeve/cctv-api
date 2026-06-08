@@ -58,9 +58,12 @@ services:
         - rabbitmq_data:/var/lib/rabbitmq/
         - rabbitmq_log:/var/log/rabbitmq
 
-  # redis:
-  #   image: redis:7
-  #   container_name: redis
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    networks:
+      - default
 
   backend:
     image: cctv_backend
@@ -76,7 +79,7 @@ services:
     depends_on:
       - db
       - rabbitmq
-      # - redis
+      - redis
     command: ["/src/docker/entry_point.sh"]
     restart: always
     ports:

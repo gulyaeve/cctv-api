@@ -63,8 +63,8 @@ class Settings(BaseSettings):
     MEDIA_USERNAME: str = Field(default="admin")
     MEDIA_PASSWORD: str = Field(default="admin123")
 
-    REDIS_HOST: str
-    REDIS_PORT: int
+    REDIS_HOST: str = Field(default="redis")
+    REDIS_PORT: int = Field(default=6379)
 
     # RabbitMQ
     RABBITMQ_HOST: Optional[str] = None
