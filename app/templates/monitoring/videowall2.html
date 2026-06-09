@@ -5,7 +5,7 @@ content %}
         <div class="container-sm">
             <form
                 class=""
-                action="{{ url_for('page_get_videowall_page') }}"
+                action="{{ url_for('page_get_videowall_page_2') }}"
                 method="get"
                 enctype="multipart/form-data"
             >
@@ -306,7 +306,10 @@ content %}
     });
 </script> -->
 
-
+<script>
+  // Данные передаются из FastAPI через Jinja2
+  const allCameras = {{ cameras | tojson }};
+</script>
 <script>
   // ─── Глобальное хранилище активных сессий ───────────────────────
   let activeSessions = []; // [{ pc, sessionUrl, videoEl }]
