@@ -14,7 +14,7 @@ from app.users.models import UserModel
 from app.incidents.type.router import router as incident_type_router
 from app.incidents.answers.router import router as incident_answer_router
 from app.config import settings
-# from fastapi_cache.decorator import cache
+from fastapi_cache.decorator import cache
 
 
 router = APIRouter(
@@ -34,7 +34,7 @@ async def get_active_monitoring(id: int, current_user: UserModel = Depends(get_c
 
 @router.get("", response_model=Sequence[IncidentScheme])
 # @router.get("")
-# @cache(expire=60)
+@cache(expire=60)
 async def get_all_incidents(filter_query: Annotated[IncidentSearch, Query()]):
     """
     Get all incidents
@@ -44,7 +44,7 @@ async def get_all_incidents(filter_query: Annotated[IncidentSearch, Query()]):
 
 
 @router.get("/count")
-# @cache(expire=60)
+@cache(expire=60)
 async def count_incidents(filter_query: Annotated[IncidentSearch, Query()]):
     """
     Count all incidents

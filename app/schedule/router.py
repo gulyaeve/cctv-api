@@ -55,7 +55,7 @@ async def get_all_schedules(filter_query: Annotated[ScheduleSearch, Query()]):
 
 
 @router.get("/count")
-# @cache(expire=60)
+@cache(expire=60)
 async def count_schedules(filter_query: Annotated[ScheduleSearch, Query()]):
     """
     Count all schedules
