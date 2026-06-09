@@ -1,4 +1,4 @@
-from typing import List
+from datetime import datetime, timedelta, date
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
@@ -8,8 +8,7 @@ from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings, get_building
 from app.cameras.dao import CamerasDAO
 from app.classrooms.dao import ClassroomsDAO
-from app.schedule.models import ScheduleModel
-from app.schedule.router import get_all_schedules
+from app.schedule.dao import ScheduleDAO
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 from app.logger import logger
@@ -156,9 +155,9 @@ async def page_get_building_schedule_page(
     request: Request,
     building: BuildingModel = Depends(get_building),
     current_user: UserModel = Depends(get_current_user),
-    schedules: List[ScheduleModel] = Depends(get_all_schedules)
+    date_from: date = (datetime.now() - timedelta(days=datetime.now().weekday())).date()
 ):
-    # schedules = await ScheduleDAO.find_all(building_id=id)
+    schedules = await ScheduleDAO.find_all(building_id=id, date_from=date_from)
     logger.info(
         "User open list of schedules",
         extra={
