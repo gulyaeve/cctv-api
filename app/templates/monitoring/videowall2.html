@@ -353,18 +353,26 @@ content %}
     statusBadge.className = `badge bg-${color}`;
   }
 
-  // ── AUTH: добавить ?token= к URL ─────────────────────────────────
-  function withToken(url) {
-    if (!MTX_TOKEN) return url;
-    try {
-      const u = new URL(url);
-      u.searchParams.set('token', MTX_TOKEN);
-      return u.toString();
-    } catch (e) {
-      const sep = url.includes('?') ? '&' : '?';
-      return `${url}${sep}token=${encodeURIComponent(MTX_TOKEN)}`;
-    }
+//   ── AUTH: добавить ?token= к URL ─────────────────────────────────
+//   function withToken(url) {
+//     if (!MTX_TOKEN) return url;
+//     try {
+//       const u = new URL(url);
+//       u.searchParams.set('token', MTX_TOKEN);
+//       return u.toString();
+//     } catch (e) {
+//       const sep = url.includes('?') ? '&' : '?';
+//       return `${url}${sep}token=${encodeURIComponent(MTX_TOKEN)}`;
+//     }
+//   }
+
+function authHeaders() {
+  const headers = { 'Content-Type': 'application/sdp' };
+  if (MTX_TOKEN) {
+    headers['Authorization'] = `Bearer ${MTX_TOKEN}`;
   }
+  return headers;
+}
 
   // ── Прогресс-бар ─────────────────────────────────────────────────
   function startProgressBar() {
@@ -379,24 +387,33 @@ content %}
   }
 
   // ── Закрыть все текущие WebRTC-сессии ────────────────────────────
-  async function stopAllSessions() {
+    async function stopAllSessions() {
     const tasks = activeSessions.map(async ({ pc, sessionUrl, videoEl }) => {
-      if (videoEl) videoEl.srcObject = null;
-      if (sessionUrl) {
+        if (videoEl) videoEl.srcObject = null;
+
+        if (sessionUrl) {
         try {
-          await fetch(withToken(sessionUrl), { method: 'DELETE' });
+            // ✅ Bearer токен и здесь
+            await fetch(sessionUrl, {
+            method: 'DELETE',
+            headers: MTX_TOKEN
+                ? { 'Authorization': `Bearer ${MTX_TOKEN}` }
+                : {},
+            });
         } catch (e) {
-          console.warn('[WHEP] Ошибка DELETE сессии:', e);
+            console.warn('[WHEP] Ошибка DELETE сессии:', e);
         }
-      }
-      if (pc && pc.signalingState !== 'closed') pc.close();
+        }
+
+        if (pc && pc.signalingState !== 'closed') pc.close();
     });
+
     await Promise.allSettled(tasks);
     activeSessions = [];
-  }
+    }
 
   // ── Запустить одну WHEP-сессию ───────────────────────────────────
-  async function startStream(videoEl, whepUrl) {
+    async function startStream(videoEl, whepUrl) {
     const pc = new RTCPeerConnection({ iceServers: [] });
     let sessionUrl = null;
 
@@ -404,52 +421,54 @@ content %}
     pc.addTransceiver('audio', { direction: 'recvonly' });
 
     pc.ontrack = (evt) => {
-      if (evt.track.kind === 'video') {
+        if (evt.track.kind === 'video') {
         videoEl.srcObject = evt.streams[0];
-      }
+        }
     };
 
     pc.onconnectionstatechange = () => {
-      if (['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
+        if (['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
         console.warn('[WHEP] Соединение потеряно:', whepUrl, pc.connectionState);
-      }
+        }
     };
 
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
 
     await new Promise((resolve) => {
-      if (pc.iceGatheringState === 'complete') return resolve();
-      pc.addEventListener('icegatheringstatechange', function handler() {
+        if (pc.iceGatheringState === 'complete') return resolve();
+        pc.addEventListener('icegatheringstatechange', function handler() {
         if (pc.iceGatheringState === 'complete') {
-          pc.removeEventListener('icegatheringstatechange', handler);
-          resolve();
+            pc.removeEventListener('icegatheringstatechange', handler);
+            resolve();
         }
-      });
-      setTimeout(resolve, 5000);
+        });
+        setTimeout(resolve, 5000);
     });
 
-    const resp = await fetch(withToken(whepUrl), {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/sdp' },
-      body:    pc.localDescription.sdp,
+    // ✅ Токен передаётся в заголовке, НЕ в URL
+    const resp = await fetch(whepUrl, {
+        method: 'POST',
+        headers: authHeaders(), // ← Authorization: Bearer TOKEN
+        body: pc.localDescription.sdp,
     });
 
     if (!resp.ok) {
-      pc.close();
-      throw new Error(`[WHEP] HTTP ${resp.status} — ${whepUrl}`);
+        pc.close();
+        throw new Error(`[WHEP] HTTP ${resp.status} — ${whepUrl}`);
     }
 
     const location = resp.headers.get('location');
     sessionUrl = location
-      ? (location.startsWith('http') ? location : new URL(location, whepUrl).href)
-      : null;
+        ? (location.startsWith('http') ? location : new URL(location, whepUrl).href)
+        : null;
 
     const answerSdp = await resp.text();
     await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
 
     activeSessions.push({ pc, sessionUrl, videoEl });
-  }
+    }
+
 
   // ── Загрузить страницу ───────────────────────────────────────────
   async function loadPage(pageIndex) {
