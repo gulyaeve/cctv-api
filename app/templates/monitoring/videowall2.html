@@ -526,17 +526,17 @@ content %}
     pageInfo    = document.getElementById('page-info');
     rotBar      = document.getElementById('rotation-bar');
 
-    document.getElementById('btn-prev').addEventListener('click', () => {
-      const totalPages = Math.ceil(ALL_CAMERAS.length / PAGE_SIZE);
-      currentPage = (currentPage - 1 + totalPages) % totalPages;
-      restartRotation();
-    });
+    // document.getElementById('btn-prev').addEventListener('click', () => {
+    //   const totalPages = Math.ceil(ALL_CAMERAS.length / PAGE_SIZE);
+    //   currentPage = (currentPage - 1 + totalPages) % totalPages;
+    //   restartRotation();
+    // });
 
-    document.getElementById('btn-next').addEventListener('click', () => {
-      const totalPages = Math.ceil(ALL_CAMERAS.length / PAGE_SIZE);
-      currentPage = (currentPage + 1) % totalPages;
-      restartRotation();
-    });
+    // document.getElementById('btn-next').addEventListener('click', () => {
+    //   const totalPages = Math.ceil(ALL_CAMERAS.length / PAGE_SIZE);
+    //   currentPage = (currentPage + 1) % totalPages;
+    //   restartRotation();
+    // });
 
     startRotation();
   });
