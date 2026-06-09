@@ -1,4 +1,5 @@
 from os import path
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
@@ -24,8 +25,8 @@ async def serve_screenshots(file_path: str):
     
 
 @router.get("")
-async def get_screenshot_by_ids(incident_id: int, event_id: int, camera_id: int):
-    file = find_screenshot(incident_id, event_id, camera_id)
+async def get_screenshot_by_ids(incident_id: int, camera_id: int):
+    file = find_screenshot(incident_id, camera_id)
     if file is not None:
         return await serve_screenshots(file)
     else:

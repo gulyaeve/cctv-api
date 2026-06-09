@@ -24,6 +24,7 @@ role_permissions = Table(
 class LowerCaseString(TypeDecorator):
     """Приводит строку к нижнему регистру перед отправкой в БД"""
     impl = String
+    cache_ok = True
 
     def process_bind_param(self, value, dialect):
         return value.lower() if value else None
