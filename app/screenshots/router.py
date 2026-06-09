@@ -1,5 +1,4 @@
 from os import path
-from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
