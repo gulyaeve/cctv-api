@@ -318,18 +318,14 @@ content %}
 (function () {
   'use strict';
 
-  // ── Состояние ────────────────────────────────────────────────────
-  let activeSessions  = [];
-  let rotationTimer   = null;
-  let progressTimer   = null;
-  let currentPage     = 0;
-  const totalPages    = Math.ceil(ALL_CAMERAS.length / PAGE_SIZE);
+  // ── Состояние (не зависит от DOM — можно снаружи) ────────────────
+  let activeSessions = [];
+  let rotationTimer  = null;
+  let progressTimer  = null;
+  let currentPage    = 0;
 
-  // ── DOM-узлы ─────────────────────────────────────────────────────
-  const slots       = document.querySelectorAll('.camera-slot');
-  const statusBadge = document.getElementById('status-badge');
-  const pageInfo    = document.getElementById('page-info');
-  const rotBar      = document.getElementById('rotation-bar');
+  // ── DOM-узлы объявляем здесь, инициализируем внутри DOMContentLoaded
+  let slots, statusBadge, pageInfo, rotBar;
 
   // ── Утилиты ──────────────────────────────────────────────────────
   function getSlotVideo(slot)   { return slot.querySelector('.camera-feed'); }
@@ -337,11 +333,12 @@ content %}
   function getSlotSpinner(slot) { return slot.querySelector('.camera-spinner'); }
 
   function setStatus(text, color = 'secondary') {
+    if (!statusBadge) return; // ← защита на случай гонки
     statusBadge.textContent = text;
     statusBadge.className = `badge bg-${color}`;
   }
 
-  // ── ◄ AUTH: добавить ?token= к любому URL ───────────────────────
+  // ── AUTH: добавить ?token= к URL ─────────────────────────────────
   function withToken(url) {
     if (!MTX_TOKEN) return url;
     try {
@@ -349,7 +346,6 @@ content %}
       u.searchParams.set('token', MTX_TOKEN);
       return u.toString();
     } catch (e) {
-      // Если URL относительный — добавляем вручную
       const sep = url.includes('?') ? '&' : '?';
       return `${url}${sep}token=${encodeURIComponent(MTX_TOKEN)}`;
     }
@@ -359,7 +355,6 @@ content %}
   function startProgressBar() {
     clearInterval(progressTimer);
     rotBar.style.width = '0%';
-    rotBar.style.transition = 'none';
     const step = 100 / (ROTATE_MS / 100);
     let pct = 0;
     progressTimer = setInterval(() => {
@@ -371,12 +366,7 @@ content %}
   // ── Закрыть все текущие WebRTC-сессии ────────────────────────────
   async function stopAllSessions() {
     const tasks = activeSessions.map(async ({ pc, sessionUrl, videoEl }) => {
-
-      if (videoEl) {
-        videoEl.srcObject = null;
-      }
-
-      // ◄ AUTH: DELETE с токеном — MediaMTX требует авторизацию и здесь
+      if (videoEl) videoEl.srcObject = null;
       if (sessionUrl) {
         try {
           await fetch(withToken(sessionUrl), { method: 'DELETE' });
@@ -384,21 +374,15 @@ content %}
           console.warn('[WHEP] Ошибка DELETE сессии:', e);
         }
       }
-
-      if (pc && pc.signalingState !== 'closed') {
-        pc.close();
-      }
+      if (pc && pc.signalingState !== 'closed') pc.close();
     });
-
     await Promise.allSettled(tasks);
     activeSessions = [];
   }
 
   // ── Запустить одну WHEP-сессию ───────────────────────────────────
   async function startStream(videoEl, whepUrl) {
-    const pc = new RTCPeerConnection({
-      iceServers: []
-    });
+    const pc = new RTCPeerConnection({ iceServers: [] });
     let sessionUrl = null;
 
     pc.addTransceiver('video', { direction: 'recvonly' });
@@ -430,7 +414,6 @@ content %}
       setTimeout(resolve, 5000);
     });
 
-    // ◄ AUTH: POST на WHEP endpoint с ?token= в URL
     const resp = await fetch(withToken(whepUrl), {
       method:  'POST',
       headers: { 'Content-Type': 'application/sdp' },
@@ -443,7 +426,6 @@ content %}
     }
 
     const location = resp.headers.get('location');
-    // ◄ AUTH: sessionUrl сохраняем БЕЗ токена — добавим при DELETE через withToken()
     sessionUrl = location
       ? (location.startsWith('http') ? location : new URL(location, whepUrl).href)
       : null;
@@ -500,6 +482,7 @@ content %}
 
   // ── Ротация ──────────────────────────────────────────────────────
   function startRotation() {
+    const totalPages = Math.ceil(ALL_CAMERAS.length / PAGE_SIZE);
     if (totalPages === 0) {
       setStatus('Камеры не найдены', 'danger');
       return;
@@ -511,26 +494,17 @@ content %}
     }, ROTATE_MS);
   }
 
-//   // ── Ручная навигация ─────────────────────────────────────────────
-//   function restartRotation() {
-//     clearInterval(rotationTimer);
-//     clearInterval(progressTimer);
-//     loadPage(currentPage);
-//     rotationTimer = setInterval(() => {
-//       currentPage = (currentPage + 1) % totalPages;
-//       loadPage(currentPage);
-//     }, ROTATE_MS);
-//   }
-
-//   document.getElementById('btn-prev').addEventListener('click', () => {
-//     currentPage = (currentPage - 1 + totalPages) % totalPages;
-//     restartRotation();
-//   });
-
-//   document.getElementById('btn-next').addEventListener('click', () => {
-//     currentPage = (currentPage + 1) % totalPages;
-//     restartRotation();
-//   });
+  // ── Ручная навигация ─────────────────────────────────────────────
+  function restartRotation() {
+    const totalPages = Math.ceil(ALL_CAMERAS.length / PAGE_SIZE);
+    clearInterval(rotationTimer);
+    clearInterval(progressTimer);
+    loadPage(currentPage);
+    rotationTimer = setInterval(() => {
+      currentPage = (currentPage + 1) % totalPages;
+      loadPage(currentPage);
+    }, ROTATE_MS);
+  }
 
   // ── Очистка при уходе со страницы ───────────────────────────────
   window.addEventListener('beforeunload', () => {
@@ -543,9 +517,32 @@ content %}
     activeSessions = [];
   });
 
-  document.addEventListener('DOMContentLoaded', startRotation);
+  // ── ✅ ВСЕ обращения к DOM — строго внутри DOMContentLoaded ──────
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // Инициализация DOM-узлов после полной загрузки страницы
+    slots       = document.querySelectorAll('.camera-slot');
+    statusBadge = document.getElementById('status-badge');
+    pageInfo    = document.getElementById('page-info');
+    rotBar      = document.getElementById('rotation-bar');
+
+    document.getElementById('btn-prev').addEventListener('click', () => {
+      const totalPages = Math.ceil(ALL_CAMERAS.length / PAGE_SIZE);
+      currentPage = (currentPage - 1 + totalPages) % totalPages;
+      restartRotation();
+    });
+
+    document.getElementById('btn-next').addEventListener('click', () => {
+      const totalPages = Math.ceil(ALL_CAMERAS.length / PAGE_SIZE);
+      currentPage = (currentPage + 1) % totalPages;
+      restartRotation();
+    });
+
+    startRotation();
+  });
 
 })();
+
 </script>
 
 
