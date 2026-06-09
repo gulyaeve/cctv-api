@@ -307,42 +307,98 @@ content %}
 </script> -->
 
 <script>
-  // Данные передаются из FastAPI через Jinja2
-  const allCameras = {{ cameras | tojson }};
+  const ALL_CAMERAS = {{ cameras | tojson }};
+  const PAGE_SIZE   = 9;
+  const ROTATE_MS   = 20000;
+  // Токен пользователя из FastAPI сессии
+  const MTX_TOKEN   = access_token;
 </script>
-<script>
-  // ─── Глобальное хранилище активных сессий ───────────────────────
-  let activeSessions = []; // [{ pc, sessionUrl, videoEl }]
-  let rotationTimer = null;
-  let currentPage = 0;
 
-  // ─── Остановить все текущие WebRTC-сессии ───────────────────────
+<script>
+(function () {
+  'use strict';
+
+  // ── Состояние ────────────────────────────────────────────────────
+  let activeSessions  = [];
+  let rotationTimer   = null;
+  let progressTimer   = null;
+  let currentPage     = 0;
+  const totalPages    = Math.ceil(ALL_CAMERAS.length / PAGE_SIZE);
+
+  // ── DOM-узлы ─────────────────────────────────────────────────────
+  const slots       = document.querySelectorAll('.camera-slot');
+  const statusBadge = document.getElementById('status-badge');
+  const pageInfo    = document.getElementById('page-info');
+  const rotBar      = document.getElementById('rotation-bar');
+
+  // ── Утилиты ──────────────────────────────────────────────────────
+  function getSlotVideo(slot)   { return slot.querySelector('.camera-feed'); }
+  function getSlotLabel(slot)   { return slot.querySelector('.camera-label'); }
+  function getSlotSpinner(slot) { return slot.querySelector('.camera-spinner'); }
+
+  function setStatus(text, color = 'secondary') {
+    statusBadge.textContent = text;
+    statusBadge.className = `badge bg-${color}`;
+  }
+
+  // ── ◄ AUTH: добавить ?token= к любому URL ───────────────────────
+  function withToken(url) {
+    if (!MTX_TOKEN) return url;
+    try {
+      const u = new URL(url);
+      u.searchParams.set('token', MTX_TOKEN);
+      return u.toString();
+    } catch (e) {
+      // Если URL относительный — добавляем вручную
+      const sep = url.includes('?') ? '&' : '?';
+      return `${url}${sep}token=${encodeURIComponent(MTX_TOKEN)}`;
+    }
+  }
+
+  // ── Прогресс-бар ─────────────────────────────────────────────────
+  function startProgressBar() {
+    clearInterval(progressTimer);
+    rotBar.style.width = '0%';
+    rotBar.style.transition = 'none';
+    const step = 100 / (ROTATE_MS / 100);
+    let pct = 0;
+    progressTimer = setInterval(() => {
+      pct = Math.min(pct + step, 100);
+      rotBar.style.width = pct + '%';
+    }, 100);
+  }
+
+  // ── Закрыть все текущие WebRTC-сессии ────────────────────────────
   async function stopAllSessions() {
-    const closing = activeSessions.map(async ({ pc, sessionUrl, videoEl }) => {
-      // 1. Сброс видеоэлемента
+    const tasks = activeSessions.map(async ({ pc, sessionUrl, videoEl }) => {
+
       if (videoEl) {
         videoEl.srcObject = null;
       }
-      // 2. Закрыть серверную сессию на MediaMTX (DELETE по WHEP)
+
+      // ◄ AUTH: DELETE с токеном — MediaMTX требует авторизацию и здесь
       if (sessionUrl) {
         try {
-          await fetch(sessionUrl, { method: 'DELETE' });
+          await fetch(withToken(sessionUrl), { method: 'DELETE' });
         } catch (e) {
-          console.warn('[WHEP] Не удалось закрыть сессию на сервере:', e);
+          console.warn('[WHEP] Ошибка DELETE сессии:', e);
         }
       }
-      // 3. Закрыть PeerConnection на стороне браузера
+
       if (pc && pc.signalingState !== 'closed') {
         pc.close();
       }
     });
-    await Promise.allSettled(closing);
+
+    await Promise.allSettled(tasks);
     activeSessions = [];
   }
 
-  // ─── Запустить одну WHEP-сессию для видеоэлемента ───────────────
+  // ── Запустить одну WHEP-сессию ───────────────────────────────────
   async function startStream(videoEl, whepUrl) {
-    const pc = new RTCPeerConnection();
+    const pc = new RTCPeerConnection({
+      iceServers: []
+    });
     let sessionUrl = null;
 
     pc.addTransceiver('video', { direction: 'recvonly' });
@@ -354,86 +410,144 @@ content %}
       }
     };
 
-    // Создаём offer
+    pc.onconnectionstatechange = () => {
+      if (['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
+        console.warn('[WHEP] Соединение потеряно:', whepUrl, pc.connectionState);
+      }
+    };
+
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
 
-    // Ждём завершения сбора ICE-кандидатов
     await new Promise((resolve) => {
       if (pc.iceGatheringState === 'complete') return resolve();
-      pc.addEventListener('icegatheringstatechange', () => {
-        if (pc.iceGatheringState === 'complete') resolve();
+      pc.addEventListener('icegatheringstatechange', function handler() {
+        if (pc.iceGatheringState === 'complete') {
+          pc.removeEventListener('icegatheringstatechange', handler);
+          resolve();
+        }
       });
+      setTimeout(resolve, 5000);
     });
 
-    // POST offer → MediaMTX WHEP endpoint
-    const resp = await fetch(whepUrl, {
-      method: 'POST',
-      token: access_token,
+    // ◄ AUTH: POST на WHEP endpoint с ?token= в URL
+    const resp = await fetch(withToken(whepUrl), {
+      method:  'POST',
       headers: { 'Content-Type': 'application/sdp' },
-      body: pc.localDescription.sdp,
+      body:    pc.localDescription.sdp,
     });
 
     if (!resp.ok) {
       pc.close();
-      throw new Error(`[WHEP] Ошибка ${resp.status} для ${whepUrl}`);
+      throw new Error(`[WHEP] HTTP ${resp.status} — ${whepUrl}`);
     }
 
-    // Сохраняем URL сессии для последующего DELETE
-    sessionUrl = resp.headers.get('location');
+    const location = resp.headers.get('location');
+    // ◄ AUTH: sessionUrl сохраняем БЕЗ токена — добавим при DELETE через withToken()
+    sessionUrl = location
+      ? (location.startsWith('http') ? location : new URL(location, whepUrl).href)
+      : null;
+
     const answerSdp = await resp.text();
     await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
 
-    // Регистрируем сессию
     activeSessions.push({ pc, sessionUrl, videoEl });
   }
 
-  // ─── Загрузить один «экран» из 9 камер ──────────────────────────
+  // ── Загрузить страницу ───────────────────────────────────────────
   async function loadPage(pageIndex) {
-    // 1. Останавливаем всё текущее
+    setStatus('Переключение...', 'warning');
     await stopAllSessions();
 
-    const videos = document.querySelectorAll('.camera-slot video');
-    const start = pageIndex * 9;
-    const cameras = allCameras.slice(start, start + 9); // allCameras — из шаблона Jinja
+    const start   = pageIndex * PAGE_SIZE;
+    const cameras = ALL_CAMERAS.slice(start, start + PAGE_SIZE);
 
-    // 2. Сбрасываем все слоты
-    videos.forEach((v, i) => {
-      v.srcObject = null;
-      v.closest('.camera-slot').style.visibility =
-        i < cameras.length ? 'visible' : 'hidden';
+    slots.forEach((slot, i) => {
+      const video   = getSlotVideo(slot);
+      const label   = getSlotLabel(slot);
+      const spinner = getSlotSpinner(slot);
+
+      video.srcObject = null;
+
+      if (i < cameras.length) {
+        slot.style.visibility = 'visible';
+        label.textContent     = cameras[i].name || `Камера ${start + i + 1}`;
+        spinner.style.display = 'block';
+      } else {
+        slot.style.visibility = 'hidden';
+        label.textContent     = '';
+        spinner.style.display = 'none';
+      }
     });
 
-    // 3. Параллельно запускаем новые сессии
     cameras.forEach((cam, i) => {
-      startStream(videos[i], cam.whep_url)
-        .catch((err) => console.error(`[WHEP] Камера "${cam.name}":`, err));
+      const video   = getSlotVideo(slots[i]);
+      const spinner = getSlotSpinner(slots[i]);
+
+      startStream(video, cam.whep_url)
+        .then(() => { spinner.style.display = 'none'; })
+        .catch((err) => {
+          spinner.style.display = 'none';
+          getSlotLabel(slots[i]).textContent = '⚠ ' + (cam.name || '');
+          console.error(`[WHEP] Камера "${cam.name}":`, err);
+        });
     });
+
+    pageInfo.textContent = `Страница ${pageIndex + 1} из ${totalPages}`;
+    setStatus(`Страница ${pageIndex + 1} / ${totalPages}`, 'success');
+    startProgressBar();
   }
 
-  // ─── Запустить цикл ротации ──────────────────────────────────────
-  async function startRotation() {
-    const totalPages = Math.ceil(allCameras.length / 9);
-    if (totalPages === 0) return;
-
-    await loadPage(currentPage);
-    currentPage = (currentPage + 1) % totalPages;
-
-    rotationTimer = setInterval(async () => {
-      await loadPage(currentPage);
+  // ── Ротация ──────────────────────────────────────────────────────
+  function startRotation() {
+    if (totalPages === 0) {
+      setStatus('Камеры не найдены', 'danger');
+      return;
+    }
+    loadPage(currentPage);
+    rotationTimer = setInterval(() => {
       currentPage = (currentPage + 1) % totalPages;
-    }, 20000);
+      loadPage(currentPage);
+    }, ROTATE_MS);
   }
 
-  // ─── Очистка при уходе со страницы (закрытие вкладки) ───────────
-  window.addEventListener('beforeunload', () => {
-    stopAllSessions();
-    if (rotationTimer) clearInterval(rotationTimer);
+  // ── Ручная навигация ─────────────────────────────────────────────
+  function restartRotation() {
+    clearInterval(rotationTimer);
+    clearInterval(progressTimer);
+    loadPage(currentPage);
+    rotationTimer = setInterval(() => {
+      currentPage = (currentPage + 1) % totalPages;
+      loadPage(currentPage);
+    }, ROTATE_MS);
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    currentPage = (currentPage - 1 + totalPages) % totalPages;
+    restartRotation();
   });
 
-  // ─── Старт ──────────────────────────────────────────────────────
+  document.getElementById('btn-next').addEventListener('click', () => {
+    currentPage = (currentPage + 1) % totalPages;
+    restartRotation();
+  });
+
+  // ── Очистка при уходе со страницы ───────────────────────────────
+  window.addEventListener('beforeunload', () => {
+    clearInterval(rotationTimer);
+    clearInterval(progressTimer);
+    activeSessions.forEach(({ pc, videoEl }) => {
+      if (videoEl) videoEl.srcObject = null;
+      if (pc && pc.signalingState !== 'closed') pc.close();
+    });
+    activeSessions = [];
+  });
+
   document.addEventListener('DOMContentLoaded', startRotation);
+
+})();
 </script>
+
 
 
 
