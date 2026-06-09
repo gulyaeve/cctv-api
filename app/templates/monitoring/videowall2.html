@@ -511,26 +511,26 @@ content %}
     }, ROTATE_MS);
   }
 
-  // ── Ручная навигация ─────────────────────────────────────────────
-  function restartRotation() {
-    clearInterval(rotationTimer);
-    clearInterval(progressTimer);
-    loadPage(currentPage);
-    rotationTimer = setInterval(() => {
-      currentPage = (currentPage + 1) % totalPages;
-      loadPage(currentPage);
-    }, ROTATE_MS);
-  }
+//   // ── Ручная навигация ─────────────────────────────────────────────
+//   function restartRotation() {
+//     clearInterval(rotationTimer);
+//     clearInterval(progressTimer);
+//     loadPage(currentPage);
+//     rotationTimer = setInterval(() => {
+//       currentPage = (currentPage + 1) % totalPages;
+//       loadPage(currentPage);
+//     }, ROTATE_MS);
+//   }
 
-  document.getElementById('btn-prev').addEventListener('click', () => {
-    currentPage = (currentPage - 1 + totalPages) % totalPages;
-    restartRotation();
-  });
+//   document.getElementById('btn-prev').addEventListener('click', () => {
+//     currentPage = (currentPage - 1 + totalPages) % totalPages;
+//     restartRotation();
+//   });
 
-  document.getElementById('btn-next').addEventListener('click', () => {
-    currentPage = (currentPage + 1) % totalPages;
-    restartRotation();
-  });
+//   document.getElementById('btn-next').addEventListener('click', () => {
+//     currentPage = (currentPage + 1) % totalPages;
+//     restartRotation();
+//   });
 
   // ── Очистка при уходе со страницы ───────────────────────────────
   window.addEventListener('beforeunload', () => {
