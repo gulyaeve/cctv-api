@@ -21,6 +21,7 @@ from app.pages.schedule import router as schedule_frontend_router
 from app.schedule.router import get_active_monitoring
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
+from app.config import settings
 
 router = APIRouter(
     tags=["Фронтенд"],
@@ -129,6 +130,34 @@ async def page_get_videowall_page(
         # name="monitoring/camera_stream.html",
         name="monitoring/videowall.html",
         context={"request": request, "cameras": cameras, "current_user": current_user},
+    )
+
+
+@router.get(
+    "/videowall2",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))],
+)
+async def page_get_videowall_page_2(
+    request: Request,
+    cameras=Depends(get_all_cameras),
+    current_user: UserModel = Depends(get_current_user),
+):
+    logger.info("User open videowall2", extra=current_user, exc_info=True)
+    return templates.TemplateResponse(
+        request=request,
+        # name="monitoring/camera_stream.html",
+        name="monitoring/videowall2.html",
+        context={
+            "current_user": current_user,
+            "request": request,
+            "cameras": [
+                {
+                    "name": cam.view,
+                    "whep_url": f"{settings.DOMAIN}/media/{cam.id}_p/whep"
+                } for cam in cameras
+            ]
+        },
     )
 
 
