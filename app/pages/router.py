@@ -21,7 +21,6 @@ from app.pages.schedule import router as schedule_frontend_router
 from app.schedule.router import get_active_monitoring
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
-from app.config import settings
 
 router = APIRouter(
     tags=["Фронтенд"],
