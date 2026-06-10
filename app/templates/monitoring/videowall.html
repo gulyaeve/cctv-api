@@ -166,7 +166,7 @@ content %}
         reader;
 
         for (let i = 0; i < dataCameras.length; i++) {
-            startStream(dataCameras[i]["view"], "https://{{ request.base_url.hostname }}/media/" + dataCameras[i]["id"] + "_p/whep")
+            reader = startStream(dataCameras[i]["view"], "https://{{ request.base_url.hostname }}/media/" + dataCameras[i]["id"] + "_p/whep")
                 .catch((err) => {
                     console.error(`[WHEP] Камера "${dataCameras[i]["id"]}":`, err);
                 });
@@ -181,7 +181,7 @@ content %}
 
     window.addEventListener("beforeunload", () => {
         if (reader !== null) {
-            reader.close();
+            stopAllSessions();
         }
     });
 
