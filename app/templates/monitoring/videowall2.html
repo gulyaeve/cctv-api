@@ -106,7 +106,7 @@ function authHeaders() {
   }
 
   // ── Закрыть все текущие WebRTC-сессии ────────────────────────────
-    async function stopAllSessions() {
+  async function stopAllSessions() {
     const tasks = activeSessions.map(async ({ pc, sessionUrl, videoEl }) => {
         if (videoEl) videoEl.srcObject = null;
 
@@ -132,7 +132,7 @@ function authHeaders() {
     }
 
   // ── Запустить одну WHEP-сессию ───────────────────────────────────
-    async function startStream(videoEl, whepUrl) {
+  async function startStream(videoEl, whepUrl) {
     const pc = new RTCPeerConnection({ iceServers: [] });
     let sessionUrl = null;
 

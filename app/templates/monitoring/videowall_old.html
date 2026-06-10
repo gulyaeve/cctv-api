@@ -98,7 +98,7 @@ content %}
 
 {% endblock %} {% block scripts %}
 
-<!-- <script defer src="{{ url_for('static', path='js/reader.js') }}"></script> -->
+<script defer src="{{ url_for('static', path='js/reader.js') }}"></script>
 <script>
     function getCookie(name) {
         const cookieValue = document.cookie
@@ -111,11 +111,10 @@ content %}
     const access_token = getCookie("jwt_access_token");
 </script>
 <script type="text/javascript">
-    let activeSessions = [];
     let dataCameras = [];
     let dataCamerasLength = [];
     let reader = null;
-    let chunckCount = 0;
+    let cunckCount = 0;
     let params_send = "";
 
     let params = new URLSearchParams(document.location.search);
@@ -148,35 +147,46 @@ content %}
             .then((result) => {
                 dataCameras = result;
                 dataCamerasLength = dataCameras.length;
-                cameraConnect(dataCameras[chunckCount], timeout);
+                cameraConnect(dataCameras[cunckCount], timeout);
             });
         let timer = setInterval(
-            () => cameraConnect(dataCameras[chunckCount]),
+            () => cameraConnect(dataCameras[cunckCount]),
             timeout,
         );
     });
-    function authHeaders() {
-        const headers = { 'Content-Type': 'application/sdp' };
-        if (access_token) {
-            headers['Authorization'] = `Bearer ${access_token}`;
-        }
-        return headers;
-    }
+
     function cameraConnect(dataCameras, timeout) {
         reader;
 
         for (let i = 0; i < dataCameras.length; i++) {
-            startStream(dataCameras[i]["view"], "https://{{ request.base_url.hostname }}/media/" + dataCameras[i]["id"] + "_p/whep")
-                .catch((err) => {
-                    console.error(`[WHEP] Камера "${dataCameras[i]["id"]}":`, err);
-                });
+            reader = new MediaMTXWebRTCReader({
+                // url: "https://media.cctv.itmoscow/" + dataCameras[i]["id"] + "_p/whep",
+                url:
+                    "https://{{ request.base_url.hostname }}/media/" +
+                    dataCameras[i]["id"] +
+                    "_p/whep",
+                token: access_token,
+                onError: (err) => {
+                    console.error(err);
+                },
+                onTrack: (evt) => {
+                    document.getElementById("camera" + i).srcObject =
+                        evt.streams[0];
+                },
+                onDataChannel: (evt) => {
+                    evt.channel.binaryType = "arraybuffer";
+                    evt.channel.onmessage = (evt) => {
+                        console.log("data channel message", evt.data);
+                    };
+                },
+            });
         }
-        chunckCount++;
-        if (chunckCount >= dataCamerasLength) {
+        cunckCount++;
+        if (cunckCount >= dataCamerasLength) {
             // console.log('dataCamerasLength = ' + dataCamerasLength)
-            chunckCount = 0;
+            cunckCount = 0;
         }
-        setTimeout(() => stopAllSessions(), timeout);
+        setTimeout(() => reader.close(), timeout);
     }
 
     window.addEventListener("beforeunload", () => {
@@ -184,90 +194,6 @@ content %}
             reader.close();
         }
     });
-
-      // ── Запустить одну WHEP-сессию ───────────────────────────────────
-    async function startStream(videoEl, whepUrl) {
-        const pc = new RTCPeerConnection({ iceServers: [] });
-        let sessionUrl = null;
-
-        pc.addTransceiver('video', { direction: 'recvonly' });
-        pc.addTransceiver('audio', { direction: 'recvonly' });
-
-        pc.ontrack = (evt) => {
-            if (evt.track.kind === 'video') {
-            videoEl.srcObject = evt.streams[0];
-            }
-        };
-
-        pc.onconnectionstatechange = () => {
-            if (['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
-            console.warn('[WHEP] Соединение потеряно:', whepUrl, pc.connectionState);
-            }
-        };
-
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-
-        await new Promise((resolve) => {
-            if (pc.iceGatheringState === 'complete') return resolve();
-            pc.addEventListener('icegatheringstatechange', function handler() {
-            if (pc.iceGatheringState === 'complete') {
-                pc.removeEventListener('icegatheringstatechange', handler);
-                resolve();
-            }
-            });
-            setTimeout(resolve, 5000);
-        });
-
-        // ✅ Токен передаётся в заголовке, НЕ в URL
-        const resp = await fetch(whepUrl, {
-            method: 'POST',
-            headers: authHeaders(), // ← Authorization: Bearer TOKEN
-            body: pc.localDescription.sdp,
-        });
-
-        if (!resp.ok) {
-            pc.close();
-            throw new Error(`[WHEP] HTTP ${resp.status} — ${whepUrl}`);
-        }
-
-        const location = resp.headers.get('location');
-        sessionUrl = location
-            ? (location.startsWith('http') ? location : new URL(location, whepUrl).href)
-            : null;
-
-        const answerSdp = await resp.text();
-        await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
-
-        activeSessions.push({ pc, sessionUrl, videoEl });
-    }
-    
-    // ── Закрыть все текущие WebRTC-сессии ────────────────────────────
-    async function stopAllSessions() {
-        const tasks = activeSessions.map(async ({ pc, sessionUrl, videoEl }) => {
-            if (videoEl) videoEl.srcObject = null;
-
-            if (sessionUrl) {
-            try {
-                // ✅ Bearer токен и здесь
-                await fetch(sessionUrl, {
-                    method: 'DELETE',
-                    headers: access_token
-                        ? { 'Authorization': `Bearer ${access_token}` }
-                        : {},
-                    });
-            } catch (e) {
-                console.warn('[WHEP] Ошибка DELETE сессии:', e);
-            }
-            }
-
-            if (pc && pc.signalingState !== 'closed') pc.close();
-        });
-
-        await Promise.allSettled(tasks);
-        activeSessions = [];
-        }
-
 </script>
 <script>
     $(function () {
