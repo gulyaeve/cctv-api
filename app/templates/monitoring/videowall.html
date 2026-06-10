@@ -166,10 +166,64 @@ content %}
         reader;
 
         for (let i = 0; i < dataCameras.length; i++) {
-            reader = startStream(dataCameras[i]["view"], "https://{{ request.base_url.hostname }}/media/" + dataCameras[i]["id"] + "_p/whep")
-                .catch((err) => {
-                    console.error(`[WHEP] Камера "${dataCameras[i]["id"]}":`, err);
+            const pc = new RTCPeerConnection({ iceServers: [] });
+            let sessionUrl = null;
+            let videoEl = dataCameras[i]["view"]
+            let whepUrl = "https://{{ request.base_url.hostname }}/media/" + dataCameras[i]["id"] + "_p/whep"
+
+            pc.addTransceiver('video', { direction: 'recvonly' });
+            pc.addTransceiver('audio', { direction: 'recvonly' });
+
+            pc.ontrack = (evt) => {
+                if (evt.track.kind === 'video') {
+                    document.getElementById("camera" + i).srcObject = evt.streams[0];
+                }
+            };
+
+            pc.onconnectionstatechange = () => {
+                if (['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
+                console.warn('[WHEP] Соединение потеряно:', whepUrl, pc.connectionState);
+                }
+            };
+
+            const offer = pc.createOffer();
+            pc.setLocalDescription(offer);
+
+            new Promise((resolve) => {
+                if (pc.iceGatheringState === 'complete') return resolve();
+                pc.addEventListener('icegatheringstatechange', function handler() {
+                if (pc.iceGatheringState === 'complete') {
+                    pc.removeEventListener('icegatheringstatechange', handler);
+                    resolve();
+                }
                 });
+                setTimeout(resolve, 5000);
+            });
+
+            const resp = fetch(whepUrl, {
+                method: 'POST',
+                headers: authHeaders(),
+                body: pc.localDescription.sdp,
+            });
+
+            if (!resp.ok) {
+                pc.close();
+                throw new Error(`[WHEP] HTTP ${resp.status} — ${whepUrl}`);
+            }
+
+            const location = resp.headers.get('location');
+            sessionUrl = location
+                ? (location.startsWith('http') ? location : new URL(location, whepUrl).href)
+                : null;
+
+            const answerSdp = resp.text();
+            pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
+
+            activeSessions.push({ pc, sessionUrl, videoEl });
+            // reader = startStream(dataCameras[i]["view"], "https://{{ request.base_url.hostname }}/media/" + dataCameras[i]["id"] + "_p/whep")
+            //     .catch((err) => {
+            //         console.error(`[WHEP] Камера "${dataCameras[i]["id"]}":`, err);
+            //     });
         }
         chunckCount++;
         if (chunckCount >= dataCamerasLength) {
@@ -184,65 +238,7 @@ content %}
             stopAllSessions();
         }
     });
-
-      // ── Запустить одну WHEP-сессию ───────────────────────────────────
-    async function startStream(videoEl, whepUrl) {
-        const pc = new RTCPeerConnection({ iceServers: [] });
-        let sessionUrl = null;
-
-        pc.addTransceiver('video', { direction: 'recvonly' });
-        pc.addTransceiver('audio', { direction: 'recvonly' });
-
-        pc.ontrack = (evt) => {
-            if (evt.track.kind === 'video') {
-                // videoEl.srcObject = evt.streams[0];
-                document.getElementById("camera" + i).srcObject = evt.streams[0];
-            }
-        };
-
-        pc.onconnectionstatechange = () => {
-            if (['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
-            console.warn('[WHEP] Соединение потеряно:', whepUrl, pc.connectionState);
-            }
-        };
-
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-
-        await new Promise((resolve) => {
-            if (pc.iceGatheringState === 'complete') return resolve();
-            pc.addEventListener('icegatheringstatechange', function handler() {
-            if (pc.iceGatheringState === 'complete') {
-                pc.removeEventListener('icegatheringstatechange', handler);
-                resolve();
-            }
-            });
-            setTimeout(resolve, 5000);
-        });
-
-        // ✅ Токен передаётся в заголовке, НЕ в URL
-        const resp = await fetch(whepUrl, {
-            method: 'POST',
-            headers: authHeaders(), // ← Authorization: Bearer TOKEN
-            body: pc.localDescription.sdp,
-        });
-
-        if (!resp.ok) {
-            pc.close();
-            throw new Error(`[WHEP] HTTP ${resp.status} — ${whepUrl}`);
-        }
-
-        const location = resp.headers.get('location');
-        sessionUrl = location
-            ? (location.startsWith('http') ? location : new URL(location, whepUrl).href)
-            : null;
-
-        const answerSdp = await resp.text();
-        await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
-
-        activeSessions.push({ pc, sessionUrl, videoEl });
-    }
-    
+   
     // ── Закрыть все текущие WebRTC-сессии ────────────────────────────
     async function stopAllSessions() {
         const tasks = activeSessions.map(async ({ pc, sessionUrl, videoEl }) => {
