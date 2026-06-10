@@ -67,33 +67,12 @@ content %}
     <div id="btn"><span></span></div>
 </div>
 <div class="row videowall-monitoring">
-    <div class="col-4 p-0 video-monitoring" style="">
-        <video id="camera0" controls muted autoplay></video>
-    </div>
+    {% for i in range(9) %}
     <div class="col-4 p-0 video-monitoring">
-        <video id="camera1" controls muted autoplay></video>
+        <!-- <video id="camera{{ i }}" controls muted autoplay></video> -->
+        <video id="camera{{ i }}" autoplay muted playsinline></video>
     </div>
-    <div class="col-4 p-0 video-monitoring">
-        <video id="camera2" controls muted autoplay></video>
-    </div>
-    <div class="col-4 p-0 video-monitoring">
-        <video id="camera3" controls muted autoplay></video>
-    </div>
-    <div class="col-4 p-0 video-monitoring">
-        <video id="camera4" controls muted autoplay></video>
-    </div>
-    <div class="col-4 p-0 video-monitoring">
-        <video id="camera5" controls muted autoplay></video>
-    </div>
-    <div class="col-4 p-0 video-monitoring">
-        <video id="camera6" controls muted autoplay></video>
-    </div>
-    <div class="col-4 p-0 video-monitoring">
-        <video id="camera7" controls muted autoplay></video>
-    </div>
-    <div class="col-4 p-0 video-monitoring">
-        <video id="camera8" controls muted autoplay></video>
-    </div>
+    {% for i in range(9) %}
 </div>
 
 {% endblock %} {% block scripts %}
