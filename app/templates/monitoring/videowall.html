@@ -195,7 +195,8 @@ content %}
 
         pc.ontrack = (evt) => {
             if (evt.track.kind === 'video') {
-            videoEl.srcObject = evt.streams[0];
+                // videoEl.srcObject = evt.streams[0];
+                document.getElementById("camera" + i).srcObject = evt.streams[0];
             }
         };
 
