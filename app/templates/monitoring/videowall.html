@@ -77,7 +77,6 @@ content %}
 
 {% endblock %} {% block scripts %}
 
-<!-- <script defer src="{{ url_for('static', path='js/reader.js') }}"></script> -->
 <script>
     function getCookie(name) {
         const cookieValue = document.cookie
@@ -164,7 +163,7 @@ content %}
         }
     });
 
-      // ── Запустить одну WHEP-сессию ───────────────────────────────────
+    // ── Запустить одну WHEP-сессию ───────────────────────────────────
     async function startStream(camera_id, videoEl, whepUrl) {
         const pc = new RTCPeerConnection({ iceServers: [] });
         let sessionUrl = null;
@@ -174,7 +173,6 @@ content %}
 
         pc.ontrack = (evt) => {
             if (evt.track.kind === 'video') {
-                // videoEl.srcObject = evt.streams[0];
                 document.getElementById("camera" + camera_id).srcObject = evt.streams[0];
             }
         };
@@ -199,7 +197,6 @@ content %}
             setTimeout(resolve, 5000);
         });
 
-        // ✅ Токен передаётся в заголовке, НЕ в URL
         const resp = await fetch(whepUrl, {
             method: 'POST',
             headers: authHeaders(), // ← Authorization: Bearer TOKEN
