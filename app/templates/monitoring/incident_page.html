@@ -20,8 +20,8 @@
   
     <div class="row m-0">
       <div class="col-4 pl-3 pr-0 pt-3 m-0">
-        <div class="control-panel-meta">
-          <div class="control-panel-meta-head">
+        <div class="status inc-{% if incident.status == 0 %}alright {% elif incident.status == 2 %}alert {% elif incident.status == 3 %}control {% endif %} d-block">
+          <div class="status-head-placeholder d-flex">
             {{ incident.time_created.strftime('%d.%m.%Y %H:%M') }}
             <hr class="mt-1">
           </div>
