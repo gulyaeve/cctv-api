@@ -3,6 +3,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import event
 
 from app.buildings.dao import BuildingsDAO
 from app.buildings.models import BuildingModel
@@ -13,11 +14,12 @@ from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
 from app.incidents.dao import IncidentsDAO
 from app.incidents.models import IncidentModel
-from app.incidents.router import get_all_incidents
+from app.incidents.router import get_all_incidents, get_incident
 from app.incidents.type.router import get_all_incident_types
 from app.logger import logger
 from app.pages.buildings import router as buildings_frontend_router
 from app.pages.schedule import router as schedule_frontend_router
+from app.schedule.dao import ScheduleDAO
 from app.schedule.router import get_active_monitoring
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
@@ -71,6 +73,30 @@ async def page_get_incidents_page(
         context={
             "incidents": incidents,
             "current_user": current_user,
+        },
+    )
+
+
+@router.get(
+    "/incidents/{id}",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))],
+)
+async def page_get_incident_by_id_page(
+    request: Request,
+    incident: IncidentModel = Depends(get_incident),
+    current_user: UserModel = Depends(get_current_user),
+):
+    event = await ScheduleDAO.find_one_or_none(id=incident.event)
+    logger.info(f"User open incident page {incident.id=} {event.id=}", extra=current_user, exc_info=True)
+    return templates.TemplateResponse(
+        request=request,
+        name="monitoring/incident_page.html",
+        context={
+            "request": request,
+            "incident": incident,
+            "current_user": current_user,
+            "event": event
         },
     )
 

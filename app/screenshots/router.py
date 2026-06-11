@@ -23,7 +23,7 @@ async def serve_screenshots(file_path: str):
         return HTTPException(400, "File does not exists")
     
 
-@router.get("")
+@router.get("", name="get_screenshot_by_ids")
 async def get_screenshot_by_ids(incident_id: int, camera_id: int):
     file = find_screenshot(incident_id, camera_id)
     if file is not None:

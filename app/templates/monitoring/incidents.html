@@ -145,7 +145,7 @@
       <tbody>
           {% for incident in incidents %}
           <tr>
-              <td><a href="">{{ incident.subject }}</a></td>
+              <td><a href="{{ url_for('page_get_incident_by_id_page', id=incident.id) }}">{{ incident.subject }}</a></td>
               <td>{{ incident.time_created.strftime('%d.%m.%Y %H:%M') }}</td>
               <td class="text-center">{{ incident.building_name }}, {{ incident.classroom_name }}</td>
               <td>{{ incident.teacher_name }}</td>

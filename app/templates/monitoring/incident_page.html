@@ -1,0 +1,63 @@
+{% extends "mainmenu.html" %}
+
+{# 0 - всё хорошо, 1 - ещё не смотрел, 2 - инцидент, 3 - контроль #}
+{% block title %}{{ 'Всё хорошо' if incident.status == 0 else 'Инцидент' if incident.status == 2 else 'Контроль' if incident.status == 3 else 'Ещё не смотрел' }}{% endblock %}
+
+{% block breadcrubs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{url_for('page_get_incidents_page')}}">Инциденты</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ incident.current_schedule }}. {{ event.timestamp_start.strftime('%d.%m.%Y %H:%M') }}</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<div class="row m-0">
+  <div class="col-9 p-0">
+    
+  
+    <div class="row m-0">
+      <div class="col-4 pl-3 pr-0 pt-3 m-0">
+        <div class="control-panel-meta">
+          <div class="control-panel-meta-head">
+            {{ incident.time_created.strftime('%d.%m.%Y %H:%M') }}
+            <hr class="mt-1">
+          </div>
+          <div style="word-wrap: anywhere;">
+            <b>Кабинет:</b> {{ incident.current_classroom }}<br>
+            <b>Корпус:</b> {{ incident.current_building}}<br>
+            <br>
+            <b>Визор:</b> {{ incident.current_visor }}<br>
+            <b>Комментарий визора:</b> {{ incident.comment }}<br>
+            <br>
+            <b>{{ "Экзамен" if incident.event_type == 1 else "Занятие" }}:</b><br>
+            {{ incident.current_schedule }}<br>
+            <b>Время {{ "экзамена" if incident.event_type == 1 else "занятия" }}:</b> {{ event.timestamp_start.strftime('%H:%M') }} - {{ event.timestamp_end.strftime('%H:%M') }}<br>
+            <b>{{ "Тех.эксперт" if incident.event_type == 1 else "Преподаватель" }}:</b><br>
+            {{ incident.current_teacher }}<br>
+            <b>Группа:</b><br>
+            {{ incident.current_group }}<br>
+            {% if incident.curator %}
+              <b>Куратор группы:</b><br>
+              {{ incident.curator }}<br>
+            {% endif %}
+            {% if incident.group_size %}
+              <b>Количество студентов в группе:</b><br>
+              {{ incident.group_size }}<br>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-8 p-3 m-0">
+        <div class="video-wall d-flex ">
+          {% for camera_id in incident.cameras_ids %}
+            <img src="{{ url_for('get_screenshot_by_ids').include_query_params(incident_id=incident.id, camera_id=camera_id) }}">
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
