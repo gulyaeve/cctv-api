@@ -1,9 +1,8 @@
-from typing import List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import event
 
 from app.buildings.dao import BuildingsDAO
 from app.buildings.models import BuildingModel
@@ -63,7 +62,7 @@ async def page_get_dashboard_page(
 )
 async def page_get_incidents_page(
     request: Request,
-    incidents: List[IncidentModel] = Depends(get_all_incidents),
+    incidents = Depends(get_all_incidents),
     current_user: UserModel = Depends(get_current_user),
 ):
     logger.info("User open incidents", extra=current_user, exc_info=True)
