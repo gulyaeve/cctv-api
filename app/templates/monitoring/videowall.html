@@ -93,7 +93,7 @@ content %}
     let dataCameras = [];
     let dataCamerasLength = [];
     let reader = null;
-    let chunckCount = 0;
+    let chunkCount = 0;
     let params_send = "";
 
     let params = new URLSearchParams(document.location.search);
@@ -120,26 +120,20 @@ content %}
                 building_id: current_buildings_id,
             });
         }
-        console.log(`${url}${params_send}`);
+        // console.log(`${url}${params_send}`);
         let response = fetch(`${url}${params_send}`)
             .then((response) => response.json())
             .then((result) => {
                 dataCameras = result;
                 dataCamerasLength = dataCameras.length;
-                cameraConnect(dataCameras[chunckCount], timeout);
+                cameraConnect(dataCameras[chunkCount], timeout);
             });
         let timer = setInterval(
-            () => cameraConnect(dataCameras[chunckCount]),
+            () => cameraConnect(dataCameras[chunkCount]),
             timeout,
         );
     });
-    function authHeaders() {
-        const headers = { 'Content-Type': 'application/sdp' };
-        if (access_token) {
-            headers['Authorization'] = `Bearer ${access_token}`;
-        }
-        return headers;
-    }
+    
     function cameraConnect(dataCameras, timeout) {
         reader;
 
@@ -149,10 +143,10 @@ content %}
                     console.error(`[WHEP] Камера "${dataCameras[i]["id"]}":`, err);
                 });
         }
-        chunckCount++;
-        if (chunckCount >= dataCamerasLength) {
+        chunkCount++;
+        if (chunkCount >= dataCamerasLength) {
             // console.log('dataCamerasLength = ' + dataCamerasLength)
-            chunckCount = 0;
+            chunkCount = 0;
         }
         setTimeout(() => stopAllSessions(), timeout);
     }
@@ -179,7 +173,7 @@ content %}
 
         pc.onconnectionstatechange = () => {
             if (['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
-            console.warn('[WHEP] Соединение потеряно:', whepUrl, pc.connectionState);
+                console.warn('[WHEP] Соединение потеряно:', whepUrl, pc.connectionState);
             }
         };
 
@@ -199,7 +193,10 @@ content %}
 
         const resp = await fetch(whepUrl, {
             method: 'POST',
-            headers: authHeaders(), // ← Authorization: Bearer TOKEN
+            headers: {
+                'Content-Type': 'application/sdp',
+                'Authorization': `Bearer ${access_token}`
+            },
             body: pc.localDescription.sdp,
         });
 
@@ -226,13 +223,10 @@ content %}
 
             if (sessionUrl) {
             try {
-                // Bearer токен и здесь
                 await fetch(sessionUrl, {
                     method: 'DELETE',
-                    headers: access_token
-                        ? { 'Authorization': `Bearer ${access_token}` }
-                        : {},
-                    });
+                    headers: { 'Authorization': `Bearer ${access_token}` }
+                });
             } catch (e) {
                 console.warn('[WHEP] Ошибка DELETE сессии:', e);
             }
