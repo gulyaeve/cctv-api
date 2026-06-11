@@ -162,7 +162,7 @@
               </td>
               <th class="text-center">
                 {# for cameras_screenshot in incident.cameras_screenshots #}
-                  <a href="{{ cameras_screenshot }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                  <a href="{{ url_for('serve_screenshots', file_path=cameras_screenshot) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
                 {# endfor #}
               </th>
           </tr>
