@@ -62,7 +62,7 @@ async def page_get_dashboard_page(
 )
 async def page_get_incidents_page(
     request: Request,
-    incidents = Depends(get_all_incidents),
+    incidents=Depends(get_all_incidents),
     current_user: UserModel = Depends(get_current_user),
 ):
     logger.info("User open incidents", extra=current_user, exc_info=True)
@@ -87,7 +87,11 @@ async def page_get_incident_by_id_page(
     current_user: UserModel = Depends(get_current_user),
 ):
     event = await ScheduleDAO.find_one_or_none(id=incident.event)
-    logger.info(f"User open incident page {incident.id=} {event.id=}", extra=current_user, exc_info=True)
+    logger.info(
+        f"User open incident page {incident.id=} {event.id=}",
+        extra=current_user,
+        exc_info=True,
+    )
     return templates.TemplateResponse(
         request=request,
         name="monitoring/incident_page.html",
@@ -95,7 +99,7 @@ async def page_get_incident_by_id_page(
             "request": request,
             "incident": incident,
             "current_user": current_user,
-            "event": event
+            "event": event,
         },
     )
 
@@ -231,9 +235,9 @@ async def page_get_login(request: Request):
     return templates.TemplateResponse("auth/login.html", {"request": request})
 
 
-@router.get("/register", response_class=HTMLResponse)
-async def get_register_page(request: Request):
-    return templates.TemplateResponse("auth/register.html", {"request": request})
+# @router.get("/register", response_class=HTMLResponse)
+# async def get_register_page(request: Request):
+# return templates.TemplateResponse("auth/register.html", {"request": request})
 
 
 @router.get("/403", response_class=HTMLResponse)
