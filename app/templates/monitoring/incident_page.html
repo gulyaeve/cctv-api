@@ -7,7 +7,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{{url_for('page_get_incidents_page')}}">Инциденты</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ incident.current_schedule }}. {{ event.timestamp_start.strftime('%d.%m.%Y %H:%M') }}</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ incident.current_schedule }}. {{ incident.time_created.strftime('%d.%m.%Y %H:%M') }}</li>
   </ol>
 </nav>
 {% endblock %}
