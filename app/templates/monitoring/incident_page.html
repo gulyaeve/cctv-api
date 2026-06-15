@@ -50,15 +50,15 @@
           </div>
         </div>
       </div>
-      <div class="col-8 mb-2">
-        <div class="d-flex flex-column">
-          {% if incident.cameras_ids %}
+      {% if incident.cameras_ids %}
+        <div class="col-8 mb-2">
+          <div class="d-flex flex-column">
             {% for camera_id in incident.cameras_ids %}
               <img class="img-fluid p-1 m-1" src="{{ url_for('get_screenshot_by_ids').include_query_params(incident_id=incident.id, camera_id=camera_id) }}">
             {% endfor %}
-          {% endif %}
+          </div>
         </div>
-      </div>
+      {% endif %}
     </div>
   </div>
 </div>
