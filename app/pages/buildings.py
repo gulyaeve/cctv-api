@@ -155,9 +155,10 @@ async def page_get_building_schedule_page(
     request: Request,
     building: BuildingModel = Depends(get_building),
     current_user: UserModel = Depends(get_current_user),
-    date_from: date = (datetime.now() - timedelta(days=datetime.now().weekday())).date()
+    date_from: date = (datetime.now() - timedelta(days=datetime.now().weekday())).date(),
+    date_to: date = datetime.now().date()
 ):
-    schedules = await ScheduleDAO.find_all(building_id=id, date_from=date_from)
+    schedules = await ScheduleDAO.find_all(building_id=id, date_from=date_from, date_to=date_to)
     logger.info(
         "User open list of schedules",
         extra={
