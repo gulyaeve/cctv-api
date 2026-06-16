@@ -103,6 +103,7 @@ content %}
     }
     let current_buildings_id = params.get("building_id");
     let current_classroom_type_id = params.get("classroom_type_id");
+    let current_classroom_id = params.get("classroom_id")
 
     window.addEventListener("load", () => {
         let url = "{{ url_for('get_data_for_videowall') }}?";
@@ -118,6 +119,10 @@ content %}
         } else if (current_buildings_id != null) {
             params_send = new URLSearchParams({
                 building_id: current_buildings_id,
+            });
+        } else if (current_classroom_id != null) {
+            params_send = new URLSearchParams({
+                classroom_id: current_classroom_id,
             });
         }
         // console.log(`${url}${params_send}`);
