@@ -1,4 +1,4 @@
-{% extends "mainmenu.html" %} {% block title %}{{ building.name }}. Кабинет {{classroom.name }} {% endblock %} {% block breadcrubs %}
+{% extends "mainmenu.html" %} {% block title %}{{ building.name }}. {{classroom.name }} {% endblock %} {% block breadcrubs %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -9,7 +9,7 @@
                 Карта</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-            {{ building.name }}. Кабинет {{ classroom.name }}
+            {{ building.name }}. {{ classroom.name }}
         </li>
     </ol>
 </nav>
@@ -63,17 +63,4 @@
     {% endfor %}
 </div>
 
-<!--
-<div class="flex justify-center mb-5 text-3xl">
-    Камеры {{ classroom.name }}
-</div>
-<div class="container">
-    <div class="row">
-        {% for camera in cameras %}
-            <div class="col">
-                <img src="/camera_view/{{ camera.id }}" width="1024" class="img-fluid">
-            </div>
-        {% endfor %}
-    </div>
-</div> -->
 {% endblock %}
