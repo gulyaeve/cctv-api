@@ -8,7 +8,6 @@ from app.buildings.dao import BuildingsDAO
 from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings
 from app.cameras.dao import CamerasDAO
-from app.cameras.router import get_all_cameras
 from app.classrooms.models import ClassroomModel
 from app.classrooms.router import get_classroom
 from app.incidents.dao import IncidentsDAO
@@ -149,14 +148,13 @@ async def page_get_cameras_view_page(
 )
 async def page_get_videowall_page(
     request: Request,
-    cameras=Depends(get_all_cameras),
     current_user: UserModel = Depends(get_current_user),
 ):
     logger.info("User open videowall", extra=current_user, exc_info=True)
     return templates.TemplateResponse(
         request=request,
         name="monitoring/videowall.html",
-        context={"request": request, "cameras": cameras, "current_user": current_user},
+        context={"request": request, "current_user": current_user},
     )
 
 
