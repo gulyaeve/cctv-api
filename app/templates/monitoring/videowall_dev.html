@@ -192,7 +192,7 @@ content %}
             if (evt.track.kind === 'video') {
                 // document.getElementById("camera" + camera_id).srcObject = evt.streams[0];
                 const videoElement = document.createElement('video' + camera_id);
-                videoElement.src = whepUrl;
+                videoElement.src = evt.streams[0];
                 videoElement.controls = false;
                 videoElement.autoplay = true;
                 videoElement.muted = true;
