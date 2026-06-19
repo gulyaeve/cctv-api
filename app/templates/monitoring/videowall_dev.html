@@ -191,11 +191,13 @@ content %}
         pc.ontrack = (evt) => {
             if (evt.track.kind === 'video') {
                 // document.getElementById("camera" + camera_id).srcObject = evt.streams[0];
-                const videoElement = document.createElement('video' + camera_id);
-                videoElement.src = evt.streams[0];
+                const videoElement = document.createElement('video');
+                videoElement.id = "camera" + camera_id;
+                videoElement.srcObject = evt.streams[0];
                 videoElement.controls = false;
                 videoElement.autoplay = true;
                 videoElement.muted = true;
+                videoElement.setAttribute('playsinline', true);
                 
                 // Встраиваем стили напрямую в создаваемый тег <video>
                 videoElement.style.cssText = 'width: 100%; height: 250px; object-fit: cover; border-radius: 8px;';
@@ -270,6 +272,7 @@ content %}
 
         await Promise.allSettled(tasks);
         activeSessions = [];
+        gridContainer.innerHTML = '';
         }
 
 </script>
