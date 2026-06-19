@@ -108,20 +108,13 @@ content %}
     let current_classroom_id = params.get("classroom_id")
 
     const gridContainer = document.getElementById('grid-container');
-    // const videoSources = ['video1.mp4', 'video2.mp4'];
 
-    // activeSessions.forEach(sessionUrl => {
-    //     const videoElement = document.createElement('video');
-    //     videoElement.src = sessionUrl;
-    //     videoElement.controls = false;
-    //     videoElement.autoplay = true;
-    //     videoElement.muted = true;
-        
-    //     // Встраиваем стили напрямую в создаваемый тег <video>
-    //     videoElement.style.cssText = 'width: 100%; height: 250px; object-fit: cover; border-radius: 8px;';
-        
-    //     gridContainer.appendChild(videoElement);
-    // });
+    function getGridCapacity() {
+        const computedStyle = window.getComputedStyle(document.getElementById('grid-container'));
+        const columns = computedStyle.getPropertyValue('grid-template-columns').split(' ').filter(Boolean).length;
+        const rows = computedStyle.getPropertyValue('grid-template-rows').split(' ').filter(Boolean).length;
+        return (columns * rows) || 9; // 9 — как запасной вариант, если сетка еще не отрисовалась
+    }
 
     window.addEventListener("load", () => {
         let url = "{{ url_for('get_data_for_videowall') }}?";
@@ -143,6 +136,7 @@ content %}
                 classroom_id: current_classroom_id,
             });
         }
+        params_send.push({chunk_size: getGridCapacity()})
         // console.log(`${url}${params_send}`);
         let response = fetch(`${url}${params_send}`)
             .then((response) => response.json())
