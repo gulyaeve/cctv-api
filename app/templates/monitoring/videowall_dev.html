@@ -118,20 +118,19 @@ content %}
 
     window.addEventListener("load", () => {
         // const VideoWallURL = new URL("{{ url_for('get_data_for_videowall') }}");
-        let chunk_size = 9;
         let url = "{{ url_for('get_data_for_videowall') }}?";
         params_send = new URLSearchParams();
         if (current_buildings_id != null && current_classroom_type_id != null) {
-            params_send.append(building_id, current_buildings_id);
-            params_send.append(classroom_type_id, current_classroom_type_id);
+            params_send.append("building_id", current_buildings_id);
+            params_send.append("classroom_type_id", current_classroom_type_id);
         } else if (current_classroom_type_id != null) {
-            params_send.append(classroom_type_id, current_classroom_type_id);
+            params_send.append("classroom_type_id", current_classroom_type_id);
         } else if (current_buildings_id != null) {
-            params_send.append(building_id, current_buildings_id);
+            params_send.append("building_id", current_buildings_id);
         } else if (current_classroom_id != null) {
-            params_send.append(classroom_id, current_classroom_id);
+            params_send.append("classroom_id", current_classroom_id);
         }
-        params_send.append(chunk_size, getGridCapacity());
+        params_send.append("chunk_size", getGridCapacity());
         console.log(`${url}${params_send}`);
         let response = fetch(`${url}${params_send}`)
             .then((response) => response.json())
