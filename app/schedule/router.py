@@ -2,7 +2,7 @@ from datetime import date
 from random import choice
 from typing import Annotated, Sequence
 
-from fastapi import APIRouter, Depends, Form, Query, status
+from fastapi import APIRouter, Depends, Form, Query, Request, status
 from fastapi_cache.decorator import cache
 
 from app.broker_utils.schedule_broker import send_ai_job
@@ -80,6 +80,7 @@ async def get_schedule(id: int):
 )
 async def create_ai_task(
     id: int,
+    request: Request,
     query_params: Annotated[ScheduleAiSchema, Form()],
 ):
     schedule = await ScheduleDAO.find_by_id(id=id)
@@ -97,7 +98,7 @@ async def create_ai_task(
         camera_id=camera, id=schedule.id, date=schedule.timestamp_start.date()
     )
     # return data_to_analysis
-    await send_ai_job(data_to_analysis)
+    await send_ai_job(data_to_analysis, broker=request.app.state.broker)
 
 
 @router.post(

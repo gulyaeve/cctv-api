@@ -1,7 +1,8 @@
 from datetime import datetime
+
 from app.logger import logger
 from typing import Annotated, Sequence
-from fastapi import APIRouter, Query, status, Depends
+from fastapi import APIRouter, Query, Request, status, Depends
 
 from app.broker_utils.incident_tg import message_to_tg
 # from app.cameras.dao import CamerasDAO
@@ -68,7 +69,7 @@ async def get_incident(id: int):
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(permission_required("incident_create"))]
 )
-async def add_incident(data: IncidentAppendScheme):
+async def add_incident(data: IncidentAppendScheme, request: Request):
     """
     Add incident with cameras
     """
@@ -94,7 +95,7 @@ async def add_incident(data: IncidentAppendScheme):
     if new_object.status in [0, 2] and settings.rabbitmq_url:
         incident_full_info = IncidentFullInfo.model_validate(incident_full_info)
         logger.info("send to queue", extra=dict(incident_full_info), exc_info=True)
-        await message_to_tg(incident_full_info)
+        await message_to_tg(incident_full_info, broker=request.app.state.broker)
     
     return incident_full_info
 

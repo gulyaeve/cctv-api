@@ -1,7 +1,9 @@
-from app.config import broker, settings
+from faststream.rabbit import RabbitBroker
+
+from app.config import settings
 
 
-async def send_ai_job(data):
+async def send_ai_job(data, broker: RabbitBroker):
     async with broker:
         await broker.publish(
             data,

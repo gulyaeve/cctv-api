@@ -27,7 +27,7 @@ async def create_incident(
     building_id: int | Literal["all", "None"] | None = "all",
     event_type: int | Literal["all", "None"] | None = "all",
     ):
-    await add_incident(query_params)
+    await add_incident(query_params, request=request)
     logger.info(
         "Created incident",
         extra={

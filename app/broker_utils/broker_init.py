@@ -1,9 +1,9 @@
 import aio_pika
-from faststream.rabbit import RabbitQueue, RabbitExchange, ExchangeType
-from app.config import settings, broker
+from faststream.rabbit import RabbitBroker, RabbitQueue, RabbitExchange, ExchangeType
+from app.config import settings
 
 
-async def declare_exchange_and_queue():
+async def declare_exchange_and_queue(broker: RabbitBroker):
     # queues for image and messages
     queue_max = RabbitQueue(settings.QUEUE_NAME_MAX, auto_delete=False)
     queue_tg = RabbitQueue(settings.QUEUE_NAME_TG, auto_delete=False)

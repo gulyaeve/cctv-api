@@ -4,7 +4,6 @@ from ipaddress import ip_network
 from typing import Optional
 from urllib.parse import quote, urljoin
 
-from faststream.rabbit import RabbitBroker
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -132,4 +131,3 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-broker = RabbitBroker(url=settings.rabbitmq_url)

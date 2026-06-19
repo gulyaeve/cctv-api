@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from time import time
 
+from faststream.rabbit import RabbitBroker
 import httpx
 from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -87,11 +88,14 @@ async def lifespan(app: FastAPI):
     
     # Create exchange and queue in RabbitMQ
     if settings.rabbitmq_url:
-        await declare_exchange_and_queue()
+        broker = RabbitBroker(url=settings.rabbitmq_url)
+        app.state.broker = broker
+        await declare_exchange_and_queue(broker)
         logger.info("RabbitMQ data ready")
 
     http_client = httpx.AsyncClient()
     app.state.keycloak_client = KeycloakClient(http_client)
+
     logger.info(f"Configured keycloak auth: {settings.sso_url}")
 
     logger.info(f"Started app {app.title} v{app.version}")
