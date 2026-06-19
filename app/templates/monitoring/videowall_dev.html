@@ -118,7 +118,7 @@ content %}
 
     window.addEventListener("load", () => {
         // const VideoWallURL = new URL("{{ url_for('get_data_for_videowall') }}");
-        
+        let chunk_size = 9;
         let url = "{{ url_for('get_data_for_videowall') }}?";
         params_send = new URLSearchParams();
         if (current_buildings_id != null && current_classroom_type_id != null) {
