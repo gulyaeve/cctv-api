@@ -136,7 +136,7 @@ content %}
                 classroom_id: current_classroom_id,
             });
         }
-        params_send.push({chunk_size: getGridCapacity()})
+        params_send.append({chunk_size: getGridCapacity()})
         // console.log(`${url}${params_send}`);
         let response = fetch(`${url}${params_send}`)
             .then((response) => response.json())
