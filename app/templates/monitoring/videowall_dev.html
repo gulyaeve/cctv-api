@@ -130,7 +130,7 @@ content %}
         } else if (current_classroom_id != null) {
             params_send.append("classroom_id", current_classroom_id);
         }
-        params_send.append("chunk_size", 35);
+        params_send.append("chunk_size", 28);
         console.log(`${url}${params_send}`);
         let response = fetch(`${url}${params_send}`)
             .then((response) => response.json())
