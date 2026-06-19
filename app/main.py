@@ -103,6 +103,10 @@ async def lifespan(app: FastAPI):
     yield
 
     # After shutdown
+    if settings.rabbitmq_url:
+        # broker = app.state.broker
+        await broker.stop()
+    await http_client.aclose()
     logger.info("Application shutdown")
 
 
