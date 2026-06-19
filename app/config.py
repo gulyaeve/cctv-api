@@ -65,6 +65,10 @@ class Settings(BaseSettings):
     REDIS_HOST: str = Field(default="redis")
     REDIS_PORT: int = Field(default=6379)
 
+    @property
+    def redis_url(self) -> str:
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
+
     # RabbitMQ
     RABBITMQ_HOST: Optional[str] = None
     RABBITMQ_PORT: Optional[int] = None
