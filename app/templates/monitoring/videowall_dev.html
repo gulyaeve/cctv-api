@@ -1,0 +1,378 @@
+{% extends "mainmenu.html" %} {% block container %}-fluid{% endblock %} {% block
+content %}
+<div class="slide_container">
+    <nav id="menu">
+        <div class="container-sm">
+            <form
+                class=""
+                action="{{ url_for('page_get_videowall_page') }}"
+                method="get"
+                enctype="multipart/form-data"
+            >
+                <div class="row">
+                    <div class="form-group mr-5">
+                        <label for="buildings-list">Корпус</label>
+                        <input
+                            type="text"
+                            id="building-id"
+                            name="building_id"
+                            class="d-none"
+                            disabled
+                        />
+                        <select class="form-control" id="building_id">
+                            <option value="0">Все корпуса</option>
+                        </select>
+                    </div>
+                    <div class="form-group mr-5">
+                        <label for="type-list">Тип камеры</label>
+                        <input
+                            type="text"
+                            id="types-id"
+                            name="classroom_type_id"
+                            class="d-none"
+                            disabled
+                        />
+                        <select class="form-control" id="classroom_type_id">
+                            <option value="0">Все типы</option>
+                        </select>
+                    </div>
+                    <div class="form-group mr-5">
+                        <label for="timeout-list">Таймаут</label>
+
+                        <select
+                            class="form-control"
+                            id="timeout"
+                            name="timeout"
+                        >
+                            <option value="20000">20 сек</option>
+                            <option value="30000">30 сек</option>
+                            <option value="40000">40 сек</option>
+                            <option value="50000">50 сек</option>
+                            <option value="60000">60 сек</option>
+                        </select>
+                    </div>
+                    <div class="form-group mr-5" style="display: flex">
+                        <button
+                            class="btn btn-primary"
+                            type="submit"
+                            style="margin: auto"
+                        >
+                            Сформировать
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </nav>
+    <div id="btn"><span></span></div>
+</div>
+<!-- <div class="row videowall-monitoring">
+    {% for i in range(9) %}
+    <div class="col-4 p-0 video-monitoring">
+        <!-- <video id="camera{{ i }}" controls muted autoplay></video> -->
+        <!-- <video id="camera{{ i }}" autoplay muted playsinline></video>
+    </div>
+    {% endfor %}
+</div> -->
+<div id="grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; padding: 15px; width: 100%;"></div>
+
+
+{% endblock %} {% block scripts %}
+
+<script>
+    function getCookie(name) {
+        const cookieValue = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith(`${name}=`))
+            ?.split("=")[1]; // The optional chaining operator (?) is used here
+
+        return cookieValue || null;
+    }
+    const access_token = getCookie("jwt_access_token");
+</script>
+<script type="text/javascript">
+    let activeSessions = [];
+    let dataCameras = [];
+    let dataCamerasLength = [];
+    let reader = null;
+    let chunkCount = 0;
+    let params_send = "";
+
+    let params = new URLSearchParams(document.location.search);
+    let timeout = params.get("timeout");
+    if (timeout == null) {
+        timeout = 20000;
+    }
+    let current_buildings_id = params.get("building_id");
+    let current_classroom_type_id = params.get("classroom_type_id");
+    let current_classroom_id = params.get("classroom_id")
+
+    const gridContainer = document.getElementById('grid-container');
+    // const videoSources = ['video1.mp4', 'video2.mp4'];
+
+    // activeSessions.forEach(sessionUrl => {
+    //     const videoElement = document.createElement('video');
+    //     videoElement.src = sessionUrl;
+    //     videoElement.controls = false;
+    //     videoElement.autoplay = true;
+    //     videoElement.muted = true;
+        
+    //     // Встраиваем стили напрямую в создаваемый тег <video>
+    //     videoElement.style.cssText = 'width: 100%; height: 250px; object-fit: cover; border-radius: 8px;';
+        
+    //     gridContainer.appendChild(videoElement);
+    // });
+
+    window.addEventListener("load", () => {
+        let url = "{{ url_for('get_data_for_videowall') }}?";
+        if (current_buildings_id != null && current_classroom_type_id != null) {
+            params_send = new URLSearchParams({
+                building_id: current_buildings_id,
+                classroom_type_id: current_classroom_type_id,
+            });
+        } else if (current_classroom_type_id != null) {
+            params_send = new URLSearchParams({
+                classroom_type_id: current_classroom_type_id,
+            });
+        } else if (current_buildings_id != null) {
+            params_send = new URLSearchParams({
+                building_id: current_buildings_id,
+            });
+        } else if (current_classroom_id != null) {
+            params_send = new URLSearchParams({
+                classroom_id: current_classroom_id,
+            });
+        }
+        // console.log(`${url}${params_send}`);
+        let response = fetch(`${url}${params_send}`)
+            .then((response) => response.json())
+            .then((result) => {
+                dataCameras = result;
+                dataCamerasLength = dataCameras.length;
+                cameraConnect(dataCameras[chunkCount], timeout);
+            });
+        let timer = setInterval(
+            () => cameraConnect(dataCameras[chunkCount]),
+            timeout,
+        );
+    });
+    
+    function cameraConnect(dataCameras, timeout) {
+        reader;
+
+        for (let i = 0; i < dataCameras.length; i++) {
+            reader = startStream(i, dataCameras[i]["view"], "https://{{ request.base_url.hostname }}/media/" + dataCameras[i]["id"] + "_p/whep")
+                .catch((err) => {
+                    console.error(`[WHEP] Камера "${dataCameras[i]["id"]}":`, err);
+                });
+        }
+        chunkCount++;
+        if (chunkCount >= dataCamerasLength) {
+            // console.log('dataCamerasLength = ' + dataCamerasLength)
+            chunkCount = 0;
+        }
+        setTimeout(() => stopAllSessions(), timeout);
+    }
+
+    window.addEventListener("beforeunload", () => {
+        if (reader !== null) {
+            stopAllSessions();
+        }
+    });
+
+    // ── Запустить одну WHEP-сессию ───────────────────────────────────
+    async function startStream(camera_id, videoEl, whepUrl) {
+        const pc = new RTCPeerConnection({ iceServers: [] });
+        let sessionUrl = null;
+
+        pc.addTransceiver('video', { direction: 'recvonly' });
+        pc.addTransceiver('audio', { direction: 'recvonly' });
+
+        pc.ontrack = (evt) => {
+            if (evt.track.kind === 'video') {
+                // document.getElementById("camera" + camera_id).srcObject = evt.streams[0];
+                const videoElement = document.createElement('video' + camera_id);
+                videoElement.src = whepUrl;
+                videoElement.controls = false;
+                videoElement.autoplay = true;
+                videoElement.muted = true;
+                
+                // Встраиваем стили напрямую в создаваемый тег <video>
+                videoElement.style.cssText = 'width: 100%; height: 250px; object-fit: cover; border-radius: 8px;';
+                
+                gridContainer.appendChild(videoElement);
+            }
+        };
+
+        pc.onconnectionstatechange = () => {
+            if (['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
+                console.warn('[WHEP] Соединение потеряно:', whepUrl, pc.connectionState);
+            }
+        };
+
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+
+        await new Promise((resolve) => {
+            if (pc.iceGatheringState === 'complete') return resolve();
+            pc.addEventListener('icegatheringstatechange', function handler() {
+            if (pc.iceGatheringState === 'complete') {
+                pc.removeEventListener('icegatheringstatechange', handler);
+                resolve();
+            }
+            });
+            setTimeout(resolve, 5000);
+        });
+
+        const resp = await fetch(whepUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/sdp',
+                'Authorization': `Bearer ${access_token}`
+            },
+            body: pc.localDescription.sdp,
+        });
+
+        if (!resp.ok) {
+            pc.close();
+            throw new Error(`[WHEP] HTTP ${resp.status} — ${whepUrl}`);
+        }
+
+        const location = resp.headers.get('location');
+        sessionUrl = location
+            ? (location.startsWith('http') ? location : new URL(location, whepUrl).href)
+            : null;
+
+        const answerSdp = await resp.text();
+        await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
+
+        activeSessions.push({ pc, sessionUrl, videoEl });
+    }
+    
+    // ── Закрыть все текущие WebRTC-сессии ────────────────────────────
+    async function stopAllSessions() {
+        const tasks = activeSessions.map(async ({ pc, sessionUrl, videoEl }) => {
+            if (videoEl) videoEl.srcObject = null;
+
+            if (sessionUrl) {
+            try {
+                await fetch(sessionUrl, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${access_token}` }
+                });
+            } catch (e) {
+                console.warn('[WHEP] Ошибка DELETE сессии:', e);
+            }
+            }
+
+            if (pc && pc.signalingState !== 'closed') pc.close();
+        });
+
+        await Promise.allSettled(tasks);
+        activeSessions = [];
+        }
+
+</script>
+<script>
+    $(function () {
+        var openBtn = $("#btn"),
+            slideMenu = $("#menu"),
+            layer = document.getElementById("blackout");
+        openBtn.on("click", function () {
+            if (slideMenu.is(":hidden")) {
+                $(layer).addClass("layer");
+                openBtn.slideDown(300);
+                slideMenu.slideDown(300);
+                $("html,body").css("overflow", "hidden");
+            } else {
+                slideMenu.slideUp(300);
+                openBtn.slideDown(300);
+                $(layer).removeClass("layer");
+                $("html,body").css("overflow", "auto");
+            }
+        });
+    });
+    function closeMenu() {
+        var openBtn = $("#btn"),
+            slideMenu = $("#menu"),
+            layer = document.getElementById("blackout");
+        slideMenu.slideUp(300);
+        openBtn.slideDown(300);
+        $(layer).removeClass("layer");
+        $("html,body").css("overflow", "auto");
+    }
+</script>
+
+<script type="text/javascript">
+    window.addEventListener("DOMContentLoaded", () => {
+        let url_buildings = "{{ url_for('get_all_buildings') }}";
+        let url_types = "{{ url_for('get_all_classroom_types') }}";
+
+        let params = new URLSearchParams(document.location.search);
+        let current_buildings_id = params.get("building_id");
+        let current_classroom_type_id = params.get("classroom_type_id");
+        let current_timeout = params.get("timeout");
+
+        const t1 = document.getElementById("classroom_type_id");
+        const t2 = document.getElementById("types-id");
+        const b1 = document.getElementById("building_id");
+        const b2 = document.getElementById("building-id");
+
+        function sync(i1, i2) {
+            if (i1.value === "0") {
+                i2.disabled = true;
+                i2.value = "";
+            } else {
+                i2.disabled = false;
+                i2.value = i1.value;
+            }
+        }
+
+        let buildings_list = fetch(url_buildings)
+            .then((response) => response.json())
+            .then((result) => {
+                let parent = document.querySelector("#building_id");
+                for (const building of result) {
+                    let dropdown_item = document.createElement("option");
+                    if (building["id"] == current_buildings_id) {
+                        dropdown_item.setAttribute("selected", "selected");
+                    }
+                    dropdown_item.setAttribute("value", building["id"]);
+                    dropdown_item.textContent = building["name"];
+                    parent.appendChild(dropdown_item);
+                }
+                sync(b1, b2);
+                b1.addEventListener("change", () => sync(b1, b2));
+            });
+        let types_list = fetch(url_types)
+            .then((response) => response.json())
+            .then((result) => {
+                let parent = document.querySelector("#classroom_type_id");
+                for (const type of result) {
+                    let dropdown_item = document.createElement("option");
+                    if (type["id"] == current_classroom_type_id) {
+                        dropdown_item.setAttribute("selected", "selected");
+                    }
+                    dropdown_item.setAttribute("value", type["id"]);
+                    dropdown_item.textContent = type["name"];
+                    parent.appendChild(dropdown_item);
+                }
+                sync(t1, t2);
+                t1.addEventListener("change", () => sync(t1, t2));
+            });
+
+        document.querySelectorAll("select[id]").forEach((sel) => {
+            const val = params.get(sel.id);
+            if (val == null) return;
+            if ([...sel.options].some((o) => o.value === val)) {
+                sel.value = val;
+            } else {
+                const opt = [...sel.options].find((o) => o.text === val);
+                if (opt) sel.value = opt.value;
+            }
+            sel.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+    });
+</script>
+
+{% endblock %}

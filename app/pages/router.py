@@ -159,6 +159,23 @@ async def page_get_videowall_page(
 
 
 @router.get(
+    "/videowall_dev",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))],
+)
+async def page_get_videowall_dev_page(
+    request: Request,
+    current_user: UserModel = Depends(get_current_user),
+):
+    logger.info("User open videowall_dev", extra=current_user, exc_info=True)
+    return templates.TemplateResponse(
+        request=request,
+        name="monitoring/videowall_dev.html",
+        context={"request": request, "current_user": current_user},
+    )
+
+
+@router.get(
     "/active_monitoring",
     response_class=HTMLResponse,
     dependencies=[Depends(permission_required("frontend"))],
