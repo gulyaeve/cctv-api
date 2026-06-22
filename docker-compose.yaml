@@ -97,9 +97,6 @@ services:
 # TODO: Check .env
   media:
     image: cctv_media
-    build:
-      context: .
-      dockerfile: Dockerfile-media
     container_name: cctv_media
     env_file:
       - .env.media
