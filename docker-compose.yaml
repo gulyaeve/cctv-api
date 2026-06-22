@@ -148,7 +148,7 @@ services:
       - rabbitmq
     command: ["python", "main.py"]
     networks:
-      default
+      - default
 
   # cctv_tg_worker:
   #   image: cctv_tg_worker
