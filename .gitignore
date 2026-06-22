@@ -12,3 +12,4 @@ wheels/
 .DS_Store
 .vscode/
 screenshots_bank/
+.env.*
