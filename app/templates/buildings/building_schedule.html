@@ -137,7 +137,7 @@
         {% for schedule in schedules %}
         <form class="" action="index.html" method="post">
           <tr>
-              <td><a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}">{{ schedule.subject }}</a></td>
+              <td><a href="{{ url_for('page_get_building_schedule_info_page', id=schedule.id, building_id=building.id) }}">{{ schedule.subject }}</a></td>
               <td>{{ schedule.timestamp_start.strftime('%d.%m.%Y %H:%M') }}-{{ schedule.timestamp_end.strftime('%H:%M') }}</td>
               <td class="text-center">{{ schedule.group_name }}</td>
               <td class="text-center">{{ schedule.teacher_name }}</td>

@@ -4,11 +4,15 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from app.ai_analysis.dao import AiAnalysisDAO
 from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings, get_building
 from app.cameras.dao import CamerasDAO
 from app.classrooms.dao import ClassroomsDAO
+from app.incidents.dao import IncidentsDAO
 from app.schedule.dao import ScheduleDAO
+from app.schedule.models import ScheduleModel
+from app.schedule.router import get_schedule
 from app.users.dependencies import get_current_user, permission_required
 from app.users.models import UserModel
 from app.logger import logger
@@ -174,5 +178,38 @@ async def page_get_building_schedule_page(
             "schedules": schedules,
             "building": building,
             "current_user": current_user,
+        }
+    )
+
+
+@router.get(
+    "/{building_id}/schedule/{id}",
+    response_class=HTMLResponse,
+    dependencies=[Depends(permission_required("frontend"))]
+)
+async def page_get_building_schedule_info_page(
+    request: Request,
+    schedule: ScheduleModel=Depends(get_schedule),
+    current_user: UserModel = Depends(get_current_user)
+):
+    incidents = await IncidentsDAO.find_all(event=schedule.id)
+    ai_analysis = await AiAnalysisDAO.find_all(event=schedule.id)
+    logger.info(
+        "User open schedule info page",
+        extra={
+            "current_user": current_user,
+            "schedule": schedule,
+        },
+        exc_info=True
+    )
+    return templates.TemplateResponse(
+        request=request,
+        name="schedules/schedule_info.html",
+        context={
+            "request": request,
+            "current_user": current_user,
+            "schedule": schedule,
+            "incidents": incidents,
+            "ai_analysis": ai_analysis,
         }
     )
