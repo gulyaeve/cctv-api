@@ -5,7 +5,6 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.ai_analysis.dao import AiAnalysisDAO
-from app.buildings.dao import BuildingsDAO
 from app.buildings.models import BuildingModel
 from app.buildings.router import get_all_buildings, get_building
 from app.cameras.dao import CamerasDAO

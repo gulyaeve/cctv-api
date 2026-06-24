@@ -16,8 +16,16 @@
 {% endblock %}
 
 {% block content %}
-<h2>Информация о {{ "экзамене" if schedule.event_type == 1 else "занятии" }}</h2>
+<h2>Информация {{ "об экзамене" if schedule.event_type == 1 else "о занятии" }}</h2>
+
 <div class="control-panel-meta">
+    {% if schedule.status == 0 %}
+        <span class="badge badge-secondary">Не началось</span>
+    {% elif schedule.status == 1 %}
+        <span class="badge badge-warning">В процессе</span>
+    {% else %}
+        <span class="badge badge-success">Завершено</span>
+    {% endif %}
     <div class="control-panel-meta-data overflow-y" style="word-wrap: anywhere;">
         <b>Кабинет:</b> {{ schedule.classroom_name }}<br>
         <b>Корпус:</b> {{ schedule.building_name}}<br>
