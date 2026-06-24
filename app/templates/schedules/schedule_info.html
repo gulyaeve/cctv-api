@@ -1,9 +1,14 @@
 {% extends "mainmenu.html" %}
 
-{% block title %}Информация о занятии {% endblock %}
+{% block title %}{{ "Экзамен" if schedule.event_type == 1 else "Занятие" }} {{ schedule.subject }} {{ schedule.group_name }} {{ schedule.timestamp_start.strftime('%d.%m.%Y %H:%M') }}-{{ schedule.timestamp_end.strftime('%H:%M') }} {% endblock %}
 
 {% block breadcrubs %}
-
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('page_get_building_schedule_page', id=schedule.building_id) }}">{{ schedule.building_name }}. Расписание занятий</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ schedule.subject }} {{ schedule.group_name }} {{ schedule.timestamp_start.strftime('%d.%m.%Y %H:%M') }}-{{ schedule.timestamp_end.strftime('%H:%M') }}</li>
+  </ol>
+</nav>
 {% endblock %}
 
 {% block scripts %}
@@ -11,5 +16,45 @@
 {% endblock %}
 
 {% block content %}
-
+<h2>Информация о {{ "экзамене" if schedule.event_type == 1 else "занятии" }}</h2>
+<div class="control-panel-meta">
+    <div class="control-panel-meta-data overflow-y" style="word-wrap: anywhere;">
+        <b>Кабинет:</b> {{ schedule.classroom_name }}<br>
+        <b>Корпус:</b> {{ schedule.building_name}}<br>
+        <br>
+        <b>{{ "Экзамен" if event_type == 1 else "Предмет" }}:</b><br>
+        {{ schedule.subject }}<br>
+        <b>Время {{ "экзамена" if event_type == 1 else "занятия" }}:</b> {{ schedule.timestamp_start.strftime('%H:%M') }} - {{ schedule.timestamp_end.strftime('%H:%M') }}<br>
+        <b>{{ "Тех.эксперт" if event_type == 1 else "Преподаватель" }}:</b><br>
+        {{ schedule.teacher_name }}<br>
+        <b>Группа:</b><br>
+        {{ schedule.group_name }}<br>
+    </div>
+</div>
+<br>
+<br>
+{% if incidents %}
+<h2>Инциденты</h2>
+<div class="row m-0">
+    {% for incident in incidents | sort(attribute='id') %}
+    <div class="col-xl-3 col-lg-4 col-md-6 col-12 p-3 m-0">
+        <a href="{{ url_for('page_get_incident_by_id_page', id=incident.id) }}" class="text-decoration-none text-reset">
+            <div class="status inc-{% if incident.status == 0 %}alright {% elif incident.status == 2 %}alert {% elif incident.status == 3 %}control {% endif %} d-block">
+                <div class="status-head-placeholder d-flex">
+                    <b>{{ incident.time_created.strftime('%H:%M') }}
+                    {% if incident.status == 0 %}Нарушений нет {% elif incident.status == 2 %}Инцидент {% elif incident.status == 3 %}Контроль {% endif %}</b>
+                    <hr class="mt-1">
+                </div>
+                <div style="word-wrap: anywhere;">
+                    <b>Визор:</b> {{ incident.visor_name }}<br>
+                    {% if incident.comment %} <b>Комментарий визора:</b> {{ incident.comment }}<br> {% endif %}
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<h2>Инциденты отсутствуют</h2>
+{% endif %}
 {% endblock %}
