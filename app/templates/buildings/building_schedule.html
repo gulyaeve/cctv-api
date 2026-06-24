@@ -152,8 +152,8 @@
                 {% endif %}
               </td>
               <th class="text-center">
-                <a href=""><i class="fa fa-edit" aria-hidden="true"></i></a>
-                <a href="{{ url_for('page_get_building_schedule_page', id=building.id)}}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                <!-- <a href=""><i class="fa fa-edit" aria-hidden="true"></i></a> -->
+                <a href="{{ url_for('page_get_building_schedule_info_page', id=schedule.id, building_id=building.id) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
               </th>
           </tr>
         </form>
