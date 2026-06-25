@@ -137,7 +137,11 @@
         {% for schedule in schedules %}
         <form class="" action="index.html" method="post">
           <tr>
+            {% if schedule.status == 1 %}
+              <td><a href="{{ url_for('page_get_active_monitoring').include_query_params(classroom_id=schedule.current_classroom_id) }}">{{ schedule.subject }}</a></td>
+            {% else %}
               <td><a href="{{ url_for('page_get_building_schedule_info_page', id=schedule.id, building_id=building.id) }}">{{ schedule.subject }}</a></td>
+            {% endif %}
               <td>{{ schedule.timestamp_start.strftime('%d.%m.%Y %H:%M') }}-{{ schedule.timestamp_end.strftime('%H:%M') }}</td>
               <td class="text-center">{{ schedule.group_name }}</td>
               <td class="text-center">{{ schedule.teacher_name }}</td>
@@ -152,8 +156,13 @@
                 {% endif %}
               </td>
               <th class="text-center">
+              {% if schedule.status == 1 %}
+                <!-- <a href=""><i class="fa fa-edit" aria-hidden="true"></i></a> -->
+                <a href="{{ url_for('page_get_active_monitoring').include_query_params(classroom_id=schedule.current_classroom_id) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+              {% else %}
                 <!-- <a href=""><i class="fa fa-edit" aria-hidden="true"></i></a> -->
                 <a href="{{ url_for('page_get_building_schedule_info_page', id=schedule.id, building_id=building.id) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+              {% endif %}
               </th>
           </tr>
         </form>
