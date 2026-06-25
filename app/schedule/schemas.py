@@ -80,4 +80,5 @@ class ScheduleAiTask(ScheduleAiSchema):
 
 class ActiveMonitoringSearch(BaseModel):
     building_id: Optional[int] = None
+    classroom_id: Optional[int] = None
     event_type: Optional[int] = None
