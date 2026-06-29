@@ -40,6 +40,7 @@ async def get_active_monitoring(
         visor_id=(current_user.id),
         building_id=filter_query.building_id,
         classroom_id=filter_query.classroom_id,
+        group_id=filter_query.group_id,
         event_type=filter_query.event_type,
     )
     return schedule_for_monitoring

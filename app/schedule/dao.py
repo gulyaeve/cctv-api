@@ -266,6 +266,7 @@ class ScheduleDAO(BaseDAO):
         building_id: Optional[int] = None,
         event_type: Optional[int] = None,
         classroom_id: Optional[int] = None,
+        group_id: Optional[int] = None,
     ):
         try:
             # Алиас для инцидентов (для подзапроса)
@@ -288,6 +289,8 @@ class ScheduleDAO(BaseDAO):
                 conditions.append(ScheduleModel.event_type == event_type)
             if classroom_id is not None:
                 conditions.append(ClassroomModel.id == classroom_id)
+            if group_id is not None:
+                conditions.append(GroupModel.id == group_id)
 
             # Incaliased = aliased(IncidentModel, incident_subquery)
             Curator = aliased(TeacherModel, name="curator")

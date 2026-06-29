@@ -184,6 +184,7 @@ async def page_get_active_monitoring(
     request: Request,
     building_id: Optional[int] = None,
     classroom_id: Optional[int] = None,
+    group_id: Optional[int] = None,
     event_type: Optional[int] = None,
     monitoring_data=Depends(get_active_monitoring),
     incident_types=Depends(get_all_incident_types),
@@ -196,6 +197,7 @@ async def page_get_active_monitoring(
             "building_id": building_id,
             "classroom_id": classroom_id,
             "event_type": event_type,
+            "group_id": group_id,
         },
         exc_info=True,
     )
