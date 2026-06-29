@@ -102,6 +102,7 @@ services:
       - .env.media
     depends_on:
       - db
+      - backend
     volumes:
       - ./media/mediamtx.yml:/src/mediamtx.yml
       - ./media/ffmpeg_stream.py:/src/ffmpeg_stream.py
@@ -112,7 +113,6 @@ services:
       # - ./cctv.itmoscow.crt:/ssl/cctv.itmoscow.crt
     networks:
       - default
-      - backend
     ports:
     #   - 8554:8554
     #   - 1935:1935
