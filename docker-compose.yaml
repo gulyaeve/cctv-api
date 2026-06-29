@@ -86,7 +86,6 @@ services:
       - db
       - rabbitmq
       - redis
-      - media
     command: ["/src/docker/entry_point.sh"]
     restart: always
     ports:
