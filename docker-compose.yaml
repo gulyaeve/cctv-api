@@ -112,6 +112,7 @@ services:
       # - ./cctv.itmoscow.crt:/ssl/cctv.itmoscow.crt
     networks:
       - default
+      - backend
     ports:
     #   - 8554:8554
     #   - 1935:1935
@@ -130,6 +131,7 @@ services:
       - .env.scr
     depends_on:
       - rabbitmq
+      - backend
     command: ["python", "main.py"]
     networks:
       - default
@@ -143,6 +145,7 @@ services:
       - .env.max
     depends_on:
       - rabbitmq
+      - backend
     command: ["python", "main.py"]
     networks:
       - default
